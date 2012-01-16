@@ -5,8 +5,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.http.params.HttpAbstractParamBean;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +17,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class DemonService extends Service implements LocationListener{
-	
-	int count = 0;
-	
+
 	boolean Quit;
 	private LocationManager mLocationManager;
 	private Location mLocation = null;
@@ -53,8 +49,10 @@ public class DemonService extends Service implements LocationListener{
 		DemonThread thread = new DemonThread(); 
 		thread.start();
 		return START_STICKY;
+
 	}
 	
+
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 		return null;
@@ -63,7 +61,6 @@ public class DemonService extends Service implements LocationListener{
 	class DemonThread extends Thread{ 
 		public void run(){
 			for(int i = 0 ; Quit == false ; i++){
-				count++;
 
 				if(mLocation != null){
 					double lat = mLocation.getLatitude();
