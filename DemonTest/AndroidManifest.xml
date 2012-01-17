@@ -22,11 +22,17 @@
 				<action android:name="exam.DomonTest.DemonService"></action>		        
 		    </intent-filter>
 	    </service>
-		            
+	    <receiver android:name=".BRDemon" android:enabled="true">
+	        <intent-filter >
+	        	<action android:name="android.intent.action.BOOT_COMPLETED" />
+	        </intent-filter>
+	    </receiver>
+	    <receiver android:name=".AlarmReceiver"/>
     </application>
     
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>
