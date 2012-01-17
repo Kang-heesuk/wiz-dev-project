@@ -17,7 +17,7 @@ public class DemonTestActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(DemonTestActivity.this, DemonService.class);
 				startService(intent);
-			}
+			} 
         });
         
         Button btnstop = (Button)findViewById(R.id.stopBtn);
