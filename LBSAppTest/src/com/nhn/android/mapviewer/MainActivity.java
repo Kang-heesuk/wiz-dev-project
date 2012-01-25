@@ -47,7 +47,10 @@ public class MainActivity extends Activity {
         Button btn_04 = (Button) findViewById(R.id.btn_04);
         btn_04.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "준비중이야!!!", Toast.LENGTH_LONG).show();
+				
+				Intent intent = new Intent(MainActivity.this, MyLocationInfoView.class);
+				startActivity(intent);
+				
 				Log.d("location", "btn_04 pressed");
 			}
 		});
