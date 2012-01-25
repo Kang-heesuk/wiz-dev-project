@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30pt"
+        android:text="이곳은 SMS 인증센터임요!"
+        />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        >
+        
+        <EditText
+            android:id="@+id/phonenum"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textSize="20pt"
+            android:hint="폰번호를 입력하세요"
+            android:inputType="phone"
+            android:layout_weight="3"
+            />
+        
+        <Button
+            android:id="@+id/smsSend"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textSize="20pt"
+            android:text="인증번호받기"
+            android:layout_weight="1"
+            />
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        >
+        
+        <EditText
+            android:id="@+id/authNum"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textSize="20pt"
+            android:inputType="phone"
+            android:hint="인증번호를 입력하세요"
+            android:layout_weight="3"
+            />
+        
+        <Button
+            android:id="@+id/goCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textSize="20pt"
+            android:text="인증하기"
+            android:layout_weight="1"
+            />
+        
+    </LinearLayout>
+    
+
+</LinearLayout>
