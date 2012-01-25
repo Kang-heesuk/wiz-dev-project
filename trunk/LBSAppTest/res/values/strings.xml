@@ -3,6 +3,7 @@
 
     <string name="hello">Hello World, LBSAppTestActivity!</string>
     <string name="location_info">This is LBS App for Testing page!</string>
-    <string name="app_name">LBSAppTest</string>
-
+    <string name="str_done">완료</string>
+	<string name="app_name">LBSAppTest</string>
+    
 </resources>

@@ -32,26 +32,19 @@ import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 
 
-public class LocationInfoView extends NMapActivity {
+public class MyLocationInfoView extends NMapActivity {
 	
 	private static final String LOG_TAG = "NMapViewer";
 	private static final boolean DEBUG = false;
 
 	private NMapView mMapView; 
 	private NMapController mMapController;
-
-	//String test1 = this.getIntent().getStringExtra("reqId");
-    //String test2 = this.getIntent().getStringExtra("reqCtn");
-
-    double longitude01 = 127.12201246666667;
-	double latitude01 = 37.495217644444445;
 	
-    
+	
 	//최초 맵 기준  지정 변수 -> 현재는 시청으로 나중에는 자신의 위치로 변경하자.
-	private NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude01, latitude01);
+	private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(126.978371, 37.5666091);
 	//private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(127.12201246666667, 37.495217644444445);
-	
-	private static final int NMAP_ZOOMLEVEL_DEFAULT = 15;
+	private static final int NMAP_ZOOMLEVEL_DEFAULT = 11;
 	private static final int NMAP_VIEW_MODE_DEFAULT = NMapView.VIEW_MODE_VECTOR;
 	private static final boolean NMAP_TRAFFIC_MODE_DEFAULT = false;
 	private static final boolean NMAP_BICYCLE_MODE_DEFAULT = false;
@@ -154,9 +147,21 @@ public class LocationInfoView extends NMapActivity {
  	 
  		// create my location overlay - 현재 내위치를 보여주는 오버레이 : 위에서 파라메터 값을 반드시 생성해주어야 한다.
  		mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, mMapCompassManager);
+ 		/*
+        Button btn_go_main = (Button) findViewById(R.id.btn_go_main);
+        btn_go_main.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				
+				Intent intent = new Intent(LocationInfoView.this, MainActivity.class);
+				startActivity(intent);
+				
+				Log.d("location", "btn_go_main pressed");
+			}
+		});
+		*/
+ 		
 
- 		//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
- 		getCurrentLocationInfoPOIdataOverlay();
+ 		startMyLocation();
     }
 
     //액티비티가 활성화되면 mylocation 이 시작됨
@@ -185,7 +190,7 @@ public class LocationInfoView extends NMapActivity {
   			} else {
   				boolean isMyLocationEnabled = mMapLocationManager.enableMyLocation(false);
   				if (!isMyLocationEnabled) {
-  					Toast.makeText(LocationInfoView.this, "Please enable a My Location source in system settings",
+  					Toast.makeText(MyLocationInfoView.this, "Please enable a My Location source in system settings",
   						Toast.LENGTH_LONG).show();
 
   					Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -217,40 +222,6 @@ public class LocationInfoView extends NMapActivity {
 	}
 
 
-	//좌표에 해당하는 주소를 지도에 표현하는 오버레이
-	private void getCurrentLocationInfoPOIdataOverlay() {
- 
-		//값을 받아와서 셋팅하면 해당 위치를 표시하는 오버레이를 보여줄 수 있음
-		//double 형 변수 , double 형 변수, 해당 위치 표현할 string
-		double longitude01 = 127.12201246666667;
-		double latitude01 = 37.495217644444445;
-		String placeInfo01 = "IT Becher Tower";
-		
-		// Markers for POI item
-		int markerId = NMapPOIflagType.PIN;
-
-		// set POI data
-		NMapPOIdata poiData = new NMapPOIdata(2, mMapViewerResourceProvider);
-		poiData.beginPOIdata(2);
-		//poiData.addPOIitem(127.0630205, 37.5091300, "Pizza 777-111", markerId, 0);
-		//poiData.addPOIitem(127.061, 37.51, "Pizza 123-456", markerId, 0);
-		poiData.addPOIitem(longitude01, latitude01, placeInfo01, markerId, 0);
-		poiData.endPOIdata();
-
-		// create POI data overlay
-		NMapPOIdataOverlay poiDataOverlay = mOverlayManager.createPOIdataOverlay(poiData, null);
-
-		// set event listener to the overlay
-		poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
-
-		// select an item
-		poiDataOverlay.selectPOIitem(0, true);
-
-		// show all POI data
-		//poiDataOverlay.showAllPOIdata(0);
-	}
-
-	
 	/* NMapDataProvider Listener */
 	private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
 
@@ -265,7 +236,7 @@ public class LocationInfoView extends NMapActivity {
 			if (errInfo != null) {
 				Log.e(LOG_TAG, "Failed to findPlacemarkAtLocation: error=" + errInfo.toString());
 
-				Toast.makeText(LocationInfoView.this, errInfo.toString(), Toast.LENGTH_LONG).show();
+				Toast.makeText(MyLocationInfoView.this, errInfo.toString(), Toast.LENGTH_LONG).show();
 				return;
 			}
 /*
@@ -315,7 +286,7 @@ public class LocationInfoView extends NMapActivity {
 
 					if (countOfOverlappedItems > 1) {
 						String text = countOfOverlappedItems + " overlapped items for " + overlayItem.getTitle();
-						Toast.makeText(LocationInfoView.this, text, Toast.LENGTH_LONG).show();
+						Toast.makeText(MyLocationInfoView.this, text, Toast.LENGTH_LONG).show();
 						return null;
 					}
 				}
@@ -373,13 +344,13 @@ public class LocationInfoView extends NMapActivity {
 			//			};
 			//			runnable.run();	
 
-			Toast.makeText(LocationInfoView.this, "Your current location is temporarily unavailable.", Toast.LENGTH_LONG).show();
+			Toast.makeText(MyLocationInfoView.this, "Your current location is temporarily unavailable.", Toast.LENGTH_LONG).show();
 		}
 
 		//@Override
 		public void onLocationUnavailableArea(NMapLocationManager locationManager, NGeoPoint myLocation) {
 
-			Toast.makeText(LocationInfoView.this, "Your current location is unavailable area.", Toast.LENGTH_LONG).show();
+			Toast.makeText(MyLocationInfoView.this, "Your current location is unavailable area.", Toast.LENGTH_LONG).show();
 
 			stopMyLocation();
 		}
@@ -401,7 +372,7 @@ public class LocationInfoView extends NMapActivity {
 			} else { // fail
 				Log.e(LOG_TAG, "onFailedToInitializeWithError: " + errorInfo.toString());
 
-				Toast.makeText(LocationInfoView.this, errorInfo.toString(), Toast.LENGTH_LONG).show();
+				Toast.makeText(MyLocationInfoView.this, errorInfo.toString(), Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -477,31 +448,6 @@ public class LocationInfoView extends NMapActivity {
 
 	};
 
-
-	/* POI data State Change Listener*/
-	private final NMapPOIdataOverlay.OnStateChangeListener onPOIdataStateChangeListener = new NMapPOIdataOverlay.OnStateChangeListener() {
-
-		//@Override
-		public void onCalloutClick(NMapPOIdataOverlay poiDataOverlay, NMapPOIitem item) {
-			if (DEBUG) {
-				Log.i(LOG_TAG, "onCalloutClick: title=" + item.getTitle());
-			}
-
-			// [[TEMP]] handle a click event of the callout
-			Toast.makeText(LocationInfoView.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
-		}
-
-		//@Override
-		public void onFocusChanged(NMapPOIdataOverlay poiDataOverlay, NMapPOIitem item) {
-			if (DEBUG) {
-				if (item != null) {
-					Log.i(LOG_TAG, "onFocusChanged: " + item.toString());
-				} else {
-					Log.i(LOG_TAG, "onFocusChanged: ");
-				}
-			}
-		}
-	};
 
     
     /** 
