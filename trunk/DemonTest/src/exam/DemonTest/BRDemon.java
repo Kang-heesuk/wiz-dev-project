@@ -8,7 +8,6 @@ import android.util.Log;
 public class BRDemon extends BroadcastReceiver {
 	
 	public void onReceive(Context context, Intent intent) {
-		
 		Log.i("JYJ test","Action == " + intent.getAction());
 		if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
 			Log.i("JYJ test","Boot Completed");
@@ -16,5 +15,4 @@ public class BRDemon extends BroadcastReceiver {
 			Log.i("JYJ test","Time Tick");
 		}
 	}
-
 }

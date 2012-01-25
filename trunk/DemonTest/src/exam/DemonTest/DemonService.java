@@ -71,7 +71,7 @@ public class DemonService extends Service implements LocationListener{
 		DemonThread thread = new DemonThread(); 
 		thread.start();
 		
-		//데몬은 계속 두면 40분 정도 지나면 지가 죽어버린다. 재시작 시간을 셋팅한 알람을 호출해 놓는다.
+		//데몬은 계속 두면 40분 정도 지나면 지가 죽어버린다. 재시작 시간을 셋팅한 알람을 호출해 놓는다.(30분마다)
 		restartDemon();
 		
 		return START_STICKY;
