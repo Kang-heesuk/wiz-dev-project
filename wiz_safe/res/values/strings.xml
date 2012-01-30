@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, Wiz_safeActivity!</string>
+    
     <string name="app_name">Wiz_safe</string>
+    
+    <string name="btn_string_01">자녀리스트</string>
+    <string name="btn_string_02">부모리스트</string>
+    <string name="btn_string_03">설정</string>
+    
+    <string name="btn_back">이전</string>
+    <string name="btn_del">삭제</string>
 
 </resources>
