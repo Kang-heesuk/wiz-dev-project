@@ -2,10 +2,7 @@ package com.wiz.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,29 +41,11 @@ public class MainActivity extends Activity {
 				Log.d("location", "btn03 pressed");
 			}
 		});
-
-    }
-
-    
-    private void checkNetworkStat(Handler handler){
-		ConnectivityManager con =  (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-		
-		if (con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ) {
-			//3G연결 확인
-			//ConnectivityManager.TYPE_MOBILE는 0값을 받습니다.
-			handler.sendEmptyMessageDelayed(0, 2000); 
-		}else if(con.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTING){
-		
-		
-		//와이파이 연결
-		//ConnectivityManager.TYPE_WIFI 는 1값을 갇습니다.
-		} else{
-			//연결상태 확인 x
-		}
-
-    }
+        
         
 
-    
+    }
+
+       
     
 }
