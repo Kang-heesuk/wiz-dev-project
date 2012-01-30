@@ -9,5 +9,21 @@
     
     <string name="btn_back">이전</string>
     <string name="btn_del">삭제</string>
+    <string name="btn_del">동의</string>
+    <string name="btn_del">재요청</string>
+    <string name="btn_del">설정</string>
+    <string name="btn_del">닫기</string>
+    <string name="btn_del">삭제</string>
+    
+    <string name="title_child">자녀리스트</string>
+    <string name="title_parent">부모리스트</string>
+    <string name="title_reg_child">자녀등록하기</string>
+    <string name="title_req_finish">요청완료</string>
+    <string name="title_current_loca">현위치</string>
+    <string name="title_loca_accept">위치허용동의</string>
+    <string name="title_child_log">자녀발자취</string>
+    <string name="title_log_setup">발자취설정</string>
+    <string name="title_saftyzone">안심존</string>
+    <string name="title_saftyzone_setup">안심존설정</string>
 
 </resources>
