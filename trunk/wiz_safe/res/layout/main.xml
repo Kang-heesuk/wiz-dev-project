@@ -4,9 +4,26 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="fill_parent"
+    <Button
+        android:id="@+id/btn1"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        android:text="@string/btn_string_01" />
+
+    <Button
+        android:id="@+id/btn2"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_02" />
+
+    <Button
+        android:id="@+id/btn3"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_03" />
 
 </LinearLayout>
