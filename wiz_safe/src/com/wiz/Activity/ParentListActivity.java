@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,16 +34,16 @@ public class ParentListActivity extends ListActivity {
         	topTitle.setText(R.string.title_parent);
         }
         
-        Button btn_back = (Button)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new Button.OnClickListener() {
+        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				ParentListActivity.this.finish();
 			}
 		});
         
         
-        Button btn_del = (Button)findViewById(R.id.btn_del);
-        btn_del.setOnClickListener(new Button.OnClickListener() {
+        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
+        btn_del.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				Toast.makeText(ParentListActivity.this, "부모 리스트 삭제 ", Toast.LENGTH_SHORT).show();
 			}
