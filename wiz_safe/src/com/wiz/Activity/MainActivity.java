@@ -27,8 +27,8 @@ public class MainActivity extends Activity {
         Button btn02 = (Button)findViewById(R.id.btn2);
         btn02.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "btn02 pressed!!!", Toast.LENGTH_SHORT).show();
-				Log.d("location", "btn02 pressed");
+				Intent intent = new Intent(MainActivity.this, ParentListActivity.class);
+				startActivity(intent);
 			}
 		});
         
