@@ -3,7 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-	<include layout="@layout/top_navigation" />
+	 
+	 <!-- include -->
+	<include 
+	    layout="@layout/top_navigation"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" 
+	    />
 	
   	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:layout_width="fill_parent"
