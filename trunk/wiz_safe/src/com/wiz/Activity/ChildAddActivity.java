@@ -31,7 +31,7 @@ public class ChildAddActivity extends Activity {
 			} 
 		});
         
-        TextView textView1 = (TextView)findViewById(R.id.textView1);
+        TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_reg_child);
         
         Button btn_del = (Button)findViewById(R.id.btn_del);
