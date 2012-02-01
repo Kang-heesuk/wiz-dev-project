@@ -3,48 +3,42 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:orientation="horizontal" >
+	<include layout="@layout/top_navigation" />
 	
-	    <Button
-	        android:id="@+id/btn_back"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="left"
-	        android:layout_weight="1"
-	        android:text="@string/btn_back" />
-	
-	    <TextView
-	        android:id="@+id/textView1"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/btn_string_01"
-	        android:paddingTop="10dp"
-	        android:gravity="center"
-	        android:layout_weight="4"
-	        android:textAppearance="?android:attr/textAppearanceMedium" />
-	
-	    <Button
-	        android:id="@+id/btn_del"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="right"
-	        android:layout_weight="1"
-	        android:text="@string/btn_del" />
-	    
-	</LinearLayout>
   	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="wrap_content"
+	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:orientation="horizontal" >
+	    android:orientation="vertical" 
+	    >
 		 
-		 <Button
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="right"
-		        android:text="asdasdasdasdasdasdasdasdasdasd" />
+  	    <TextView
+  	        android:id="@+id/info1"
+  	        android:layout_width="100pt"
+  	        android:layout_height="wrap_content"
+  	        android:text="등록된 자녀가 없습니다. 아래  '자녀 등록하기 ' 메뉴에서 등록해 주세요."
+  	        android:layout_gravity="center"
+  	        />
+  	    
+		<Button
+		    android:id="@+id/btn_child1"
+	        android:layout_width="100pt"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+			/>
+		
+		<Button
+		    android:id="@+id/btn_child2"
+	        android:layout_width="100pt"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+			/>
+		
+		<Button
+		    android:id="@+id/btn_child3"
+	        android:layout_width="100pt"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+			/>
 	
 	</LinearLayout>
 
