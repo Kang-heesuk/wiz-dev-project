@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,14 +24,14 @@ public class ParentAcceptActivity extends Activity {
         	topTitle.setText(R.string.title_loca_accept);
         }
         
-        Button btn_back = (Button)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new Button.OnClickListener() {
+        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				ParentAcceptActivity.this.finish();
 			}
 		});
         
-        Button btn_del = (Button)findViewById(R.id.btn_del);
+        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
         btn_del.setVisibility(View.INVISIBLE);
         
         
