@@ -41,7 +41,9 @@ public class SplashActivity extends Activity {
        		    	SplashActivity.this.finish();
        			}
        		};
-       		timer.schedule(myTask, 3000);
+       		
+       		//내가 일부러 0초로 만듬 빠른 테스트를 위하여
+       		timer.schedule(myTask, 0);
        		
        	}else{
        		//인증 splash 액티비티를 호출
