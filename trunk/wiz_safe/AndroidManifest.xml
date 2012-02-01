@@ -35,6 +35,18 @@
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
+        
+         <activity
+            android:name=".ParentListActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        
+         <activity
+            android:name=".ParentAcceptActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>
