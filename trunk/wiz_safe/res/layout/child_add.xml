@@ -9,7 +9,12 @@
 	    android:layout_height="fill_parent"
 	    android:orientation="vertical">
 	    
-	    <include layout="@layout/top_navigation" />
+	    <!-- include -->
+		<include 
+		    layout="@layout/top_navigation"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content" 
+		    />
 	
 	    <LinearLayout
 	        android:layout_width="fill_parent"
