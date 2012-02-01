@@ -25,5 +25,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/btn_string_03" />
-
+    
+    <Button
+        android:id="@+id/btn4"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="상대위치 조회(위도경도를 받아서 )" />
+    
 </LinearLayout>
