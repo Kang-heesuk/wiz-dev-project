@@ -2,7 +2,7 @@ package com.wiz.Activity;
 
 import java.util.ArrayList;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,17 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ParentListActivity extends ListActivity {
+public class ParentListActivity extends Activity {
 
-	ArrayAdapter<CustomListData> parentAdapter;
-	final ArrayList<CustomListData> parentList = new ArrayList<CustomListData>();
+	ParentListAdapter parentListAdapter;
+	//부모 리스트 정보를 담는 리스트
+	final ArrayList<ParentDetail> parentList = new ArrayList<ParentDetail>();
 	
     /** Called when the activity is first created. */
     @Override
@@ -55,16 +57,13 @@ public class ParentListActivity extends ListActivity {
         //서버와 통신하여 리스트 정보를 가져온다.
         //서버와 통신하여 리스트 정보를 가져온다.        
         //서버와 통신하여 리스트 정보를 가져온다.
+        getParentList();
         
-        //리스트 데이터 정의
-        CustomListData ne1 = new CustomListData("Mia","010-1111-1111", R.drawable.noimg);
-        parentList.add(ne1);
-        CustomListData ne2 = new CustomListData("Char","010-2222-3333", R.drawable.noimg);
-        parentList.add(ne2);
         //어댑터 정의
-        parentAdapter = new CustomListAdapter(this, R.layout.custom_listview, parentList);
+        parentListAdapter = new ParentListAdapter(this, R.layout.safe_list, parentList);
+        ListView listView = (ListView)findViewById(R.id.list);
         //실행하면 화면에 listview를 보여준다.
-        setListAdapter(parentAdapter);
+        listView.setAdapter(parentListAdapter);
         
     } 
     
@@ -80,21 +79,22 @@ public class ParentListActivity extends ListActivity {
         //서버와 통신하여 리스트 정보를 가져온다.
         //서버와 통신하여 리스트 정보를 가져온다.        
         //서버와 통신하여 리스트 정보를 가져온다.
-        
-        //리스트 데이터 정의
-        CustomListData ne1 = new CustomListData("Mia","010-3333-4444", R.drawable.noimg);
-        parentList.add(ne1);
-        CustomListData ne2 = new CustomListData("Char","010-5555-6666", R.drawable.noimg);
-        parentList.add(ne2);
-        
-     
+		getParentList();
         
         //어댑터 정의
-        parentAdapter = new CustomListAdapter(this, R.layout.custom_listview, parentList);
+        parentListAdapter = new ParentListAdapter(this, R.layout.safe_list, parentList);
+        ListView listView = (ListView)findViewById(R.id.list);
         //실행하면 화면에 listview를 보여준다.
-        setListAdapter(parentAdapter);
+        listView.setAdapter(parentListAdapter);
 	}
 
+	//부모리스트를 가져오는 로직 - 실행하면 통신하여 리스트를 가져와서  arraylist에 담긴다.
+	public void getParentList(){
+		ParentDetail ne1 = new ParentDetail("Mia","010-1111-1111", R.drawable.noimg);
+        parentList.add(ne1);
+        ParentDetail ne2 = new ParentDetail("Char","010-2222-3333", R.drawable.noimg);
+        parentList.add(ne2);
+	}
 
 /*    
     @Override
@@ -104,7 +104,7 @@ public class ParentListActivity extends ListActivity {
     	//Toast.makeText(ParentListActivity.this, "==="+position+"===", Toast.LENGTH_SHORT).show();
     	
     	//커스텀 리스트뷰의 phone 정보를 가져온다.
-    	CustomListData data = parentAdapter.getItem(position);
+    	ParentDetail data = parentAdapter.getItem(position);
     	
     	Intent intent = new Intent(ParentListActivity.this, ParentAcceptActivity.class);
 		intent.putExtra("phonenum", data.getPhoneNo());
@@ -115,45 +115,61 @@ public class ParentListActivity extends ListActivity {
     
 	
 	//custom list adapter 를 inner class 로 선언하여 사용
-	class CustomListAdapter extends ArrayAdapter<CustomListData> {       
+	class ParentListAdapter extends BaseAdapter {       
 		
-		private ArrayList<CustomListData> items;       
+		Context maincon;
+    	LayoutInflater Inflater;
+    	ArrayList<ParentDetail> arSrc;
+    	int layout;
 		 
-		public CustomListAdapter(Context context, int textViewResourceId, ArrayList<CustomListData> items) {
-			super(context, textViewResourceId, items);         
-			this.items = items; 
+		public ParentListAdapter(Context context, int alayout, ArrayList<ParentDetail> aarSrc) {
+			maincon = context;
+    		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    		arSrc = aarSrc;
+    		layout = alayout; 
 		}
+		
+		public int getCount() {
+			return arSrc.size();
+		}
+
+		public ParentDetail getItem(int position) {
+			return arSrc.get(position);
+		}
+
+		public long getItemId(int position) {
+			return position;
+		} 
 		
 		@Override    
 		public View getView(final int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			if (v == null) {
-				LayoutInflater vi = (LayoutInflater) getContext().getSystemService(
-					Context.LAYOUT_INFLATER_SERVICE);
-					v = vi.inflate(R.layout.custom_listview, null);
-			}         
+			final int pos = position;
+			if(convertView == null){
+				convertView = Inflater.inflate(layout, parent, false);
+			}       
 			
-			CustomListData custom_list_data = items.get(position);
+			ParentDetail parentDetail = getItem(position);
 			
-			if (custom_list_data != null) {             //하나의 이미지뷰와 2개의 텍스트뷰와 버튼 한개 정보를 받아온다.
+			if (parentDetail != null) {             //하나의 이미지뷰와 2개의 텍스트뷰와 버튼 한개 정보를 받아온다.
 				
-				((TextView)v.findViewById(R.id.eName)).setText(custom_list_data.getName());
+				((TextView)convertView.findViewById(R.id.eName)).setText(parentDetail.getName());
 	            
-				((TextView)v.findViewById(R.id.ePhoneNo)).setText(custom_list_data.getPhoneNo());
+				((TextView)convertView.findViewById(R.id.info1)).setText(parentDetail.getPhoneNo());
 	           
-				if (custom_list_data.getPhotoId() != -1) {
-	            	((ImageView)v.findViewById(R.id.ePhoto)).setImageResource(custom_list_data.getPhotoId());                
+				if (arSrc.get(pos).getPhotoId() != -1) {
+	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(parentDetail.getPhotoId());                
 	            } else {
-	            	((ImageView)v.findViewById(R.id.ePhoto)).setImageResource(R.drawable.noimg);  
+	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(R.drawable.noimg);  
 	            }
 
-				Button btn_accept = (Button)v.findViewById(R.id.btn_accept);
+				Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
+				btn_accept.setVisibility(View.VISIBLE);
 				btn_accept.setText(R.string.btn_accept);
 				
 			}            
 			
 			//Button 기능 셋팅
-			Button btn_accept = (Button)v.findViewById(R.id.btn_accept);
+			Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
 			btn_accept.setTag(position);
 			//승낙하기 클릭 리스너
 			btn_accept.setOnClickListener(new OnClickListener() {
@@ -161,7 +177,7 @@ public class ParentListActivity extends ListActivity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					String phonenum = (String)parentAdapter.getItem(position).getPhoneNo();
+					String phonenum = (String)getItem(position).getPhoneNo();
 					
 					Intent intent = new Intent(ParentListActivity.this, ParentAcceptActivity.class);
 					intent.putExtra("phonenum", phonenum);
@@ -171,20 +187,20 @@ public class ParentListActivity extends ListActivity {
 
 			});
 			
-			return v;     
+			return convertView;     
 			}
 
 		}  
 	
 	
 	//custom list data 를 inner class 로 선언
-	class CustomListData {       
+	class ParentDetail {       
 		
 		private String name;
 	    private String phoneNo;
 	    private int photo;
 	    
-	    public CustomListData(String _name, String _pn, int _photo) {
+	    public ParentDetail(String _name, String _pn, int _photo) {
 	        this.name = _name;
 	        this.phoneNo = _pn;
 	        this.photo = _photo;
