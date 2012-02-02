@@ -40,7 +40,7 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Activity.R;
 
 
-public class LocationViewActivity extends NMapActivity {
+public class ChildLocationViewActivity extends NMapActivity {
 	
 	private static final String LOG_TAG = "NMapViewer";
 	private static final boolean DEBUG = false;
@@ -102,7 +102,7 @@ public class LocationViewActivity extends NMapActivity {
         ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
-				LocationViewActivity.this.finish();
+				ChildLocationViewActivity.this.finish();
 			}
 		});
 
@@ -129,7 +129,7 @@ public class LocationViewActivity extends NMapActivity {
 			public void onClick(View v) {
 				//Toast.makeText(LocationViewActivity.this, "이탈 알림 버튼 눌렀으!!!", Toast.LENGTH_SHORT).show();
 				
-				AlertDialog.Builder ad = new AlertDialog.Builder(LocationViewActivity.this);
+				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
 				String title = "이탈 알림";	
 				String message = "현재 시간부터 24시간 이내에 해당 위치에서 이탈 시 알려드립니다.";	
 				ad.setTitle(title);
@@ -138,7 +138,7 @@ public class LocationViewActivity extends NMapActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						Toast.makeText(LocationViewActivity.this, "동의 눌렀다. ", Toast.LENGTH_SHORT).show();
+						Toast.makeText(ChildLocationViewActivity.this, "동의 눌렀다. ", Toast.LENGTH_SHORT).show();
 					}
 				});
 				ad.setNegativeButton(R.string.btn_cancel, null);
@@ -268,7 +268,7 @@ public class LocationViewActivity extends NMapActivity {
   			} else {
   				boolean isMyLocationEnabled = mMapLocationManager.enableMyLocation(false);
   				if (!isMyLocationEnabled) {
-  					Toast.makeText(LocationViewActivity.this, "Please enable a My Location source in system settings",
+  					Toast.makeText(ChildLocationViewActivity.this, "Please enable a My Location source in system settings",
   						Toast.LENGTH_LONG).show();
 
   					Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -348,7 +348,7 @@ public class LocationViewActivity extends NMapActivity {
 			if (errInfo != null) {
 				Log.e(LOG_TAG, "Failed to findPlacemarkAtLocation: error=" + errInfo.toString());
 
-				Toast.makeText(LocationViewActivity.this, errInfo.toString(), Toast.LENGTH_LONG).show();
+				Toast.makeText(ChildLocationViewActivity.this, errInfo.toString(), Toast.LENGTH_LONG).show();
 				return;
 			}
 /*
@@ -398,7 +398,7 @@ public class LocationViewActivity extends NMapActivity {
 
 					if (countOfOverlappedItems > 1) {
 						String text = countOfOverlappedItems + " overlapped items for " + overlayItem.getTitle();
-						Toast.makeText(LocationViewActivity.this, text, Toast.LENGTH_LONG).show();
+						Toast.makeText(ChildLocationViewActivity.this, text, Toast.LENGTH_LONG).show();
 						return null;
 					}
 				}
@@ -456,13 +456,13 @@ public class LocationViewActivity extends NMapActivity {
 			//			};
 			//			runnable.run();	
 
-			Toast.makeText(LocationViewActivity.this, "Your current location is temporarily unavailable.", Toast.LENGTH_LONG).show();
+			Toast.makeText(ChildLocationViewActivity.this, "Your current location is temporarily unavailable.", Toast.LENGTH_LONG).show();
 		}
 
 		//@Override
 		public void onLocationUnavailableArea(NMapLocationManager locationManager, NGeoPoint myLocation) {
 
-			Toast.makeText(LocationViewActivity.this, "Your current location is unavailable area.", Toast.LENGTH_LONG).show();
+			Toast.makeText(ChildLocationViewActivity.this, "Your current location is unavailable area.", Toast.LENGTH_LONG).show();
 
 			stopMyLocation();
 		}
@@ -484,7 +484,7 @@ public class LocationViewActivity extends NMapActivity {
 			} else { // fail
 				Log.e(LOG_TAG, "onFailedToInitializeWithError: " + errorInfo.toString());
 
-				Toast.makeText(LocationViewActivity.this, errorInfo.toString(), Toast.LENGTH_LONG).show();
+				Toast.makeText(ChildLocationViewActivity.this, errorInfo.toString(), Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -571,7 +571,7 @@ public class LocationViewActivity extends NMapActivity {
 			}
 
 			// [[TEMP]] handle a click event of the callout
-			Toast.makeText(LocationViewActivity.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
+			Toast.makeText(ChildLocationViewActivity.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
 		}
 
 		//@Override
