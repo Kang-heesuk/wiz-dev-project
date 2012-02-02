@@ -168,7 +168,7 @@ public class ChildListActivity extends Activity {
 			btn_nowLocation.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						Intent intent = new Intent(ChildListActivity.this, LocationViewActivity.class);
+						Intent intent = new Intent(ChildListActivity.this, ChildLocationViewActivity.class);
 						startActivity(intent);
 					}
 				}
