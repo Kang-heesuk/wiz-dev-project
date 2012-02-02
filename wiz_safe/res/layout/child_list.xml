@@ -4,48 +4,25 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 	 
-	 <!-- include -->
+	<!-- include -->
 	<include 
 	    layout="@layout/top_navigation"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content" 
 	    />
-	
-  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:orientation="vertical" 
-	    >
-		 
-  	    <TextView
-  	        android:id="@+id/info1"
-  	        android:layout_width="100pt"
-  	        android:layout_height="wrap_content"
-  	        android:text="등록된 자녀가 없습니다. 아래  '자녀 등록하기 ' 메뉴에서 등록해 주세요."
-  	        android:layout_gravity="center"
-  	        />
-  	    
-		<Button
-		    android:id="@+id/btn_child1"
-	        android:layout_width="100pt"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-			/>
 		
 		<Button
-		    android:id="@+id/btn_child2"
-	        android:layout_width="100pt"
+		    android:id="@+id/btn_addChild"
+		    android:layout_width="fill_parent" 
 	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-			/>
+			android:text="+자녀등록하기"
+		    />
 		
-		<Button
-		    android:id="@+id/btn_child3"
-	        android:layout_width="100pt"
+		<ListView 
+		    android:id="@+id/list"
+		    android:layout_width="fill_parent" 
 	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-			/>
-	
-	</LinearLayout>
+	        android:drawSelectorOnTop="false" 
+	 	   />
 
 </LinearLayout>
