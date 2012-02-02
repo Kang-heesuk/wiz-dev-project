@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+        
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical">
+	    
+	    <!-- include -->
+		<include 
+		    layout="@layout/top_navigation"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content" 
+		    />
+	
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:orientation="vertical"                         
+	        >
+	       
+	    <TextView
+			android:id="@+id/info1"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="위치를 찾고 싶은 자녀의 휴대폰 번호를 입력하세요."
+			android:background="#ff0000"
+			/>
+	    
+	    <TextView
+			android:id="@+id/info2"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="휴대폰 번호"
+			android:background="#fefefe"
+			/>
+	    
+	    <EditText
+	        android:id="@+id/childPhone"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="'-'를 제외하고 입력하세요."
+	        android:inputType="phone"
+	        />
+	    
+	    <TextView
+			android:id="@+id/info3"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="이름"
+			android:background="#f2f2f2"
+			/>
+	    
+	    <EditText
+	        android:id="@+id/childName"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="미입력시 '자녀1' 자동 설정 됨"
+	        android:inputType="text" 
+	        />
+	    
+	    <Button
+	        android:id="@+id/goSubmit"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:text="요청 보내기"
+	        />
+	    
+	    </LinearLayout>
+	    
+	</LinearLayout>
+	
+	<TextView
+		android:id="@+id/processingFrame"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:text="형 처리중이야 기다려"
+		android:gravity="center_horizontal|center_vertical"
+		android:background="#febefe"
+		android:visibility="invisible"
+		/>
+
+</FrameLayout>
