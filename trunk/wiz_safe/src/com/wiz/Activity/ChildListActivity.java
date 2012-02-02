@@ -2,8 +2,9 @@ package com.wiz.Activity;
 
 import java.util.ArrayList;
 
+import com.wiz.util.WizSafeUtil;
+
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,10 +46,23 @@ public class ChildListActivity extends Activity {
 			public void onClick(View v) {
 				Log.i("testTop","Delete =============");
 			} 
-		});
+		}); 
         
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
+        
+        //자녀등록하기 버튼액션
+        findViewById(R.id.btn_addChild).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					int whereFlag = childList.size() + 1;
+					
+					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
+					intent.putExtra("whereFlag", whereFlag);
+					startActivity(intent);
+				}
+			}
+		);
         
         childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childList);
         ListView listView = (ListView)findViewById(R.id.list);
@@ -64,7 +78,7 @@ public class ChildListActivity extends Activity {
     	//요건 로직을 짜지 않았으므로 일단은 하드코딩한다.
     	
     	//가져온 값
-    	String[][] tempHardCoding = {{"","",""},{"정용진","Y","01024882698"},{"반홍","N","01084464664"}};
+    	String[][] tempHardCoding = {{"박재하","Y","01012345678"},{"꽃분이","N","0105484565"},{"정용진","Y","01024882698"},{"반홍","N","01084464664"}};
     	
     	for(int i = 0 ; i < tempHardCoding.length ; i++){
     		childDetail addChildList = new childDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
@@ -126,17 +140,67 @@ public class ChildListActivity extends Activity {
 				convertView = Inflater.inflate(layout, parent, false);
 			}
 			
-			//리스트 안에 이미지 뷰
-			ImageView img = (ImageView)convertView.findViewById(R.id.ePhoto);
-			
+			//각 위젯 정의
 			LinearLayout bottomBtnArea= (LinearLayout)convertView.findViewById(R.id.bottomBtnArea);
-			bottomBtnArea.setVisibility(View.VISIBLE);
+			ImageView img = (ImageView)convertView.findViewById(R.id.ePhoto);
+			Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
+			Button btn_nowLocation = (Button)convertView.findViewById(R.id.btn_nowLocation);
+			Button btn_history = (Button)convertView.findViewById(R.id.btn_history);
+			Button btn_safeZone = (Button)convertView.findViewById(R.id.btn_safeZone);
+			TextView eName = (TextView)convertView.findViewById(R.id.eName);
+			TextView info1 = (TextView)convertView.findViewById(R.id.info1);
 			
+			eName.setText(arSrc.get(position).getChildName());
+			info1.setText(WizSafeUtil.setPhoneNum(arSrc.get(position).getChildPhone()));
 			
+			//각 버튼 액션 정의
+			btn_accept.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						Intent intent = new Intent(ChildListActivity.this, ChildAddCompleteActivity.class);
+						intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
+						startActivity(intent);
+					}
+				}
+			);
+			
+			btn_nowLocation.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						Log.i("childList","btn_nowLocation");
+					}
+				}
+			);
+			
+			btn_history.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						Log.i("childList","btn_history");
+					}
+				}
+			);
+			
+			btn_safeZone.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						Log.i("childList","btn_safeZone");
+					}
+				}
+			);
+			
+			//자녀리스트 승낙 여부에 따라서 커스텀 뷰의 디자인이 다르다.
+			if("Y".equals(arSrc.get(position).getChildRelation())){
+				btn_accept.setVisibility(View.INVISIBLE);
+				bottomBtnArea.setVisibility(View.VISIBLE);
+			}else{
+				btn_accept.setVisibility(View.VISIBLE);
+				btn_accept.setText("재요청");
+				bottomBtnArea.setVisibility(View.GONE);
+			}
 			
 			return convertView;
 		}
-    	
+
     }
     
 }
