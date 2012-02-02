@@ -46,23 +46,24 @@
             android:label="@string/app_name" >
         </activity>
         
-         <activity
+        <activity
+            android:name=".ChildLocationViewActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
             android:name=".ParentListActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         
-         <activity
+        <activity
             android:name=".ParentAcceptActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         
-         <activity
-            android:name=".LocationViewActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
-        </activity>
         
     </application>
 
