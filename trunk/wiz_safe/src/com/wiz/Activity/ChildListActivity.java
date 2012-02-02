@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,8 +32,8 @@ public class ChildListActivity extends Activity {
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.child_list);
         
-        Button btn_back = (Button)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new Button.OnClickListener() {
+        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				ChildListActivity.this.finish();
 			}
@@ -41,8 +42,8 @@ public class ChildListActivity extends Activity {
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_child);
         
-        Button btn_del = (Button)findViewById(R.id.btn_del);
-        btn_del.setOnClickListener(new Button.OnClickListener() {
+        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
+        btn_del.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				Log.i("testTop","Delete =============");
 			} 
