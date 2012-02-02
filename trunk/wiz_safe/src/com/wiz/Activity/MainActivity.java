@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
         btn_04.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				
-				Intent intent = new Intent(MainActivity.this, LocationViewActivity.class);
+				Intent intent = new Intent(MainActivity.this, ChildLocationViewActivity.class);
 				startActivity(intent);
 				
 				Log.d("location", "btn_04 pressed");
