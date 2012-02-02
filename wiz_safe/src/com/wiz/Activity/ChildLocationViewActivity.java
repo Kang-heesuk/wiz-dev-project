@@ -138,7 +138,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						Toast.makeText(ChildLocationViewActivity.this, "동의 눌렀다. ", Toast.LENGTH_SHORT).show();
+						Toast.makeText(ChildLocationViewActivity.this, "동의 눌렀다. 현재 화면의 위치를 저장하고 벗어나면 푸시해주긔 ", Toast.LENGTH_SHORT).show();
 					}
 				});
 				ad.setNegativeButton(R.string.btn_cancel, null);
