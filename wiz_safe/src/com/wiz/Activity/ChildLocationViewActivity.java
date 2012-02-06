@@ -1,6 +1,7 @@
 package com.wiz.Activity;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -37,7 +38,6 @@ import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
-import com.wiz.Activity.R;
 
 
 public class ChildLocationViewActivity extends NMapActivity {
@@ -113,14 +113,10 @@ public class ChildLocationViewActivity extends NMapActivity {
         //현재 시간 출력
         TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
         if(tv_checkTime != null){
-        	Calendar now = Calendar.getInstance();
-        	int year = now.get(Calendar.YEAR);
-        	int mon = now.get(Calendar.DAY_OF_MONTH);
-        	int day = now.get(Calendar.DATE);
-        	int hour = now.get(Calendar.HOUR_OF_DAY);
-        	int min = now.get(Calendar.MINUTE);
-        	int sec = now.get(Calendar.SECOND);
-        	tv_checkTime.setText("조회시간 : "+year+"년 "+(mon+1)+"월 "+day+"일 "+hour+":"+min+":"+sec);
+        	GregorianCalendar calendar = new GregorianCalendar();
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일  aa hh:ss");
+        	
+        	tv_checkTime.setText("조회시간 : "+sdf.format(calendar.getTime()));
         }
          
         //이탈알림 이미지 버튼 처리
