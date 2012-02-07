@@ -91,7 +91,7 @@ public class ChildLocationViewActivity extends NMapActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-    	setContentView(R.layout.location_info); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
+    	setContentView(R.layout.child_loca_info); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
     	//top-navigation 값 정의
         TextView topTitle = (TextView)findViewById(R.id.textTitle);
