@@ -178,6 +178,9 @@ public class ChildListActivity extends Activity {
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 						Log.i("childList","btn_history");
+						Intent intent = new Intent(ChildListActivity.this, ChildTraceAddActivity.class);
+						intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
+						startActivity(intent);
 					}
 				}
 			);
