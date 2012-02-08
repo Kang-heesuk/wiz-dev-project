@@ -42,18 +42,6 @@ public class MainActivity extends Activity {
 			}
 		});
         
-        Button btn_04 = (Button) findViewById(R.id.btn4);
-        btn_04.setText("발자취 테스트");
-        btn_04.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				
-				Intent intent = new Intent(MainActivity.this, ChildLogListActivity.class);
-				startActivity(intent);
-				
-				Log.d("location", "btn_04 pressed");
-			}
-		});
-
     }
 
        
