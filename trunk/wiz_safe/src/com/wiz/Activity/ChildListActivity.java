@@ -177,7 +177,6 @@ public class ChildListActivity extends Activity {
 			btn_history.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						Log.i("childList","btn_history");
 						Intent intent = new Intent(ChildListActivity.this, ChildTraceAddActivity.class);
 						intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
 						startActivity(intent);
@@ -188,7 +187,9 @@ public class ChildListActivity extends Activity {
 			btn_safeZone.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						Log.i("childList","btn_safeZone");
+						Intent intent = new Intent(ChildListActivity.this, ChildSafezoneAddActivity.class);
+						intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
+						startActivity(intent);
 					}
 				}
 			);
