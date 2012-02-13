@@ -53,6 +53,12 @@
         </activity>
         
         <activity
+            android:name=".ChildSafezoneListActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
             android:name=".ChildSafezoneAddActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
