@@ -17,6 +17,7 @@
     <string name="btn_close">닫기</string>
     <string name="btn_done">완료</string>
     <string name="btn_regist">등록</string>
+    <string name="btn_modify">수정</string>
         
     <string name="title_child">자녀리스트</string>
     <string name="title_parent">부모리스트</string>
