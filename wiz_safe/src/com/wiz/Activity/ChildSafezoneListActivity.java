@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class ChildSafezoneAddActivity extends Activity {
+public class ChildSafezoneListActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -17,7 +17,7 @@ public class ChildSafezoneAddActivity extends Activity {
         ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
-				ChildSafezoneAddActivity.this.finish();
+				ChildSafezoneListActivity.this.finish();
 			}
 		});
         
