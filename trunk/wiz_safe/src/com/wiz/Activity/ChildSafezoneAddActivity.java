@@ -12,7 +12,7 @@ public class ChildSafezoneAddActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
-		setContentView(R.layout.child_safezone_add);
+		setContentView(R.layout.child_safezone_list);
         
         ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new ImageButton.OnClickListener() {
