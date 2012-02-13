@@ -100,6 +100,10 @@ public class ChildTraceViewActivity extends NMapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.child_trace_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
 	
+		//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
+    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout1);
+		parentView.removeView(mMapView);
+		
 		//top-navigation 값 정의
         TextView topTitle = (TextView)findViewById(R.id.textTitle);
         if(topTitle != null){
