@@ -20,7 +20,7 @@
 	    />
 	
 	<Button
-	    android:id="@+id/btn_addTrace"
+	    android:id="@+id/btn_addSafezone"
 	    android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
 		android:text="+ 안심존등록"
@@ -29,9 +29,8 @@
 	<TextView
 	    android:id="@+id/bodyTopText"
     	android:layout_width="wrap_content"
-    	android:paddingTop="10dp"
-    	android:layout_height="80dp"
-    	android:textSize="20sp"
+    	android:paddingTop="5dp"
+    	android:layout_height="wrap_content"
     	android:textColor="#FFFFFF"
     	android:typeface="serif"
     	 android:text="알고 계세요? 안심존이란? 설정하신 지역에 자녀가 진입 시 문자로 알려드립니다."
