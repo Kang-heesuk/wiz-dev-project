@@ -7,13 +7,13 @@
 
 package com.wiz.Activity;
 
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +22,9 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nhn.android.maps.NMapActivity;
@@ -61,8 +64,6 @@ public class ChildTraceViewActivity extends NMapActivity {
 	// set your API key which is registered for NMapViewer library.
 	private static final String API_KEY = "12602e7037542bb1f774834ff437c15c";
 
-	private MapContainerView mMapContainerView;
-
 	private NMapView mMapView; 
 	private NMapController mMapController;
 
@@ -97,24 +98,43 @@ public class ChildTraceViewActivity extends NMapActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.child_trace_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
+	
+		//top-navigation 값 정의
+        TextView topTitle = (TextView)findViewById(R.id.textTitle);
+        if(topTitle != null){
+        	topTitle.setText(R.string.title_current_loca);
+        }
+        
+        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
+			public void onClick(View v) {
+				ChildTraceViewActivity.this.finish();
+			}
+		});
 
+        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
+        btn_del.setVisibility(View.INVISIBLE);
+        
+        //body
+        //현재 시간 출력
+        TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
+        if(tv_checkTime != null){
+        	GregorianCalendar calendar = new GregorianCalendar();
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일  aa hh:ss");
+        	
+        	tv_checkTime.setText("조회시간 : "+sdf.format(calendar.getTime()));
+        }
 		//=====================================================//
 		// 여기부터 맵 생성 및 보여주기
 		//=====================================================//		
 		
 		// create map view
-		mMapView = new NMapView(this);
-
+		//mMapView = new NMapView(this);
+        mMapView = (NMapView)findViewById(R.id.mapview2); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
 		// set a registered API key for Open MapViewer Library
 		mMapView.setApiKey(API_KEY);
-
-		// create parent view to rotate map view
-		mMapContainerView = new MapContainerView(this);
-		mMapContainerView.addView(mMapView);
-
-		// set the activity content to the parent view
-		setContentView(mMapContainerView);
-
+		
 		// initialize map view
 		mMapView.setClickable(true);
 		mMapView.setEnabled(true);
@@ -202,13 +222,13 @@ public class ChildTraceViewActivity extends NMapActivity {
 		pathData.initPathData();	//경로리스트 초기화
 		//경로위치점을 x좌표,y좌표 양식으로 입력:마지막 파라메터는 표현방식 solid는 선, dash는 점선, 앞에서 선언한 양식으로 0까지 선을 연결한다. 
 		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.129240, 37.451330, 0);
-		pathData.addPathPoint(127.122250, 37.499300, 0);
-		pathData.addPathPoint(127.125555, 37.490100, NMapPathLineStyle.TYPE_DASH);
-		pathData.addPathPoint(127.122155, 37.505217, 0);
-		pathData.addPathPoint(127.127390, 37.495640, 0);
-		pathData.addPathPoint(127.122215, 37.495490, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.122012, 37.495000, 0);
+		pathData.addPathPoint(127.133012, 37.496217, 0);
+		pathData.addPathPoint(127.132012, 37.495217, 0);
+		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_DASH);
+		pathData.addPathPoint(127.132012, 37.495217, 0);
+		pathData.addPathPoint(127.132012, 37.495217, 0);
+		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_SOLID);
+		pathData.addPathPoint(127.132012, 37.495217, 0);
 		pathData.endPathData();
 
 		//위에서 입력한 경로데이터를 가진 오버레이를 생성
@@ -217,20 +237,23 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 	}
 
-	//이동경로 중에 중요 지점을 오버레이로 표시하기 위한 메소드
+	//이동경로 중에 중요 지점을 오버레이로 표시하기 위한 메소드 - 경로 item보다 한개 더 많아야 합니다.
 	private void testPathPOIdataOverlay() {
 
 		// set POI data
 		NMapPOIdata poiData = new NMapPOIdata(4, mMapViewerResourceProvider, true);
-		poiData.beginPOIdata(1);
-		poiData.addPOIitem(127.132012, 37.495217, "시작 주소는 IT벤처", NMapPOIflagType.FROM, null);
-		//poiData.addPOIitem(127.122240, 37.495330, null, NMapPOIflagType.NUMBER_BASE + 1, null);
-		//poiData.addPOIitem(127.122250, 37.495300, null, NMapPOIflagType.NUMBER_BASE + 100, null);
-		//poiData.addPOIitem(127.122555, 37.495100, null, NMapPOIflagType.NUMBER_BASE + 200, null);
-		//poiData.addPOIitem(127.122155, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 400, null);
-		//poiData.addPOIitem(127.122390, 37.495640, null, NMapPOIflagType.NUMBER_BASE + 500, null);
-		//poiData.addPOIitem(127.122215, 37.495490, null, NMapPOIflagType.NUMBER_BASE + 999, null);
-		//poiData.addPOIitem(127.122012, 37.495000, "끝나는 구나~", NMapPOIflagType.TO, null);
+		poiData.beginPOIdata(8);
+		//poiData.addPOIitem(127.132012, 37.495217, "시작 주소는 IT벤처", NMapPOIflagType.FROM, null);
+		//poiData.addPOIitem(127.132012, 37.495217, "끝나는 구나~", NMapPOIflagType.TO, null);
+		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 1, null);
+		poiData.addPOIitem(127.133012, 37.496217, null, NMapPOIflagType.NUMBER_BASE + 2, null);
+		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 3, null);
+		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 4, null);
+		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 5, null);
+		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 6, null);
+		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 7, null);
+		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 8, null);
+
 		
 		poiData.endPOIdata();
 
