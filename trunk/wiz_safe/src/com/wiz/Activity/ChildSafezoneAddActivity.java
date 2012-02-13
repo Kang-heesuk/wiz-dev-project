@@ -7,11 +7,11 @@
 
 package com.wiz.Activity;
 
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
@@ -130,6 +130,10 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		// 여기부터 맵 생성 및 보여주기
 		//=====================================================//		
 		
+        //레이더 이미지 알파 정의 크기 조정
+        
+        
+        
 		// create map view
 		//mMapView = new NMapView(this);
         mMapView = (NMapView)findViewById(R.id.mapview); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
