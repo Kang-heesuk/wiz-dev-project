@@ -43,13 +43,22 @@ public class ChildTraceListActivity extends Activity {
         
         ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
         btn_del.setVisibility(View.INVISIBLE);
-            
+          
+        //자녀등록하기 버튼액션
+        findViewById(R.id.btn_addTrace).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceAddActivity.class);
+					startActivity(intent);
+				}
+			}
+		);
         
         //앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
         String phonenum = intent.getStringExtra("phonenum");		//몇번째 자리인지
         
-
+        
 
         //body 정의
         //서버와 통신하여 리스트 정보를 가져온다.
