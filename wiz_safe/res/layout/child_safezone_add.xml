@@ -29,6 +29,15 @@
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"/>
 		    
+		    <ImageView
+				android:id="@+id/img_raider"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/rect"
+				android:layout_centerHorizontal="true"
+				android:layout_centerVertical="true"
+				android:tint="#60000000" />
+		    
 		    <ImageButton
 				android:id="@+id/btn_alarm"
 				android:layout_width="wrap_content"
@@ -36,7 +45,7 @@
 				android:background="@drawable/icon"
 				android:layout_alignParentBottom="true"
 				android:layout_alignParentLeft="true"
-				android:paddingBottom="50dp" />
+				android:layout_marginBottom="50dp" />
 			    		
 			<ImageButton
 				android:id="@+id/btn_setup"
