@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +94,10 @@ public class ChildLocationViewActivity extends NMapActivity {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
+    	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
+    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout1);
+		parentView.removeView(mMapView);
+		
     	//top-navigation 값 정의
         TextView topTitle = (TextView)findViewById(R.id.textTitle);
         if(topTitle != null){
@@ -145,7 +150,7 @@ public class ChildLocationViewActivity extends NMapActivity {
     	// create map view
     	//mMapView = new NMapView(this);
     	
-    	mMapView = (NMapView)findViewById(R.id.mapview); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
+    	mMapView = (NMapView)findViewById(R.id.mapview1); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
 
     	// set a registered API key for Open MapViewer Library
     	mMapView.setApiKey(API_KEY); //지도 키 값을 셋팅한다.
@@ -209,36 +214,13 @@ public class ChildLocationViewActivity extends NMapActivity {
 
     	mMapController.setMapViewMode(NMapView.VIEW_MODE_SATELLITE);
 
-    	// set path data points
-    	// NMapPathData pathData = new NMapPathData(9);
-    	// 
-    	// pathData.initPathData();
-    	// pathData.addPathPoint(127.912445,37.32212, NMapPathLineStyle.TYPE_SOLID);
-    	// pathData.addPathPoint(127.912445,37.32220, 0);
-    	// pathData.addPathPoint(127.912445,37.32250, 0);
-    	// pathData.addPathPoint(127.912445,37.32280, 0);
-    	// pathData.addPathPoint(127.912445,37.32300, 0);
-    	// pathData.addPathPoint(127.912445,37.32320, 0);
-    	// pathData.addPathPoint(127.912445,37.32340, NMapPathLineStyle.TYPE_DASH);
-    	// pathData.addPathPoint(127.912445,37.32350, 0);
-    	// pathData.endPathData();
-    	//
-    	// NMapPathDataOverlay pathDataOverlay = mOverlayManager.createPathDataOverlay(pathData);
-    	// pathDataOverlay.showAllPathData(0);
-
-
+    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
     	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
-
-
-    	}
-
-
- 		//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
- 		//getCurrentLocationInfoPOIdataOverlay();
  		
-    
+    }
 
-    //액티비티가 활성화되면 mylocation 이 시작됨
+
+	//액티비티가 활성화되면 mylocation 이 시작됨
   	private void startMyLocation() {
 
   		if (mMyLocationOverlay != null) {	//최초 내위치용 오버레이가 생성된 경우만 사용
