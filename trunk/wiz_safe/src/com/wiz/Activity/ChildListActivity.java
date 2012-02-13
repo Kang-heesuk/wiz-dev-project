@@ -187,7 +187,7 @@ public class ChildListActivity extends Activity {
 			btn_safeZone.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						Intent intent = new Intent(ChildListActivity.this, ChildSafezoneAddActivity.class);
+						Intent intent = new Intent(ChildListActivity.this, ChildSafezoneListActivity.class);
 						intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
 						startActivity(intent);
 					}
