@@ -2,12 +2,15 @@ package com.wiz.Activity;
 
 import java.util.ArrayList;
 
-import com.wiz.Activity.R.string;
+import com.wiz.util.WizSafeUtil;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,8 +24,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class ChildTraceListActivity extends Activity {
-
+	
+	String phonenum = "";
+	
 	TraceListAdapter traceListAdapter;
+
 	//발자취 등록정보를 담는 리스트
 	final ArrayList<TraceDetail> traceList = new ArrayList<TraceDetail>();
 	
@@ -43,22 +49,21 @@ public class ChildTraceListActivity extends Activity {
         
         ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
         btn_del.setVisibility(View.INVISIBLE);
-          
+        
+        //앞 페이지에서 필요한 정보를 추출한다.
+        Intent intent = getIntent();
+        phonenum = intent.getStringExtra("phonenum");
+        
         //자녀등록하기 버튼액션
         findViewById(R.id.btn_addTrace).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
 					Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceAddActivity.class);
+					intent.putExtra("phonenum", phonenum);
 					startActivity(intent);
 				}
 			}
 		);
-        
-        //앞 페이지에서 필요한 정보를 추출한다.
-        Intent intent = getIntent();
-        String phonenum = intent.getStringExtra("phonenum");		//몇번째 자리인지
-        
-        
 
         //body 정의
         //서버와 통신하여 리스트 정보를 가져온다.
@@ -79,13 +84,11 @@ public class ChildTraceListActivity extends Activity {
 	
 	//부모리스트를 가져오는 로직 - 실행하면 통신하여 리스트를 가져와서  arraylist에 담긴다.
 	public void getTraceList(){
-		TraceDetail ne1 = new TraceDetail("내쉐퀴1","010-1111-1111", "0", "6", "00", "07", "1", R.drawable.noimg);
+		TraceDetail ne1 = new TraceDetail("내쉐퀴1","01011111111", "1", "5", "00", "07", "60", R.drawable.noimg);
         traceList.add(ne1);
-        TraceDetail ne2 = new TraceDetail("내쉐퀴22","010-2222-3333", "1", "5", "21", "23", "1", R.drawable.noimg);
+        TraceDetail ne2 = new TraceDetail("내쉐퀴22","01022223333", "1", "0", "21", "23", "120", R.drawable.noimg);
         traceList.add(ne2);
 	}	
-	
-	
 	
 	//custom list adapter 를 inner class 로 선언하여 사용
 	class TraceListAdapter extends BaseAdapter {       
@@ -153,20 +156,53 @@ public class ChildTraceListActivity extends Activity {
 				LinearLayout bottomBtnArea = (LinearLayout)convertView.findViewById(R.id.bottomBtnArea);
 				bottomBtnArea.setVisibility(View.VISIBLE);
 				
+				//수정하기 버튼 정의
 				Button btn_modify = (Button)convertView.findViewById(R.id.btn_nowLocation);
 				btn_modify.setText(R.string.btn_modify);
 				btn_modify.setVisibility(View.VISIBLE);
-
+				btn_modify.setOnClickListener(
+					new Button.OnClickListener(){
+						public void onClick(View v) {
+							Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceAddActivity.class);
+							intent.putExtra("phonenum", arSrc.get(pos).getTargetCtn());
+							intent.putExtra("startDay", arSrc.get(pos).getStartDay());
+							intent.putExtra("endDay", arSrc.get(pos).getEndDay());
+							intent.putExtra("startTime", arSrc.get(pos).getStartTime());
+							intent.putExtra("endTime", arSrc.get(pos).getEndTime());
+							intent.putExtra("interval", arSrc.get(pos).getInterval());
+							startActivity(intent);
+						}
+					}
+				);
+				
+				//삭제하기  버튼 정의
 				Button btn_delete = (Button)convertView.findViewById(R.id.btn_history);
 				btn_delete.setText(R.string.btn_del);
 				btn_delete.setVisibility(View.VISIBLE);
 				
+				btn_delete.setOnClickListener(
+					new Button.OnClickListener(){
+						public void onClick(View v) {
+							AlertDialog.Builder submitAlert = new AlertDialog.Builder(ChildTraceListActivity.this);
+							submitAlert.setTitle("발자취삭제");
+							submitAlert.setMessage("발자취 설정을 삭제 하시겠습니까?\n휴대폰 번호 : "+ WizSafeUtil.setPhoneNum(arSrc.get(pos).getTargetCtn()) + "\n설정 요일 : " + WizSafeUtil.dayConvertFromNumberToString(arSrc.get(pos).getStartDay()) + "~" + WizSafeUtil.dayConvertFromNumberToString(arSrc.get(pos).getEndDay()) + "요일\n설정 시간 : " + WizSafeUtil.timeConvertFromNumberToString(arSrc.get(pos).getStartTime())+ "~" + WizSafeUtil.timeConvertFromNumberToString(arSrc.get(pos).getEndTime()) + "까지" + "\n설정 간격 : " + WizSafeUtil.intervalConvertMinToHour(arSrc.get(pos).getInterval()) + "시간\n※ 삭제 시 금일 포인트는 환급 되지 않습니다.");
+							submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									Log.i("traceChild","==========통신시작!");
+								}
+							});
+							submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							});
+							submitAlert.show();
+						}
+					}
+				);
+				
 				Button btn_safeZone = (Button)convertView.findViewById(R.id.btn_safeZone);
 				btn_safeZone.setVisibility(View.GONE);
-				
-				
-				
-				
+
 			}            
 			
 			//Button 기능 셋팅
