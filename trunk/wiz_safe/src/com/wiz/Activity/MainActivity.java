@@ -35,10 +35,8 @@ public class MainActivity extends Activity {
         Button btn03 = (Button)findViewById(R.id.btn3);
         btn03.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "get123123 = ", Toast.LENGTH_SHORT).show();
-
-				//Toast.makeText(MainActivity.this, "btn03 pressed!!!", Toast.LENGTH_SHORT).show();
-				Log.d("location", "btn03 pressed");
+				Intent intent = new Intent(MainActivity.this, SetupActivity.class);
+				startActivity(intent);
 			}
 		});
         
