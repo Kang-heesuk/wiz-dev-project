@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+<!-- include -->
+	<include 
+	    layout="@layout/top_navigation"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" />
+    
+	
+    <Button
+        android:id="@+id/btn1"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_04" />
+
+    <Button
+        android:id="@+id/btn2"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_05" />
+
+    <Button
+        android:id="@+id/btn3"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_06" />
+
+    <Button
+        android:id="@+id/btn4"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_07" />
+    
+    <Button
+        android:id="@+id/btn5"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_08" />
+    
+    <Button
+        android:id="@+id/btn6"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_string_09" />
+
+  	<LinearLayout     
+         android:layout_width="fill_parent"
+         android:layout_height="50dp"
+         android:orientation="horizontal" >     
+		 
+	      <TextView
+		    android:layout_width="wrap_content"  
+	        android:layout_height="wrap_content"
+	        android:text="문자 수신"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:layout_weight="2"
+		    />
+     
+	     <ImageButton
+	         android:id="@+id/btn_sms" 
+	         android:layout_width="wrap_content"     
+	         android:layout_height="wrap_content"     
+	         android:background="@drawable/btn_on" 
+	         android:layout_weight="1" />   
+		  
+	</LinearLayout>
+
+  	 <TextView
+	    android:layout_width="fill_parent"  
+        android:layout_height="wrap_content"
+        android:text="문자 수신을  'OFF' 로 할 경우 모든 문자 메시지를 수신할 수 없습니다."
+        android:textAppearance="?android:attr/textAppearanceMedium"
+	    />
+  	
+  	 <LinearLayout     
+         android:layout_width="fill_parent"
+         android:layout_height="50dp"
+         android:orientation="horizontal" >     
+		 
+	     <TextView
+		    android:layout_width="wrap_content"  
+	        android:layout_height="wrap_content"
+	        android:text="위치 숨김"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:layout_weight="2"
+		    />
+     
+	     <ImageButton     
+	         android:id="@+id/btn_hide" 
+	         android:layout_width="wrap_content"     
+	         android:layout_height="wrap_content"     
+	         android:background="@drawable/btn_off" 
+	         android:layout_weight="1"
+	         />   
+	         
+	</LinearLayout>
+  	
+</LinearLayout>
