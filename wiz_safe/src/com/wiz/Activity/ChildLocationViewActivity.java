@@ -95,7 +95,7 @@ public class ChildLocationViewActivity extends NMapActivity {
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
     	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
-    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout1);
+    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
     	//top-navigation 값 정의
@@ -150,7 +150,7 @@ public class ChildLocationViewActivity extends NMapActivity {
     	// create map view
     	//mMapView = new NMapView(this);
     	
-    	mMapView = (NMapView)findViewById(R.id.mapview1); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
+    	mMapView = (NMapView)findViewById(R.id.mapview); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
 
     	// set a registered API key for Open MapViewer Library
     	mMapView.setApiKey(API_KEY); //지도 키 값을 셋팅한다.
