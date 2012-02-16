@@ -7,21 +7,31 @@
 
 package com.wiz.Activity;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,22 +43,19 @@ import com.nhn.android.maps.NMapController;
 import com.nhn.android.maps.NMapLocationManager;
 import com.nhn.android.maps.NMapOverlay;
 import com.nhn.android.maps.NMapOverlayItem;
+import com.nhn.android.maps.NMapProjection;
 import com.nhn.android.maps.NMapView;
 import com.nhn.android.maps.maplib.NGeoPoint;
 import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.nmapmodel.NMapPlacemark;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.maps.overlay.NMapPOIitem;
-import com.nhn.android.maps.overlay.NMapPathData;
-import com.nhn.android.maps.overlay.NMapPathLineStyle;
-import com.nhn.android.mapviewer.NMapPOIflagType;
 import com.nhn.android.mapviewer.NMapViewerResourceProvider;
 import com.nhn.android.mapviewer.overlay.NMapCalloutCustomOverlay;
 import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
-import com.nhn.android.mapviewer.overlay.NMapPathDataOverlay;
 
 /**
  * Sample class for map viewer library.
@@ -69,12 +76,21 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	double longitude01 = 127.12201246666667;
 	double latitude01 = 37.495217644444445;
+
+	//반경을 그리기 위한 오버레이 선언
+	private RadiusOverlay radiusOverlay;
+	//반경 정보 값 200,300,500 으로 변환
+	private int radiusValue = 500;
+
+	//검색창
+	EditText searchArea;
+	//키보드 보이고 안보이고
+	InputMethodManager mImm;
 	
-    
 	//최초 맵 기준  지정 변수 -> 현재는 시청으로 나중에는 자신의 위치로 변경하자.
 	private NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude01, latitude01);
 	//private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(127.12201246666667, 37.495217644444445);
-	private static final int NMAP_ZOOMLEVEL_DEFAULT = 11;
+	private static final int NMAP_ZOOMLEVEL_DEFAULT = 12;
 	private static final int NMAP_VIEW_MODE_DEFAULT = NMapView.VIEW_MODE_VECTOR;
 	private static final boolean NMAP_TRAFFIC_MODE_DEFAULT = false;
 	private static final boolean NMAP_BICYCLE_MODE_DEFAULT = false;
@@ -94,6 +110,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	private NMapLocationManager mMapLocationManager;
 	private NMapCompassManager mMapCompassManager;
 
+	
 	private NMapViewerResourceProvider mMapViewerResourceProvider;
 
 	private NMapPOIdataOverlay mFloatingPOIdataOverlay;
@@ -104,7 +121,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.child_safezone_add); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
-	
+		
 		//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout1);
 		parentView.removeView(mMapView);
@@ -126,13 +143,101 @@ public class ChildSafezoneAddActivity extends NMapActivity {
         btn_del.setVisibility(View.INVISIBLE);
         
         //body
+        
+        //검색창 영역 
+        searchArea = (EditText)findViewById(R.id.tv_search);
+        searchArea.setFilters(new InputFilter[] {
+        	new InputFilter.LengthFilter(20)	
+        });
+     
+        
+        mImm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        //검색버튼액션 정의
+        findViewById(R.id.btn_search).setOnClickListener(new Button.OnClickListener() {
+    		public void onClick(View v) {
+    			switch(v.getId()){
+	    			case R.id.btn_search:
+	    				mImm.hideSoftInputFromWindow(searchArea.getWindowToken(),0);	//키보드를 숨기고
+	    				goSearch(searchArea.getText().toString());
+	    				break;
+    			}
+    		}
+
+    	    public void goSearch(String searchStr){
+    	    	
+    	    	int read = 0;
+    	    	byte[] buf = new byte[1024];
+    	    	InputStream is = null;
+    	    	
+    	    	try{
+    	    		String result = "";
+    	    		String url = "http://210.109.111.212/tb/JYJ/appApi/smsAuthSend.jsp?ctn=" + searchStr;
+    	    		is = (new URL(url)).openStream();
+    	    		while((read=is.read(buf)) != -1){
+    	    			result = result + new String(buf,0,read,"utf-8");
+    	    		}
+    	    		Log.i("authTest","result==" + result);
+    	    		if(result.indexOf("0") > -1){
+    	    			//성공 처리
+    	    		}else{
+    	    			//실패 처리
+    	    		}
+    	    	}catch(Exception e){
+    	    		
+    	    	}finally{
+    	    		if(is != null){ try{is.close();}catch(Exception e){} }
+    	    	}
+    	    }
+        });
+        
+        //반경 정보 변경 버튼
+        ImageButton btn_radius = (ImageButton)findViewById(R.id.btn_radius);
+        btn_radius.setOnClickListener(new ImageButton.OnClickListener() {
+			public void onClick(View v) {
+				
+				if(radiusValue == 500){
+					radiusValue = 200;
+				}else if(radiusValue == 200){
+					radiusValue = 300;
+				}else{
+					radiusValue = 500;
+				}
+				//Toast.makeText(ChildSafezoneAddActivity.this, "반경="+radiusValue, Toast.LENGTH_SHORT).show();
+				
+				//radius overlay 를 다시 그린다.
+				// 맵뷰에 있는 오버레이를 모두 가져온다.
+				List<NMapOverlay> overlays = mMapView.getOverlays();
+				overlays.clear();
+				// 신규 레이더 오버레이를 만든다.
+				radiusOverlay = new RadiusOverlay(radiusValue);
+				overlays.add(radiusOverlay);
+				mOverlayManager.populate();
+				
+			}
+		});
+        
+        //설정 버튼
+        ImageButton btn_setup = (ImageButton)findViewById(R.id.btn_setup);
+        btn_setup.setOnClickListener(new ImageButton.OnClickListener() {
+			public void onClick(View v) {
+				
+				Toast.makeText(ChildSafezoneAddActivity.this, "okokok!!", Toast.LENGTH_SHORT).show();
+			}
+		});
+        
+        //취소 버튼
+        ImageButton btn_cancel = (ImageButton)findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new ImageButton.OnClickListener() {
+			public void onClick(View v) {
+				
+				ChildSafezoneAddActivity.this.finish();
+			}
+		});
+        
+        
 		//=====================================================//
 		// 여기부터 맵 생성 및 보여주기
 		//=====================================================//		
-		
-        //레이더 이미지 알파 정의 크기 조정
-        
-        
         
 		// create map view
 		//mMapView = new NMapView(this);
@@ -181,15 +286,25 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		// create my location overlay
 		mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, mMapCompassManager);
 		
-		//show map path data
-		mOverlayManager.clearOverlays();
+		
+		// 맵뷰에 있는 오버레이를 모두 가져온다.
+		List<NMapOverlay> overlays = mMapView.getOverlays();
+		
+		// 신규 레이더 오버레이를 만든다. - 기본 500m 반경
+		radiusOverlay = new RadiusOverlay(500);
+		
+		overlays.add(radiusOverlay);
+		
+		mOverlayManager.populate();
 
 		// add path data overlay
-		testPathDataOverlay();
+		//testPathDataOverlay();
 
 		// add path POI data overlay
-		testPathPOIdataOverlay();
+		//testPathPOIdataOverlay();
 		
+		//NMapMyLocationOverlay 객체를 제외한 나머지 오버레이를 모두 제거한다.
+		//mOverlayManager.clearOverlays();
 	}
 
 	@Override
@@ -217,63 +332,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	}
 
 	/* Test Functions */
-
-	//이동 경로를 표현하는 오버레이
-	private void testPathDataOverlay() {
-
-		// set path data points
-		NMapPathData pathData = new NMapPathData(8);
-		 
-		pathData.initPathData();	//경로리스트 초기화
-		//경로위치점을 x좌표,y좌표 양식으로 입력:마지막 파라메터는 표현방식 solid는 선, dash는 점선, 앞에서 선언한 양식으로 0까지 선을 연결한다. 
-		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.133012, 37.496217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_DASH);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
-		pathData.endPathData();
-
-		//위에서 입력한 경로데이터를 가진 오버레이를 생성
-		NMapPathDataOverlay pathDataOverlay = mOverlayManager.createPathDataOverlay(pathData);
-
-
-	}
-
-	//이동경로 중에 중요 지점을 오버레이로 표시하기 위한 메소드 - 경로 item보다 한개 더 많아야 합니다.
-	private void testPathPOIdataOverlay() {
-
-		// set POI data
-		NMapPOIdata poiData = new NMapPOIdata(4, mMapViewerResourceProvider, true);
-		poiData.beginPOIdata(8);
-		//poiData.addPOIitem(127.132012, 37.495217, "시작 주소는 IT벤처", NMapPOIflagType.FROM, null);
-		//poiData.addPOIitem(127.132012, 37.495217, "끝나는 구나~", NMapPOIflagType.TO, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 1, null);
-		poiData.addPOIitem(127.133012, 37.496217, null, NMapPOIflagType.NUMBER_BASE + 2, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 3, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 4, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 5, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 6, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 7, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 8, null);
-
-		
-		poiData.endPOIdata();
-
-		// create POI data overlay
-		NMapPOIdataOverlay poiDataOverlay = mOverlayManager.createPOIdataOverlay(poiData, null);
-
-		// set event listener to the overlay
-		poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
-		
-		if (poiDataOverlay != null) {		//오버레이가 정상 생성되어 존재한다면
-			
-			poiDataOverlay.showAllPOIdata(100);
-		}
-		
-	}
 
 	/* NMapDataProvider Listener */
 	private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
@@ -366,16 +424,21 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 		@Override
 		public void onMapCenterChange(NMapView mapView, NGeoPoint center) {
-			if (DEBUG) {
-				Log.i(LOG_TAG, "onMapCenterChange: center=" + center.toString());
-			}
 		}
 
 		@Override
 		public void onZoomLevelChange(NMapView mapView, int level) {
-			if (DEBUG) {
-				Log.i(LOG_TAG, "onZoomLevelChange: level=" + level);
-			}
+			//zoom 변화 시에 화면의 반경 오버레이를 다시 그려준다.
+			System.out.println("zoom 변화 시에 화면의 반경 오버레이를 다시 그려준다.");
+			
+			// 맵뷰에 있는 오버레이를 모두 가져온다.
+			List<NMapOverlay> overlays = mMapView.getOverlays();
+			overlays.clear();
+			// 신규 레이더 오버레이를 만든다.
+			radiusOverlay = new RadiusOverlay(radiusValue);
+			overlays.add(radiusOverlay);
+			mOverlayManager.populate();
+			
 		}
 
 		@Override
@@ -406,7 +469,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 		@Override
 		public void onTouchDown(NMapView mapView, MotionEvent ev) {
-
 		}
 
 		@Override
@@ -429,30 +491,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	};
 
-	/* POI data State Change Listener*/
-	private final NMapPOIdataOverlay.OnStateChangeListener onPOIdataStateChangeListener = new NMapPOIdataOverlay.OnStateChangeListener() {
-
-		@Override
-		public void onCalloutClick(NMapPOIdataOverlay poiDataOverlay, NMapPOIitem item) {
-			if (DEBUG) {
-				Log.i(LOG_TAG, "onCalloutClick: title=" + item.getTitle());
-			}
-
-			// [[TEMP]] handle a click event of the callout
-			Toast.makeText(ChildSafezoneAddActivity.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
-		}
-
-		@Override
-		public void onFocusChanged(NMapPOIdataOverlay poiDataOverlay, NMapPOIitem item) {
-			if (DEBUG) {
-				if (item != null) {
-					Log.i(LOG_TAG, "onFocusChanged: " + item.toString());
-				} else {
-					Log.i(LOG_TAG, "onFocusChanged: ");
-				}
-			}
-		}
-	};
 
 	private final NMapOverlayManager.OnCalloutOverlayListener onCalloutOverlayListener = new NMapOverlayManager.OnCalloutOverlayListener() {
 
@@ -662,57 +700,83 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	}
 
 	
+	
+	class RadiusOverlay extends NMapOverlay{
 
-	/** 
-	 * Container view class to rotate map view.
-	 */
-	private class MapContainerView extends ViewGroup {
+		int current_x;
+		int current_y;
+		Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		int windowWidth = display.getWidth();
+		int windowHeight = display.getHeight();
+		int radius = 500;
+			
+		public RadiusOverlay(int raidusValue){
+			current_x = windowWidth / 2;
+			current_y = windowHeight / 2;
+			if(raidusValue != 500){
+				radius = raidusValue;
+			}
+		}
+		
+		@Override
+		public boolean onTouchEvent(MotionEvent e, NMapView mapView) {
 
-		public MapContainerView(Context context) {
-			super(context);
+			//e.getAction() 터치 이벤트 값이 ACTION_DOWN -> ACTION_MOVE -> ACTION_UP 순으로 반환
+			// TODO Auto-generated method stub
+			return super.onTouchEvent(e, mapView);
 		}
 
 		@Override
-		protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-			final int width = getWidth();
-			final int height = getHeight();
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++) {
-				final View view = getChildAt(i);
-				final int childWidth = view.getMeasuredWidth();
-				final int childHeight = view.getMeasuredHeight();
-				final int childLeft = (width - childWidth) / 2;
-				final int childTop = (height - childHeight) / 2;
-				view.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
-			}
+		public void draw(Canvas canvas, NMapView mapView, boolean shadow) {
+			NMapProjection projection = mapView.getMapProjection();
+			Point point = new Point();
+			
+			if (shadow == false) {
+				// Get the current location
+				//맵뷰에 터치한 좌표에 해당하는 위도경도를 가져온다.
+				NGeoPoint geop = mapView.getMapProjection().fromPixels(current_x, current_y);
+				
+				//원을 그리기 위한 paint 정보 선언
+				Paint p = new Paint();
+				p.setARGB(70,0,0,200);
+				p.setAntiAlias(true); 
+				
+				// GeoPoint를 스크린 좌표로 변환
+				point = projection.toPixels(geop,point);
 
-			if (changed) {
-				mOverlayManager.onSizeChanged(width, height);
+				float radiusPixel = projection.metersToPixels(radius);
+				canvas.drawCircle(current_x, current_y-100, radiusPixel, p);
+				
+				//글씨를 위한 paint 정보 선언
+				Paint p2 = new Paint();
+				p2.setARGB(255,0,0,0);
+				p2.setTextAlign(Align.CENTER);
+				p2.setTextSize(20);
+				
+				canvas.drawText(radius+"M", point.x, point.y - 100 + radiusPixel, p2);
+				
 			}
+			super.draw(canvas,mapView,shadow);
 		}
-
+		
+		
 		@Override
-		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			int w = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
-			int h = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-			int sizeSpecWidth = widthMeasureSpec;
-			int sizeSpecHeight = heightMeasureSpec;
+		public boolean onTap(int x, int y, NMapView mapView) {
 
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++) {
-				final View view = getChildAt(i);
-
-				if (view instanceof NMapView) {
-					if (mMapView.isAutoRotateEnabled()) {
-						int diag = (((int)(Math.sqrt(w * w + h * h)) + 1) / 2 * 2);
-						sizeSpecWidth = MeasureSpec.makeMeasureSpec(diag, MeasureSpec.EXACTLY);
-						sizeSpecHeight = sizeSpecWidth;
-					}
-				}
-
-				view.measure(sizeSpecWidth, sizeSpecHeight);
-			}
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+			//소프트 키보드가 있을 경우 숨긴다.
+			mImm.hideSoftInputFromWindow(searchArea.getWindowToken(),0);	//키보드를 숨기고
+			
+			//맵뷰에 터치한 좌표에 해당하는 위도경도를 가져온다.
+			NGeoPoint geop = mapView.getMapProjection().fromPixels(x, y);
+							
+			//해당  위도경도 값이 맵 중심이 되도록 맵을 이동시킨다.
+			mMapController.animateTo(geop);
+			
+			// TODO Auto-generated method stub
+			return false;
 		}
+	
 	}
+	
+	
 }
