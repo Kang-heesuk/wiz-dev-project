@@ -31,14 +31,14 @@ public class ChildTraceDetailListActivity extends Activity {
 
 	
     public void onCreate(Bundle savedInstanceState) { 
-        super.onCreate(savedInstanceState); 
+        super.onCreate(savedInstanceState);  
         setContentView(R.layout.child_trace_detail_list);
         
         ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				ChildTraceDetailListActivity.this.finish();
-			}
+			} 
 		});
         
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
