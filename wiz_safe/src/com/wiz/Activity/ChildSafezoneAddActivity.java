@@ -75,7 +75,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	private NMapView mMapView; 
 	private NMapController mMapController;
-
+ 
 	double longitude01 = 127.12201246666667;
 	double latitude01 = 37.495217644444445;
 
