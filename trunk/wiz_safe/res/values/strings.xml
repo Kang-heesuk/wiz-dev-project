@@ -6,6 +6,12 @@
     <string name="btn_string_01">자녀리스트</string>
     <string name="btn_string_02">부모리스트</string>
     <string name="btn_string_03">설정</string>
+    <string name="btn_string_04">공지사항</string>
+    <string name="btn_string_05">이용안내</string>
+    <string name="btn_string_06">FAQ</string>
+    <string name="btn_string_07">1:1문의</string>
+    <string name="btn_string_08">포인트 사용내역</string>
+    <string name="btn_string_09">내위치 조회이력</string>
     
     <string name="btn_back">이전</string>
     <string name="btn_del">삭제</string>
