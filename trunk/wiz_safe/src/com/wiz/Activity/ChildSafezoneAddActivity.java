@@ -11,7 +11,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -79,8 +81,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	//반경을 그리기 위한 오버레이 선언
 	private RadiusOverlay radiusOverlay;
-	//반경 정보 값 200,300,500 으로 변환
-	private int radiusValue = 500;
+	//반경 정보 값 200,500,1000 으로 변환
+	private int radiusValue = 200;
 
 	//검색창
 	EditText searchArea;
@@ -195,12 +197,12 @@ public class ChildSafezoneAddActivity extends NMapActivity {
         btn_radius.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				
-				if(radiusValue == 500){
-					radiusValue = 200;
-				}else if(radiusValue == 200){
-					radiusValue = 300;
-				}else{
+				if(radiusValue == 200){
 					radiusValue = 500;
+				}else if(radiusValue == 500){
+					radiusValue = 1000;
+				}else{
+					radiusValue = 200;
 				}
 				//Toast.makeText(ChildSafezoneAddActivity.this, "반경="+radiusValue, Toast.LENGTH_SHORT).show();
 				
@@ -220,8 +222,25 @@ public class ChildSafezoneAddActivity extends NMapActivity {
         ImageButton btn_setup = (ImageButton)findViewById(R.id.btn_setup);
         btn_setup.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
-				
-				Toast.makeText(ChildSafezoneAddActivity.this, "okokok!!", Toast.LENGTH_SHORT).show();
+				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
+				String title = "안심존 등록";	
+				String message = "";
+				//if("안심존 등록 건수가 1개 이상일 경우는"){
+					message = "현재 시간부터 24시간 이내에 해당 위치에 진입 시 문자로 1회만 알려 드립니다. \n ※ 안심존 추가 등록 시 100 포인트가 소진됩니다.";
+				//}else{
+					message = "현재 시간부터 24시간 이내에 해당 위치에 진입 시 문자로 1회만 알려 드립니다.";
+				//}
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setPositiveButton(R.string.btn_regist, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						Toast.makeText(ChildSafezoneAddActivity.this, "등록눌렀다.api 통신 궈궈싱 ", Toast.LENGTH_SHORT).show();
+					}
+				});
+				ad.setNegativeButton(R.string.btn_cancel, null);
+				ad.show();
 			}
 		});
         
@@ -289,22 +308,17 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		
 		// 맵뷰에 있는 오버레이를 모두 가져온다.
 		List<NMapOverlay> overlays = mMapView.getOverlays();
+
+		//NMapMyLocationOverlay 객체를 제외한 나머지 오버레이를 모두 제거한다.
+		//mOverlayManager.clearOverlays();
 		
-		// 신규 레이더 오버레이를 만든다. - 기본 500m 반경
-		radiusOverlay = new RadiusOverlay(500);
+		// 신규 레이더 오버레이를 만든다. - 기본 200m 반경
+		radiusOverlay = new RadiusOverlay(200);
 		
 		overlays.add(radiusOverlay);
 		
 		mOverlayManager.populate();
 
-		// add path data overlay
-		//testPathDataOverlay();
-
-		// add path POI data overlay
-		//testPathPOIdataOverlay();
-		
-		//NMapMyLocationOverlay 객체를 제외한 나머지 오버레이를 모두 제거한다.
-		//mOverlayManager.clearOverlays();
 	}
 
 	@Override
@@ -429,8 +443,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		@Override
 		public void onZoomLevelChange(NMapView mapView, int level) {
 			//zoom 변화 시에 화면의 반경 오버레이를 다시 그려준다.
-			System.out.println("zoom 변화 시에 화면의 반경 오버레이를 다시 그려준다.");
-			
 			// 맵뷰에 있는 오버레이를 모두 가져온다.
 			List<NMapOverlay> overlays = mMapView.getOverlays();
 			overlays.clear();
@@ -708,12 +720,12 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int windowWidth = display.getWidth();
 		int windowHeight = display.getHeight();
-		int radius = 500;
+		int radius = 200;
 			
 		public RadiusOverlay(int raidusValue){
 			current_x = windowWidth / 2;
 			current_y = windowHeight / 2;
-			if(raidusValue != 500){
+			if(raidusValue != 200){
 				radius = raidusValue;
 			}
 		}
@@ -745,15 +757,19 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				point = projection.toPixels(geop,point);
 
 				float radiusPixel = projection.metersToPixels(radius);
-				canvas.drawCircle(current_x, current_y-100, radiusPixel, p);
+				canvas.drawCircle(current_x, current_y-110, radiusPixel, p);
 				
 				//글씨를 위한 paint 정보 선언
 				Paint p2 = new Paint();
 				p2.setARGB(255,0,0,0);
 				p2.setTextAlign(Align.CENTER);
-				p2.setTextSize(20);
+				p2.setTextSize(25);
+				//반경 원 위쪽에 미터 정보를 표시
+				canvas.drawText(radius+"M", current_x, current_y - 110 - radiusPixel, p2);
 				
-				canvas.drawText(radius+"M", point.x, point.y - 100 + radiusPixel, p2);
+				//중심점에 + 표시
+				p2.setTextSize(40);
+				canvas.drawText("+", current_x, current_y - 100, p2);
 				
 			}
 			super.draw(canvas,mapView,shadow);
