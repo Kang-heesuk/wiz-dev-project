@@ -34,19 +34,10 @@ public class ChildTraceDetailListActivity extends Activity {
         super.onCreate(savedInstanceState);  
         setContentView(R.layout.child_trace_detail_list);
         
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildTraceDetailListActivity.this.finish();
-			} 
-		});
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_child_log);
         
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
-        
+       
         //여기부터 body 구성
         TextView bodyTopText = (TextView)findViewById(R.id.bodyTopText);
         bodyTopText.setText("알고계세요? 1주일 이전의 발자취 정보는 자동 삭제 됩니다.");

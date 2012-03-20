@@ -32,18 +32,8 @@ public class ChildAddActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.child_add);
         
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildAddActivity.this.finish();
-			}
-		});
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_reg_child);
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
         
         //단말기 안에서 필요한 정보를 추출한다.
         LocalSave = getSharedPreferences("isAuthCheck", 0);

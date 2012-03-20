@@ -24,16 +24,6 @@ public class ParentAcceptActivity extends Activity {
         	topTitle.setText(R.string.title_loca_accept);
         }
         
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ParentAcceptActivity.this.finish();
-			}
-		});
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
-        
         
         //body 
         Intent intent = getIntent();
