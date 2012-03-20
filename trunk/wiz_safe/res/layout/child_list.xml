@@ -23,16 +23,70 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="94"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/listArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="93"
         android:orientation="vertical" >
 
         <ListView
             android:id="@+id/list1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="#00000000"
-            android:cacheColorHint="#00000000" >
+            android:cacheColorHint="#00000000"
+            android:divider="#00000000" >
         </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomMenuArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="16"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:background="#cccc0000"
+            >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="96"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:background="@drawable/b_menu_1_selector" />
+
+            <Button
+                android:id="@+id/childAdditionButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="34"
+                android:background="@drawable/b_menu_2_selector" />
+
+            <Button
+                android:id="@+id/useInfoButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:background="@drawable/b_menu_3_selector" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

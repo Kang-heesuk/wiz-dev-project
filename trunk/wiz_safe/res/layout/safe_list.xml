@@ -135,7 +135,7 @@
                     android:id="@+id/btn_nowLocation"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_s_now" />
+                    android:background="@drawable/btn_s_now_selector" />
             </LinearLayout>
 
             <LinearLayout
@@ -148,7 +148,7 @@
                     android:id="@+id/btn_history"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_s_trace" />
+                    android:background="@drawable/btn_s_trace_selector" />
             </LinearLayout>
 
             <LinearLayout
@@ -161,7 +161,7 @@
                     android:id="@+id/btn_safeZone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_s_safe" />
+                    android:background="@drawable/btn_s_safe_selector" />
             </LinearLayout>
 
             <LinearLayout
