@@ -3,8 +3,11 @@ package com.wiz.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.wiz.View.NoticePopView;
@@ -47,12 +50,24 @@ public class MainActivity extends Activity {
 				//Intent intent = new Intent(MainActivity.this, SetupActivity.class);
 				//startActivity(intent);
 				Toast.makeText(MainActivity.this, "open other site page!!", Toast.LENGTH_SHORT).show();
-				
-				//ÆË¾÷À» ¶ç¿î´Ù.
-				NoticePopView noticePopView = new NoticePopView(v);
-				noticePopView.show();
+
 			}
 		});
+         
+        //°øÁö»çÇ× ÆË¾÷À» ÇÚµé·¯·Î ¶ç¿î´Ù.
+        handler.sendEmptyMessageDelayed(0, 500);
         
     }
+    
+    Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+	        NoticePopView noticePopView = new NoticePopView((LinearLayout)findViewById(R.id.mainlayout));
+			noticePopView.show();
+			super.handleMessage(msg);
+		}
+    };
+
+    
 }
