@@ -34,7 +34,8 @@
         <activity
             android:name=".JoinAcceptActivity"
             android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".ChildListActivity"
