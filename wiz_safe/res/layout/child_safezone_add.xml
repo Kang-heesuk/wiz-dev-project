@@ -67,7 +67,7 @@
 				android:id="@+id/btn_radius"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/icon"
+				android:background="@drawable/check"
 				android:layout_alignParentBottom="true"
 				android:layout_alignParentLeft="true"
 				android:layout_marginBottom="50dp" />
