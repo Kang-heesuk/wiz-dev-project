@@ -34,7 +34,7 @@ public class NoticePopView extends PopView{
 	      
 	      //공지사항 내용을 입력
 	      TextView noticeStr = (TextView)root.findViewById(R.id.textView1);
-	      noticeStr.setText("개 슈ㅜ바 아 짜증남 이게 무슨 노가다임 \n 아싸 퇴근시간이당 히히");
+	      noticeStr.setText("공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n 아싸 퇴근시간이당 히히");
 	      
 	      //공지팝업 하단 체크  누른경우의 액션
 	      final Button btn_check = (Button)root.findViewById(R.id.btn_check);
@@ -58,7 +58,7 @@ public class NoticePopView extends PopView{
 	}
 	   
 	   
-	private final Context context;
+	   private final Context context;
 	   private final LayoutInflater inflater; 
 	   private final View root;
 	   private ViewGroup mTrack; 
