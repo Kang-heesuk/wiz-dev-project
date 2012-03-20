@@ -1,0 +1,137 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/notice_popup_bg"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout0"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="5"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="8"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="80"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/btn_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="@drawable/close_btn_selector" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="82"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fadingEdgeLength="0dip"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:id="@+id/viewRow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="2dip"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:paddingTop="2dip" >
+                
+                 <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" 
+                    android:text="notice area"
+                    android:textColor="#ff000000"
+                     />
+                 
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="5"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout7"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="88"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout8"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:orientation="vertical" >
+            
+             <Button
+                android:id="@+id/btn_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="@drawable/notice_popup_ck"
+                android:visibility="invisible" />
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout9"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout10"
+        android:layout_width="0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="2"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</LinearLayout>
