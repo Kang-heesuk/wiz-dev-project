@@ -16,7 +16,7 @@
             android:id="@+id/textTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="wiz_safe"
+            android:text="자녀리스트"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
@@ -30,6 +30,7 @@
             android:id="@+id/list1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="#00000000"
             android:cacheColorHint="#00000000" >
         </ListView>
     </LinearLayout>
