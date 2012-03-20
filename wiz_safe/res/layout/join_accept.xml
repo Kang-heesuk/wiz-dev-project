@@ -39,7 +39,7 @@
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="6"
+            android:layout_weight="7"
             android:orientation="vertical" >
         </LinearLayout>
 
@@ -72,7 +72,7 @@
                     android:background="@null"
                     android:digits="0123456789"
                     android:hint="휴대폰번호 입력  &apos;-&apos; 제외"
-                    android:inputType="number"
+                    android:inputType="number|phone"
                     android:textColor="#ffaaaaaa"
                     android:textSize="17dp" >
                 </EditText>
@@ -99,7 +99,7 @@
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="20"
+            android:layout_weight="19"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -181,8 +181,8 @@
 
                 <Button
                     android:id="@+id/btn_blank1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="37dp" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -198,7 +198,7 @@
             android:id="@+id/linearLayout6"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="9"
+            android:layout_weight="10"
             android:orientation="vertical" >
         </LinearLayout>
 
@@ -206,7 +206,7 @@
             android:id="@+id/linearLayout7"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="20"
+            android:layout_weight="19"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -288,8 +288,8 @@
 
                 <Button
                     android:id="@+id/btn_blank2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="37dp" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
             </LinearLayout>
 
             <LinearLayout
