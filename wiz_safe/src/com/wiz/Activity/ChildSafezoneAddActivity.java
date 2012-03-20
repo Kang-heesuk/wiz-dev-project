@@ -133,16 +133,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
         if(topTitle != null){
         	topTitle.setText(R.string.title_saftyzone_setup);
         }
-        
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildSafezoneAddActivity.this.finish();
-			}
-		});
 
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
         
         //body
         

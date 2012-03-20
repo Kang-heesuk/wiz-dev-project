@@ -36,19 +36,8 @@ public class ChildTraceListActivity extends Activity {
 		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.child_trace_list);
         
-		 //top-navigation 값 정의
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildTraceListActivity.this.finish();
-			}
-		});
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_child);
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
         
         //앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
@@ -152,9 +141,6 @@ public class ChildTraceListActivity extends Activity {
 				btn_more.setText(" > ");
 				btn_more.setVisibility(View.VISIBLE);
 				
-				//아래 버튼 3개에 대한 정의(각 버튼의 이름을 변경하고 click 이벤트를 정의, 마지막 버튼은 숨긴다.)
-				LinearLayout bottomBtnArea = (LinearLayout)convertView.findViewById(R.id.bottomBtnArea);
-				bottomBtnArea.setVisibility(View.VISIBLE);
 				
 				//수정하기 버튼 정의
 				Button btn_modify = (Button)convertView.findViewById(R.id.btn_nowLocation);

@@ -18,20 +18,8 @@ public class SetupActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setup_list);
         
-        //top navi 备己
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				SetupActivity.this.finish();
-			} 
-		}); 
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_child_log);
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
-        
         
         //body 备己
         Button btn01 = (Button)findViewById(R.id.btn1);

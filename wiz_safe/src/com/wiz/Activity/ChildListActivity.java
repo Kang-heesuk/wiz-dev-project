@@ -40,25 +40,18 @@ public class ChildListActivity extends Activity {
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.child_list);
         
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildListActivity.this.finish();
-			}
-		});
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_child);
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				Log.i("testTop","Delete =============");
-			} 
-		}); 
-        
+               
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
+       
+        childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childList);
+        ListView listView = (ListView)findViewById(R.id.list1);
+        View footer = getLayoutInflater().inflate(R.layout.footer, null, false);
+        listView.addFooterView(footer);
+        listView.setAdapter(listAdapter);
+        
         
         //자녀등록하기 버튼액션
         findViewById(R.id.btn_addChild).setOnClickListener(
@@ -72,10 +65,6 @@ public class ChildListActivity extends Activity {
 				}
 			}
 		);
-        
-        childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childList);
-        ListView listView = (ListView)findViewById(R.id.list);
-        listView.setAdapter(listAdapter);
         
     }
     
@@ -163,7 +152,6 @@ public class ChildListActivity extends Activity {
 			}
 			
 			//각 위젯 정의
-			LinearLayout bottomBtnArea= (LinearLayout)convertView.findViewById(R.id.bottomBtnArea);
 			ImageView img = (ImageView)convertView.findViewById(R.id.ePhoto);
 			Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
 			Button btn_nowLocation = (Button)convertView.findViewById(R.id.btn_nowLocation);
@@ -173,27 +161,26 @@ public class ChildListActivity extends Activity {
 			TextView info1 = (TextView)convertView.findViewById(R.id.info1);
 			
 			eName.setText(arSrc.get(position).getChildName());
-			info1.setText(WizSafeUtil.setPhoneNum(arSrc.get(position).getChildPhone()));
+			info1.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(position).getChildPhone()) + ")");
 			
 			
 			
 			//각 버튼 이름 및 노출 여부 정의
-			bottomBtnArea.setVisibility(View.VISIBLE);
 			if("01".equals(arSrc.get(position).getChildRelation())){
-				btn_accept.setText("승인대기중");
+				//btn_accept.setText("승인대기중");
 				btn_accept.setVisibility(View.VISIBLE);
 			}else if("02".equals(arSrc.get(position).getChildRelation())){
-				btn_accept.setText("승인완료");
+				//btn_accept.setText("승인완료");
 				btn_accept.setVisibility(View.VISIBLE);
 			}else{
-				btn_accept.setText("승인거절");
+				//btn_accept.setText("승인거절");
 				btn_accept.setVisibility(View.VISIBLE);
 			}
 			
 			
 			//메뉴에서 삭제하기 눌렀을 경우 버튼 노출 문구 정의
 			if(menuClickDelete){
-				btn_accept.setText("삭제하기");
+				//btn_accept.setText("삭제하기");
 				btn_accept.setVisibility(View.VISIBLE);
 			}
 			

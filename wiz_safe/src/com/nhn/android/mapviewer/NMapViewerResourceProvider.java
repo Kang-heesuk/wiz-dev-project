@@ -156,7 +156,7 @@ public class NMapViewerResourceProvider extends NMapResourceProvider {
 	}
 
 	// Resource Ids for single icons
-	private final ResourceIdsOnMap mResourceIdsForMarkerOnMap[] = {  
+	private final ResourceIdsOnMap mResourceIdsForMarkerOnMap[] = { 
 		// Spot, Pin icons
 		new ResourceIdsOnMap(NMapPOIflagType.PIN, com.wiz.Activity.R.drawable.ic_pin_01, R.drawable.ic_pin_02),
 		new ResourceIdsOnMap(NMapPOIflagType.SPOT, com.wiz.Activity.R.drawable.ic_pin_01, R.drawable.ic_pin_02),

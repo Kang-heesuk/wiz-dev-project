@@ -41,18 +41,8 @@ public class ChildTraceAddActivity extends Activity {
 		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.child_trace_add);
 		
-		ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildTraceAddActivity.this.finish();
-			}
-		});
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_log_setup);
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
         
         //전단계에서 값을 넘겨 받은 부분을 처리
    		Intent intent = getIntent();

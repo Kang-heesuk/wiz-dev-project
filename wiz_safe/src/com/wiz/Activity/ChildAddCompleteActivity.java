@@ -30,18 +30,8 @@ public class ChildAddCompleteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.child_add_complete);
         
-		ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildAddCompleteActivity.this.finish();
-			}
-		});
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_req_finish);
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
 		
 		//앞 페이지에서 필요한 정보를 추출한다.
 		Intent intent = getIntent();

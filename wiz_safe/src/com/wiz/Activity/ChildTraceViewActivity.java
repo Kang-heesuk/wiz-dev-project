@@ -109,17 +109,7 @@ public class ChildTraceViewActivity extends NMapActivity {
         if(topTitle != null){
         	topTitle.setText(R.string.title_current_loca);
         }
-        
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildTraceViewActivity.this.finish();
-			}
-		});
 
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
-        
         //body
         //현재 시간 출력
         TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 

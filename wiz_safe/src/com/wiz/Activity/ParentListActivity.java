@@ -36,22 +36,6 @@ public class ParentListActivity extends Activity {
         	topTitle.setText(R.string.title_parent);
         }
         
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ParentListActivity.this.finish();
-			}
-		});
-        
-        
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				Toast.makeText(ParentListActivity.this, "부모 리스트 삭제 ", Toast.LENGTH_SHORT).show();
-			}
-		});
-        
-        
         //body 정의
         
         //서버와 통신하여 리스트 정보를 가져온다.

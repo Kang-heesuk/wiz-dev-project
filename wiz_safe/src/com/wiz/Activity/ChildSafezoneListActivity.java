@@ -14,20 +14,9 @@ public class ChildSafezoneListActivity extends Activity {
 		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.child_safezone_list);
         
-		//top navi 정의
-        ImageButton btn_back = (ImageButton)findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new ImageButton.OnClickListener() {
-			public void onClick(View v) {
-				ChildSafezoneListActivity.this.finish();
-			}
-		});
-        
         TextView textView1 = (TextView)findViewById(R.id.textTitle);
         textView1.setText(R.string.title_child);
         
-        ImageButton btn_del = (ImageButton)findViewById(R.id.btn_del);
-        btn_del.setVisibility(View.INVISIBLE);
-            
         
         //여기부터 body
         //앞 페이지에서 필요한 정보를 추출한다.
