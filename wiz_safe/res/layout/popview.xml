@@ -5,32 +5,33 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/linearLayout0"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="5"
-        android:orientation="horizontal" />
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical" >
+    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="8"
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="16"
         android:orientation="horizontal" >
 
         <LinearLayout
-            android:id="@+id/linearLayout4"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="80"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout5"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="15"
+            android:id="@+id/linearLayout9"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="17"
             android:orientation="vertical" >
 
             <Button
@@ -42,100 +43,133 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout6"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
+            android:id="@+id/linearLayout10"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
             android:orientation="vertical" >
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="82"
-        android:orientation="vertical" >
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fadingEdgeLength="0dip"
-            android:scrollbars="none" >
-
-            <LinearLayout
-                android:id="@+id/viewRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="2dip"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip"
-                android:paddingTop="2dip" >
-                
-                 <TextView
-                    android:id="@+id/textView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:text="notice area"
-                    android:textColor="#ff000000"
-                     />
-                 
-            </LinearLayout>
-        </ScrollView>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="85"
         android:orientation="horizontal" >
 
         <LinearLayout
-            android:id="@+id/linearLayout7"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="88"
+            android:id="@+id/linearLayout11"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout8"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
+            android:id="@+id/linearLayout12"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="92"
             android:orientation="vertical" >
-            
-             <Button
-                android:id="@+id/btn_check"
+
+            <ScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:background="@drawable/notice_popup_ck" />
-             
-             <Button
-                 android:id="@+id/btn_blank"
-                 android:layout_width="wrap_content"
-                 android:layout_height="34dp" 
-                 android:visibility="gone" />
-            
+                android:fadingEdgeLength="0dip"
+                android:scrollbars="none" >
+
+                <LinearLayout
+                    android:id="@+id/viewRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="notice area"
+                        android:textColor="#ff000000" />
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout9"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout13"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="4"
             android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout10"
-        android:layout_width="0dip"
-        android:layout_height="fill_parent"
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="2"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout14"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="87"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout15"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/btn_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="@drawable/notice_popup_ck" />
+
+            <Button
+                android:id="@+id/btn_blank"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout16"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
         android:orientation="vertical" >
     </LinearLayout>
 
