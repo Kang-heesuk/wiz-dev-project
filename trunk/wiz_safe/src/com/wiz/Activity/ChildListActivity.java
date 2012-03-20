@@ -39,9 +39,6 @@ public class ChildListActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.child_list);
-        
-        TextView textView1 = (TextView)findViewById(R.id.textTitle);
-        textView1.setText(R.string.title_child);
                
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
@@ -152,7 +149,7 @@ public class ChildListActivity extends Activity {
 			}
 			
 			//각 위젯 정의
-			ImageView img = (ImageView)convertView.findViewById(R.id.ePhoto);
+			Button img = (Button)convertView.findViewById(R.id.ePhoto);
 			Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
 			Button btn_nowLocation = (Button)convertView.findViewById(R.id.btn_nowLocation);
 			Button btn_history = (Button)convertView.findViewById(R.id.btn_history);
