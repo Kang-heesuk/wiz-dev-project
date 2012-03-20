@@ -1,6 +1,7 @@
 package com.wiz.View;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,16 +36,28 @@ public class NoticePopView extends PopView{
 	      TextView noticeStr = (TextView)root.findViewById(R.id.textView1);
 	      noticeStr.setText("개 슈ㅜ바 아 짜증남 이게 무슨 노가다임 \n 아싸 퇴근시간이당 히히");
 	      
-	      //공지팝업 x 누른경우의 액션
-	      Button btn_check = (Button)root.findViewById(R.id.btn_check);
-	      btn_close.setOnClickListener(new Button.OnClickListener() {
+	      //공지팝업 하단 체크  누른경우의 액션
+	      final Button btn_check = (Button)root.findViewById(R.id.btn_check);
+	      final Button btn_blank = (Button)root.findViewById(R.id.btn_blank);
+	      Drawable alpha = btn_blank.getBackground();
+	      alpha.setAlpha(0);
+	      btn_check.setOnClickListener(new Button.OnClickListener() {
 				public void onClick(View v) {
-					v.setVisibility(View.VISIBLE);
-					dismiss();
+					btn_check.setVisibility(View.GONE);
+					btn_blank.setVisibility(View.VISIBLE);
+				}
+	      });
+	      //공지팝업 하단 빈칸 누른경우의 액션
+	      btn_blank.setOnClickListener(new Button.OnClickListener() {
+				public void onClick(View v) {
+					btn_blank.setVisibility(View.GONE);
+					btn_check.setVisibility(View.VISIBLE);
 				}
 	      });
 	      
 	}
+	   
+	   
 	private final Context context;
 	   private final LayoutInflater inflater; 
 	   private final View root;
