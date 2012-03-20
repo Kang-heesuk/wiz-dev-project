@@ -1,29 +1,21 @@
 package com.wiz.Activity;
 
 import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-
 import android.os.Bundle;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.wiz.util.WizSafeUtil;
 
 public class ChildListActivity extends Activity {
@@ -55,7 +47,6 @@ public class ChildListActivity extends Activity {
 			new Button.OnClickListener(){
 				public void onClick(View v) {
 					int whereFlag = childList.size() + 1;
-					
 					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
 					intent.putExtra("whereFlag", whereFlag);
 					startActivity(intent);
@@ -63,6 +54,76 @@ public class ChildListActivity extends Activity {
 			}
 		);
         
+        
+        
+        //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의
+        //1. 삭제
+        findViewById(R.id.deleteButton).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					bottomMenuToggle();
+					onClickdeleteButtonAction();
+				}
+			}
+		);
+        
+        //2. 자녀추가
+        findViewById(R.id.childAdditionButton).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					bottomMenuToggle();
+					int whereFlag = childList.size() + 1;
+					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
+					intent.putExtra("whereFlag", whereFlag);
+					startActivity(intent);
+				}
+			}
+		);
+        
+        //2. 이용안내
+        findViewById(R.id.useInfoButton).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					bottomMenuToggle();
+					Intent intent = new Intent(ChildListActivity.this, MainActivity.class);
+					startActivity(intent);
+				}
+			}
+		);
+        
+    }
+    
+    //메뉴키 눌렀을경우 하단의 메뉴영역이 보이고 안보이고에 따라 레이아웃 조절
+    public void bottomMenuToggle(){
+    	LinearLayout listArea = (LinearLayout)findViewById(R.id.listArea);
+		LinearLayout bottomMenuArea = (LinearLayout)findViewById(R.id.bottomMenuArea);
+		listArea.setEnabled(true);
+		bottomMenuArea.setEnabled(true);
+		LinearLayout.LayoutParams listAreaParams = (LinearLayout.LayoutParams)listArea.getLayoutParams();
+		LinearLayout.LayoutParams bottomAreaParams = (LinearLayout.LayoutParams)bottomMenuArea.getLayoutParams();
+		if(bottomMenuArea.getVisibility() == View.VISIBLE){
+			listAreaParams.weight = 93;
+			bottomAreaParams.weight = 0;
+			listArea.setLayoutParams(listAreaParams);
+			bottomMenuArea.setLayoutParams(bottomAreaParams);
+			bottomMenuArea.setVisibility(View.GONE);
+		}else{
+			listAreaParams.weight = 77;
+			bottomAreaParams.weight = 16;
+			listArea.setLayoutParams(listAreaParams);
+			bottomMenuArea.setLayoutParams(bottomAreaParams);
+			bottomMenuArea.setVisibility(View.VISIBLE);
+		}
+    }
+   
+    //메뉴키 눌렀을경우 레이아웃 정의(하단 바가 나온다. 하단 바가 나오면서 상단의 weight 값이 재조정된다.)
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+    	
+    	if(keyCode == 82){
+    		bottomMenuToggle();    		
+    		return true;
+    	}
+    	return super.onKeyDown(keyCode, event);
     }
     
     
@@ -160,24 +221,48 @@ public class ChildListActivity extends Activity {
 			eName.setText(arSrc.get(position).getChildName());
 			info1.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(position).getChildPhone()) + ")");
 			
+			//커스텀 리스트 뷰 앞쪽 이미지 숫자
+			if((position + 1) == 1){
+				img.setBackgroundResource(R.drawable.img_num_1);
+			}else if((position + 1) == 2){
+				img.setBackgroundResource(R.drawable.img_num_2);
+			}else if((position + 1) == 3){
+				img.setBackgroundResource(R.drawable.img_num_3);
+			}else if((position + 1) == 4){
+				img.setBackgroundResource(R.drawable.img_num_4);
+			}else if((position + 1) == 5){
+				img.setBackgroundResource(R.drawable.img_num_5);
+			}else if((position + 1) == 6){
+				img.setBackgroundResource(R.drawable.img_num_6);
+			}else if((position + 1) == 7){
+				img.setBackgroundResource(R.drawable.img_num_7);
+			}else if((position + 1) == 8){
+				img.setBackgroundResource(R.drawable.img_num_8);
+			}else if((position + 1) == 9){
+				img.setBackgroundResource(R.drawable.img_num_9);
+			}else if((position + 1) == 10){
+				img.setBackgroundResource(R.drawable.img_num_10);
+			}
+			
+			
 			
 			
 			//각 버튼 이름 및 노출 여부 정의
 			if("01".equals(arSrc.get(position).getChildRelation())){
-				//btn_accept.setText("승인대기중");
+				btn_accept.setBackgroundResource(R.drawable.icon_3);
 				btn_accept.setVisibility(View.VISIBLE);
 			}else if("02".equals(arSrc.get(position).getChildRelation())){
-				//btn_accept.setText("승인완료");
+				btn_accept.setBackgroundResource(R.drawable.icon_1);
 				btn_accept.setVisibility(View.VISIBLE);
 			}else{
-				//btn_accept.setText("승인거절");
+				btn_accept.setBackgroundResource(R.drawable.icon_2);
 				btn_accept.setVisibility(View.VISIBLE);
 			}
 			
 			
 			//메뉴에서 삭제하기 눌렀을 경우 버튼 노출 문구 정의
 			if(menuClickDelete){
-				//btn_accept.setText("삭제하기");
+				btn_accept.setBackgroundResource(R.drawable.icon_del_selector);
 				btn_accept.setVisibility(View.VISIBLE);
 			}
 			
@@ -245,31 +330,18 @@ public class ChildListActivity extends Activity {
     }
     
     
-    //메뉴키를 눌렀을때 동작하는 부분 menu xml 중 child_list 부분을 가져온다.
-    public boolean onCreateOptionsMenu(Menu menu){
-    	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.child_list, menu);
-		return true; 
-    }
-    
-    //메뉴에서 해당 ITEM 을 선택하였을 경우 동작하는 부분
-    public boolean onOptionsItemSelected(MenuItem item){
-    	
-    	switch(item.getItemId()){
-   	  	case R.id.deleteMenu:
-   	  		if(deleteMenuToggle == false){
-   	  			deleteMenuToggle = true;
-   	  		}else{
-   	  			deleteMenuToggle = false;
-   	  		}
-   	  		//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
-   	  		childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childList, deleteMenuToggle);
-   	  		ListView listView = (ListView)findViewById(R.id.list);
-        	listView.setAdapter(listAdapter);
-        
-   	  		return true;
-    	}
-    	return false;
+    //메뉴에서 삭제 버튼을 눌렀을 경우 액션
+    public void onClickdeleteButtonAction(){
+  		if(deleteMenuToggle == false){
+  			deleteMenuToggle = true;
+  		}else{
+  			deleteMenuToggle = false;
+  		}
+  		
+  		//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
+  		childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childList, deleteMenuToggle);
+  		ListView listView = (ListView)findViewById(R.id.list1);
+    	listView.setAdapter(listAdapter);
     }
     
 }
