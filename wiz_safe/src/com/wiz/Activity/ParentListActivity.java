@@ -74,9 +74,9 @@ public class ParentListActivity extends Activity {
 
 	//부모리스트를 가져오는 로직 - 실행하면 통신하여 리스트를 가져와서  arraylist에 담긴다.
 	public void getParentList(){
-		ParentDetail ne1 = new ParentDetail("Mia","010-1111-1111", R.drawable.noimg);
+		ParentDetail ne1 = new ParentDetail("Mia","010-1111-1111", R.drawable.check);
         parentList.add(ne1);
-        ParentDetail ne2 = new ParentDetail("Char","010-2222-3333", R.drawable.noimg);
+        ParentDetail ne2 = new ParentDetail("Char","010-2222-3333", R.drawable.check);
         parentList.add(ne2);
 	}
 
@@ -143,7 +143,7 @@ public class ParentListActivity extends Activity {
 				if (arSrc.get(pos).getPhotoId() != -1) {
 	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(parentDetail.getPhotoId());                
 	            } else {
-	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(R.drawable.noimg);  
+	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(R.drawable.check);  
 	            }
 
 				Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);

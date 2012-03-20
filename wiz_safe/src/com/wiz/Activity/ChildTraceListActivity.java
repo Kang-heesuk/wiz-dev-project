@@ -73,9 +73,9 @@ public class ChildTraceListActivity extends Activity {
 	
 	//부모리스트를 가져오는 로직 - 실행하면 통신하여 리스트를 가져와서  arraylist에 담긴다.
 	public void getTraceList(){
-		TraceDetail ne1 = new TraceDetail("내쉐퀴1","01011111111", "1", "5", "00", "07", "60", R.drawable.noimg);
+		TraceDetail ne1 = new TraceDetail("내쉐퀴1","01011111111", "1", "5", "00", "07", "60", R.drawable.check);
         traceList.add(ne1);
-        TraceDetail ne2 = new TraceDetail("내쉐퀴22","01022223333", "1", "0", "21", "23", "120", R.drawable.noimg);
+        TraceDetail ne2 = new TraceDetail("내쉐퀴22","01022223333", "1", "0", "21", "23", "120", R.drawable.check);
         traceList.add(ne2);
 	}	
 	
@@ -134,7 +134,7 @@ public class ChildTraceListActivity extends Activity {
 				if (arSrc.get(pos).getPhotoId() != -1) {
 	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(traceDetail.getPhotoId());                
 	            } else {
-	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(R.drawable.noimg);  
+	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(R.drawable.check);  
 	            }
 
 				Button btn_more = (Button)convertView.findViewById(R.id.btn_accept);
