@@ -32,6 +32,11 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name=".JoinAcceptActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name=".ChildListActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
