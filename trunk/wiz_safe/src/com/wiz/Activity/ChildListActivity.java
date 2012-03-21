@@ -37,7 +37,7 @@ public class ChildListActivity extends Activity {
        
         childListAdapter listAdapter = new childListAdapter(this, R.layout.child_list_customlist, childList);
         ListView listView = (ListView)findViewById(R.id.list1);
-        View footer = getLayoutInflater().inflate(R.layout.footer, null, false);
+        View footer = getLayoutInflater().inflate(R.layout.child_list_footer, null, false);
         listView.addFooterView(footer);
         listView.setAdapter(listAdapter);
         
@@ -210,64 +210,61 @@ public class ChildListActivity extends Activity {
 			}
 			
 			//각 위젯 정의
-			Button img = (Button)convertView.findViewById(R.id.ePhoto);
-			Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
+			Button imgNum = (Button)convertView.findViewById(R.id.imgNum);
+			Button btnChildState = (Button)convertView.findViewById(R.id.btnChildState);
 			Button btn_nowLocation = (Button)convertView.findViewById(R.id.btn_nowLocation);
 			Button btn_history = (Button)convertView.findViewById(R.id.btn_history);
 			Button btn_safeZone = (Button)convertView.findViewById(R.id.btn_safeZone);
-			TextView eName = (TextView)convertView.findViewById(R.id.eName);
-			TextView info1 = (TextView)convertView.findViewById(R.id.info1);
+			TextView childName = (TextView)convertView.findViewById(R.id.childName);
+			TextView childPhonenum = (TextView)convertView.findViewById(R.id.childPhonenum);
 			
-			eName.setText(arSrc.get(position).getChildName());
-			info1.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(position).getChildPhone()) + ")");
+			childName.setText(arSrc.get(position).getChildName());
+			childPhonenum.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(position).getChildPhone()) + ")");
 			
 			//커스텀 리스트 뷰 앞쪽 이미지 숫자
 			if((position + 1) == 1){
-				img.setBackgroundResource(R.drawable.img_num_1);
+				imgNum.setBackgroundResource(R.drawable.img_num_1);
 			}else if((position + 1) == 2){
-				img.setBackgroundResource(R.drawable.img_num_2);
+				imgNum.setBackgroundResource(R.drawable.img_num_2);
 			}else if((position + 1) == 3){
-				img.setBackgroundResource(R.drawable.img_num_3);
+				imgNum.setBackgroundResource(R.drawable.img_num_3);
 			}else if((position + 1) == 4){
-				img.setBackgroundResource(R.drawable.img_num_4);
+				imgNum.setBackgroundResource(R.drawable.img_num_4);
 			}else if((position + 1) == 5){
-				img.setBackgroundResource(R.drawable.img_num_5);
+				imgNum.setBackgroundResource(R.drawable.img_num_5);
 			}else if((position + 1) == 6){
-				img.setBackgroundResource(R.drawable.img_num_6);
+				imgNum.setBackgroundResource(R.drawable.img_num_6);
 			}else if((position + 1) == 7){
-				img.setBackgroundResource(R.drawable.img_num_7);
+				imgNum.setBackgroundResource(R.drawable.img_num_7);
 			}else if((position + 1) == 8){
-				img.setBackgroundResource(R.drawable.img_num_8);
+				imgNum.setBackgroundResource(R.drawable.img_num_8);
 			}else if((position + 1) == 9){
-				img.setBackgroundResource(R.drawable.img_num_9);
+				imgNum.setBackgroundResource(R.drawable.img_num_9);
 			}else if((position + 1) == 10){
-				img.setBackgroundResource(R.drawable.img_num_10);
+				imgNum.setBackgroundResource(R.drawable.img_num_10);
 			}
-			
-			
-			
 			
 			//각 버튼 이름 및 노출 여부 정의
 			if("01".equals(arSrc.get(position).getChildRelation())){
-				btn_accept.setBackgroundResource(R.drawable.icon_3);
-				btn_accept.setVisibility(View.VISIBLE);
+				btnChildState.setBackgroundResource(R.drawable.icon_3);
+				btnChildState.setVisibility(View.VISIBLE);
 			}else if("02".equals(arSrc.get(position).getChildRelation())){
-				btn_accept.setBackgroundResource(R.drawable.icon_1);
-				btn_accept.setVisibility(View.VISIBLE);
+				btnChildState.setBackgroundResource(R.drawable.icon_1);
+				btnChildState.setVisibility(View.VISIBLE);
 			}else{
-				btn_accept.setBackgroundResource(R.drawable.icon_2);
-				btn_accept.setVisibility(View.VISIBLE);
+				btnChildState.setBackgroundResource(R.drawable.icon_2);
+				btnChildState.setVisibility(View.VISIBLE);
 			}
 			
 			
 			//메뉴에서 삭제하기 눌렀을 경우 버튼 노출 문구 정의
 			if(menuClickDelete){
-				btn_accept.setBackgroundResource(R.drawable.icon_del_selector);
-				btn_accept.setVisibility(View.VISIBLE);
+				btnChildState.setBackgroundResource(R.drawable.icon_del_selector);
+				btnChildState.setVisibility(View.VISIBLE);
 			}
 			
 			//각 버튼 액션 정의
-			btn_accept.setOnClickListener(
+			btnChildState.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 						//삭제하기 버튼을 클릭하였을 경우
