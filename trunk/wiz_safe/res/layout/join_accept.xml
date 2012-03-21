@@ -17,7 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="회원가입"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textColor="#ffffffff"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,7 +73,7 @@
                     android:background="@null"
                     android:digits="0123456789"
                     android:hint="휴대폰번호 입력  &apos;-&apos; 제외"
-                    android:textSize="17dp"
+                    android:textSize="17sp"
                     android:inputType="number|phone"
                     android:textColor="#ffaaaaaa"
                     android:imeOptions="actionDone" />
