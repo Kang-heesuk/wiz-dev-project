@@ -1,88 +1,270 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        >
-        
-	<LinearLayout 
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:orientation="vertical">
-	    
-	    <!-- include -->
-		<include 
-		    layout="@layout/top_navigation"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content" 
-		    />
-	
-	    <LinearLayout
-	        android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:orientation="vertical"                         
-	        >
-	       
-	    <TextView
-			android:id="@+id/info1"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="위치를 찾고 싶은 자녀의 휴대폰 번호를 입력하세요."
-			android:background="#ff0000"
-			/>
-	    
-	    <TextView
-			android:id="@+id/info2"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="휴대폰 번호"
-			android:background="#fefefe"
-			/>
-	    
-	    <EditText
-	        android:id="@+id/childPhone"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:hint="'-'를 제외하고 입력하세요."
-	        android:inputType="phone"
-	        />
-	    
-	    <TextView
-			android:id="@+id/info3"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="이름"
-			android:background="#f2f2f2"
-			/>
-	    
-	    <EditText
-	        android:id="@+id/childName"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:hint="미입력시 '자녀1' 자동 설정 됨"
-	        android:inputType="text" 
-	        />
-	    
-	    <Button
-	        android:id="@+id/goSubmit"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="center"
-	        android:text="요청 보내기"
-	        />
-	    
-	    </LinearLayout>
-	    
-	</LinearLayout>
-	
-	<TextView
-		android:id="@+id/processingFrame"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:text="형 처리중이야 기다려"
-		android:gravity="center_horizontal|center_vertical"
-		android:background="#febefe"
-		android:visibility="invisible"
-		/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_register1"
+    android:orientation="vertical" >
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="자녀리스트"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/listArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="93"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="86"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/info1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="위치를 찾고 싶은 자녀의 휴대폰 번호를 입력하세요."
+                    android:textColor="#ff000000"
+                    android:textSize="16dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="11"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="9"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="82"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/childPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="&apos;-&apos;를 제외하고 입력하세요."
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:textColor="#ffaaaaaa"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="9"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="9"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="82"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/childName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="미입력시 &apos;자녀1&apos; 자동 설정 됨"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:textColor="#ffaaaaaa"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="9"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5" >
+
+                <TextView
+                    android:id="@+id/checkBox1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="11" >
+
+                <TextView
+                    android:id="@+id/checkBox2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/check"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="84" >
+
+                <TextView
+                    android:id="@+id/checkBox3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="78"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/goSubmit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/btn_request_selector" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="29"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
