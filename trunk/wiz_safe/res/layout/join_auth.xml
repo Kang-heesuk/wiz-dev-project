@@ -67,10 +67,11 @@
                 android:orientation="vertical" >
 
                 <TextView
+                    android:id="@+id/textView1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:text="  010 - 1234 - 1234 번호로 인증번호가 발송 되었습니다."
+                    android:text="  잠시만 기다려 주세요...  "
                     android:textColor="#ff000000"
                     android:textSize="17sp" />
             </LinearLayout>
