@@ -2,8 +2,6 @@ package com.wiz.Activity;
 
 import java.util.ArrayList;
 
-import com.wiz.util.WizSafeUtil;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,11 +15,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.wiz.util.WizSafeUtil;
 
 public class ChildTraceListActivity extends Activity {
 	
@@ -36,14 +34,12 @@ public class ChildTraceListActivity extends Activity {
 		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.child_trace_list);
         
-        TextView textView1 = (TextView)findViewById(R.id.textTitle);
-        textView1.setText(R.string.title_child);
-        
         //앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
         phonenum = intent.getStringExtra("phonenum");
         
         //자녀등록하기 버튼액션
+        /*
         findViewById(R.id.btn_addTrace).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
@@ -53,7 +49,8 @@ public class ChildTraceListActivity extends Activity {
 				}
 			}
 		);
-
+		*/
+		
         //body 정의
         //서버와 통신하여 리스트 정보를 가져온다.
         //서버와 통신하여 리스트 정보를 가져온다.        
@@ -63,12 +60,12 @@ public class ChildTraceListActivity extends Activity {
         getTraceList();
         
         //어댑터 정의
-        traceListAdapter = new TraceListAdapter(this, R.layout.safe_list, traceList);
-        ListView listView = (ListView)findViewById(R.id.list);
-
+        traceListAdapter = new TraceListAdapter(this, R.layout.child_trace_list_customlist, traceList);
+        ListView listView = (ListView)findViewById(R.id.list1);
+		
         //실행하면 화면에 listview를 보여준다.
         listView.setAdapter(traceListAdapter);
-        
+
 	}
 	
 	//부모리스트를 가져오는 로직 - 실행하면 통신하여 리스트를 가져와서  arraylist에 담긴다.
@@ -121,7 +118,7 @@ public class ChildTraceListActivity extends Activity {
 				String rowInfo_2 = "요일 : "+traceDetail.getStartDay()+" ~ "+traceDetail.getEndDay();
 				String rowInfo_3 = "시간 : "+traceDetail.getStartTime()+" ~ "+traceDetail.getEndTime();
 				String rowInfo_4 = "간격 : "+traceDetail.getInterval();
-				
+				/*
 				((TextView)convertView.findViewById(R.id.eName)).setText(rowInfo_1);
 				((TextView)convertView.findViewById(R.id.info1)).setText(rowInfo_2);
 				((TextView)convertView.findViewById(R.id.info2)).setText(rowInfo_3);
@@ -130,7 +127,9 @@ public class ChildTraceListActivity extends Activity {
 				TextView textInfo3 = (TextView)convertView.findViewById(R.id.info3);
 				textInfo2.setVisibility(View.VISIBLE);
 				textInfo3.setVisibility(View.VISIBLE);
-	           
+				*/
+				
+				/*
 				if (arSrc.get(pos).getPhotoId() != -1) {
 	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(traceDetail.getPhotoId());                
 	            } else {
@@ -141,7 +140,9 @@ public class ChildTraceListActivity extends Activity {
 				btn_more.setText(" > ");
 				btn_more.setVisibility(View.VISIBLE);
 				
+				*/
 				
+				/*
 				//수정하기 버튼 정의
 				Button btn_modify = (Button)convertView.findViewById(R.id.btn_nowLocation);
 				btn_modify.setText(R.string.btn_modify);
@@ -160,6 +161,10 @@ public class ChildTraceListActivity extends Activity {
 						}
 					}
 				);
+				*/
+				
+				
+				/*
 				
 				//삭제하기  버튼 정의
 				Button btn_delete = (Button)convertView.findViewById(R.id.btn_history);
@@ -188,9 +193,12 @@ public class ChildTraceListActivity extends Activity {
 				
 				Button btn_safeZone = (Button)convertView.findViewById(R.id.btn_safeZone);
 				btn_safeZone.setVisibility(View.GONE);
+				
+				*/
 
 			}            
 			
+			/*
 			//Button 기능 셋팅
 			Button btn_more = (Button)convertView.findViewById(R.id.btn_accept);
 			btn_more.setTag(position);
@@ -209,11 +217,11 @@ public class ChildTraceListActivity extends Activity {
 				}
 
 			});
-			
+			*/
 			return convertView;     
-			}
+		}
 
-		}  
+	}  
 	
 	
 	//custom list data 를 inner class 로 선언
