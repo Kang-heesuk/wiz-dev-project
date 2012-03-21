@@ -47,7 +47,6 @@ public class ChildAddActivity extends Activity {
         
         childPhone = (EditText)findViewById(R.id.childPhone);
         childName = (EditText)findViewById(R.id.childName);
-        waitFrame = (TextView)findViewById(R.id.processingFrame);
         		
         childName.setHint("미입력시 '자녀" + whereFlag + "' 자동 설정 됨");
         

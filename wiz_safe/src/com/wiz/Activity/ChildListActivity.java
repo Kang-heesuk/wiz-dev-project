@@ -35,7 +35,7 @@ public class ChildListActivity extends Activity {
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
        
-        childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childList);
+        childListAdapter listAdapter = new childListAdapter(this, R.layout.child_list_customlist, childList);
         ListView listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.footer, null, false);
         listView.addFooterView(footer);
