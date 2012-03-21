@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_join1"
-    android:baselineAligned="false"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -44,6 +43,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:baselineAligned="false"
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -72,10 +72,10 @@
                     android:background="@null"
                     android:digits="0123456789"
                     android:hint="휴대폰번호 입력  &apos;-&apos; 제외"
+                    android:textSize="17dp"
                     android:inputType="number|phone"
                     android:textColor="#ffaaaaaa"
-                    android:textSize="17dp" >
-                </EditText>
+                    android:imeOptions="actionDone" />
             </LinearLayout>
 
             <LinearLayout
@@ -96,6 +96,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:baselineAligned="false"
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -125,7 +126,7 @@
                     <TextView
                         android:id="@+id/textView1"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="본 서비스는... 약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다."
                         android:textColor="#ff464646" />
                 </ScrollView>
@@ -203,6 +204,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:baselineAligned="false"
             android:id="@+id/linearLayout7"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -232,7 +234,7 @@
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="본 서비스는... 약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다."
                         android:textColor="#ff464646" />
                 </ScrollView>
@@ -310,6 +312,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:baselineAligned="false"
             android:id="@+id/linearLayout10"
             android:layout_width="match_parent"
             android:layout_height="0dp"
