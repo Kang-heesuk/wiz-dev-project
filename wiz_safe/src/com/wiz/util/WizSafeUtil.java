@@ -166,4 +166,61 @@ public class WizSafeUtil {
 		return returnVal;
 	}
 	
+	//replace 를 char 단위가 아닌 string 단위로 수행
+	public static String replaceStr(String org, String var, String tgt)
+			throws Exception {
+		StringBuffer str = new StringBuffer("");
+		int end = 0;
+		int begin = 0;
+		if (org == null || org.equals(""))
+			return org;
+
+		try {
+			while (true) {
+				end = org.indexOf(var, begin);
+				if (end == -1) {
+					end = org.length();
+					str.append(org.substring(begin, end));
+					break;
+				}
+				str.append(org.substring(begin, end) + tgt);
+				begin = end + var.length();
+			}
+		} catch (Exception e) {
+			throw new Exception(e.toString());
+		}
+		return str.toString();
+	}
+	//폰번호에 '-' 추가
+		public static String androidParseCtn(String num, boolean cutNationNum)
+		{
+			String ctn = "";
+			
+			//국가번호 컷팅값이 false or 자릿수가 9자리 미만 이면 그대로 return한다.
+			if(cutNationNum == false || num.length() < 12)
+			{
+				ctn = num;
+			}
+			else
+			{
+			//국가번호 컷팅값이 true 이면 
+				if(num.startsWith("+82"))
+				{
+					//한국ctn 경우(국가번호 : +82)
+					try {
+						ctn = replaceStr(num, "+82", "0");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					//한국ctn 아닌 경우 -> 차후 개발. 일단은 그대로 리턴
+					ctn = num;
+				}
+			}
+
+			return ctn;
+		}
 }
