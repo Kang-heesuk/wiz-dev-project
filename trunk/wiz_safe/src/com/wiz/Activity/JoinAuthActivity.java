@@ -24,10 +24,11 @@ public class JoinAuthActivity extends Activity {
         //현재 디바이스의 ctn 추출 - 추출된 ctn 으로 인증 sms 발송한다.
         TelephonyManager mTelephonyMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         String returnValue = mTelephonyMgr.getLine1Number();
-
+        // 01XYYYYZZZZ 양식으로 변환 - 국가번호제거
+        String ctn = WizSafeUtil.androidParseCtn(returnValue, true);
         TextView textView1 = (TextView)findViewById(R.id.textView1);
-        textView1.setText("　 "+WizSafeUtil.setPhoneNum(WizSafeUtil.androidParseCtn(returnValue, true))+" 번호로 인증번호가 발송 되었습니다.");
-        
+        textView1.setText("　 " + WizSafeUtil.setPhoneNum(ctn) + " 번호로 인증번호가 발송 되었습니다.");
+         
         
         Button btn_join = (Button)findViewById(R.id.btn_join);
         btn_join.setOnClickListener(new Button.OnClickListener() {

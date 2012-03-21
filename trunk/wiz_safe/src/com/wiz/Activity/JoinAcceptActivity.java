@@ -14,7 +14,7 @@ public class JoinAcceptActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.join_accept);
-        
+         
         
 		//공지팝업 하단 체크  누른경우의 액션
 		  final Button btn_check1 = (Button)findViewById(R.id.btn_check1);
