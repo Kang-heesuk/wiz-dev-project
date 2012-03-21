@@ -96,14 +96,12 @@ public class ChildLocationViewActivity extends NMapActivity {
     	
     	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
+    	int mapviewHeightVal = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.93); 
+    	RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+    			mapviewHeightVal);
+    	parentView.setLayoutParams(params);
 		parentView.removeView(mMapView);
 		
-    	//top-navigation 값 정의
-        TextView topTitle = (TextView)findViewById(R.id.textTitle);
-        if(topTitle != null){
-        	topTitle.setText(R.string.title_current_loca);
-        }
-        
         //body
         //현재 시간 출력
         TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
@@ -115,7 +113,7 @@ public class ChildLocationViewActivity extends NMapActivity {
         }
          
         //이탈알림 이미지 버튼 처리
-        ImageButton btn_alarm = (ImageButton)findViewById(R.id.btn_alarm);
+        /*ImageButton btn_alarm = (ImageButton)findViewById(R.id.btn_alarm);
         btn_alarm.setOnClickListener(new ImageButton.OnClickListener() {
 			public void onClick(View v) {
 				//Toast.makeText(LocationViewActivity.this, "이탈 알림 버튼 눌렀으!!!", Toast.LENGTH_SHORT).show();
@@ -135,7 +133,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 				ad.setNegativeButton(R.string.btn_cancel, null);
 				ad.show();
 			}
-		});
+		});*/
         
     	// create map view
     	//mMapView = new NMapView(this);
