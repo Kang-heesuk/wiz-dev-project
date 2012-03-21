@@ -79,24 +79,6 @@
                         android:text="(010-2932-5100)"
                         android:textColor="#ff000000"
                         android:textSize="16dp" />
-                    
-                    <TextView
-                        android:id="@+id/info2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="(010-2932-5100)"
-                        android:textColor="#ff000000"
-                        android:textSize="16dp" />
-                    
-                    <TextView
-                        android:id="@+id/info3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="(010-2932-5100)"
-                        android:textColor="#ff000000"
-                        android:textSize="16dp" />
-                    
-                    
                 </LinearLayout>
 
                 <LinearLayout
