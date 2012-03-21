@@ -11,13 +11,6 @@
         android:layout_weight="6"
         android:gravity="center"
         android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="자녀리스트"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
     <LinearLayout
