@@ -44,7 +44,7 @@
                     android:orientation="vertical" >
 
                     <Button
-                        android:id="@+id/ePhoto"
+                        android:id="@+id/imgNum"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/img_num_1" />
@@ -65,7 +65,7 @@
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/eName"
+                        android:id="@+id/childName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="자녀1"
@@ -73,7 +73,7 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        android:id="@+id/info1"
+                        android:id="@+id/childPhonenum"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="(010-2932-5100)"
@@ -89,7 +89,7 @@
                     android:orientation="vertical" >
 
                     <Button
-                        android:id="@+id/btn_accept"
+                        android:id="@+id/btnChildState"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/icon_1"
