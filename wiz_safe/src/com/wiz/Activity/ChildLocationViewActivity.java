@@ -89,20 +89,16 @@ public class ChildLocationViewActivity extends NMapActivity {
 	private NMapViewerResourceProvider mMapViewerResourceProvider;    
 	
 	/** Called when the activity is first created. */
-    @Override
+    @Override 
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
     	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
-    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
-    	int mapviewHeightVal = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.93); 
-    	RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-    			mapviewHeightVal);
-    	parentView.setLayoutParams(params);
-		parentView.removeView(mMapView);
+    	//RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
+		//parentView.removeView(mMapView);
 		
-        //body
+        //body 
         //현재 시간 출력
         TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
         if(tv_checkTime != null){
