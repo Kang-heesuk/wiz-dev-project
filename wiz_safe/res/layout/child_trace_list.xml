@@ -2,35 +2,84 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_default"
     android:orientation="vertical" >
-    
-    <!-- include -->
-	<include 
-	    layout="@layout/top_navigation"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" 
-	    />
-	
-	<TextView
-	    android:id="@+id/topInfo" 
-	    android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:text="등록된 설정 이력이 없습니다. 아래  '발자취등록' 메뉴에서 등록해 주세요."
-        android:background="#ff0000"
-	    />
-	
-	<Button
-	    android:id="@+id/btn_addTrace"
-	    android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-		android:text="+ 발자취등록하기"
-	    />
-	
-	<ListView 
-	    android:id="@+id/list"
-	    android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="false" 
- 	   />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:gravity="center"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/listArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="93"
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/list1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#00000000"
+            android:divider="#00000000" >
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomMenuArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="16"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:background="#cccc0000"
+            >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="96"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:background="@drawable/b_menu_1_selector" />
+
+            <Button
+                android:id="@+id/childAdditionButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="34"
+                android:background="@drawable/b_menu_2_selector" />
+
+            <Button
+                android:id="@+id/useInfoButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:background="@drawable/b_menu_3_selector" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
