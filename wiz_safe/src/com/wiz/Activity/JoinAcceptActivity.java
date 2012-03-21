@@ -57,7 +57,7 @@ public class JoinAcceptActivity extends Activity {
         Button btn_accept = (Button)findViewById(R.id.btn_accept);
         btn_accept.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(JoinAcceptActivity.this, ChildListActivity.class);
+				Intent intent = new Intent(JoinAcceptActivity.this, JoinAuthActivity.class);
 				startActivity(intent);
 			} 
 		}); 
