@@ -34,9 +34,6 @@ public class ChildAddActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.child_add);
         
-        TextView textView1 = (TextView)findViewById(R.id.textTitle);
-        textView1.setText(R.string.title_reg_child);
-        
         //단말기 안에서 필요한 정보를 추출한다.
         LocalSave = getSharedPreferences("isAuthCheck", 0);
 		edit = LocalSave.edit();
