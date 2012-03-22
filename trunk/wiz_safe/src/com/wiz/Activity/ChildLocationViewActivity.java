@@ -1,11 +1,6 @@
 package com.wiz.Activity;
 
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -16,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.nhn.android.maps.NMapActivity;
@@ -93,11 +88,12 @@ public class ChildLocationViewActivity extends NMapActivity {
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
     	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
-    	//RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
-		//parentView.removeView(mMapView);
+    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
+		parentView.removeView(mMapView);
 		
         //body 
         //현재 시간 출력
+    	/*
         TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
         if(tv_checkTime != null){
         	GregorianCalendar calendar = new GregorianCalendar();
@@ -105,6 +101,7 @@ public class ChildLocationViewActivity extends NMapActivity {
         	
         	tv_checkTime.setText("조회시간 : "+sdf.format(calendar.getTime()));
         }
+        */
          
         //이탈알림 이미지 버튼 처리
         Button btn_alarm = (Button)findViewById(R.id.btn_retry);
