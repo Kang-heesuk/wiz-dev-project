@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class SetupActivity extends Activity {
@@ -18,9 +16,7 @@ public class SetupActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setup_list);
         
-        TextView textView1 = (TextView)findViewById(R.id.textTitle);
-        textView1.setText(R.string.title_child_log);
-        
+   
         //body ±¸¼º
         Button btn01 = (Button)findViewById(R.id.btn1);
         btn01.setOnClickListener(new Button.OnClickListener() {
@@ -65,10 +61,11 @@ public class SetupActivity extends Activity {
 				Toast.makeText(SetupActivity.this, "6666666666 = ", Toast.LENGTH_SHORT).show();
 			}
 		});
+         
         
-        ImageButton btn_sms = (ImageButton)findViewById(R.id.btn_sms);
+        Button btn_sms = (Button)findViewById(R.id.btn_sms);
         btn_sms.setTag(R.drawable.btn_off);
-        btn_sms.setOnClickListener(new ImageButton.OnClickListener() {
+        btn_sms.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				int compareValue = (Integer)findViewById(R.id.btn_sms).getTag();
 				if(compareValue == R.drawable.btn_off){
@@ -81,9 +78,9 @@ public class SetupActivity extends Activity {
 			}
 		});
         
-        ImageButton btn_hide = (ImageButton)findViewById(R.id.btn_hide);
+        Button btn_hide = (Button)findViewById(R.id.btn_hide);
         btn_hide.setTag(R.drawable.btn_off);
-        btn_hide.setOnClickListener(new ImageButton.OnClickListener() {
+        btn_hide.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				int compareValue = (Integer)findViewById(R.id.btn_hide).getTag();
 				if(compareValue == R.drawable.btn_off){
@@ -110,7 +107,4 @@ public class SetupActivity extends Activity {
 		});
         
     }
-
-       
-    
 }
