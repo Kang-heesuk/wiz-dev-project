@@ -1,54 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/bg_join2"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="7"
         android:gravity="center"
         android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="회원가입"
-            android:textColor="#ffffffff"
-            android:textSize="18sp" />
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:gravity="center"
-        android:orientation="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="93"
-        android:baselineAligned="false"
         android:orientation="vertical" >
 
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="13"
+            android:layout_weight="16"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9"
-            android:baselineAligned="false"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -86,19 +69,18 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout4"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="7"
-            android:baselineAligned="false"
+            android:layout_weight="5"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -140,23 +122,22 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout5"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout6"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="8"
-            android:baselineAligned="false"
+            android:layout_weight="7"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout16"
+                android:id="@+id/linearLayout1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="30"
@@ -164,7 +145,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout17"
+                android:id="@+id/linearLayout1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="40"
@@ -172,14 +153,13 @@
 
                 <Button
                     android:id="@+id/btn_join"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:background="@drawable/btn_join_selector" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout18"
+                android:id="@+id/linearLayout1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="30"
@@ -188,7 +168,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout7"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
@@ -196,15 +176,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout8"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:baselineAligned="false"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout19"
+                android:id="@+id/linearLayout1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="58"
@@ -212,7 +191,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout20"
+                android:id="@+id/linearLayout1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="36"
@@ -220,14 +199,13 @@
 
                 <Button
                     android:id="@+id/btn_renum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:background="@drawable/btn_certify_renum_selector" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout21"
+                android:id="@+id/linearLayout1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="6"
@@ -236,10 +214,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout9"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="48"
+            android:layout_weight="50"
             android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>
