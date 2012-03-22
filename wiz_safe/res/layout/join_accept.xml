@@ -1,58 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/bg_join1"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="6"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="회원가입"
-            android:textColor="#ffffffff"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
+        android:layout_weight="7"
         android:orientation="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="93"
-        android:baselineAligned="false"
         android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="7"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:layout_weight="8"
+            android:orientation="vertical" />
 
         <LinearLayout
-            android:baselineAligned="false"
-            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="9"
+            android:layout_weight="8"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout15"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
@@ -60,7 +37,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout16"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="84"
@@ -73,14 +49,13 @@
                     android:background="@null"
                     android:digits="0123456789"
                     android:hint="휴대폰번호 입력  &apos;-&apos; 제외"
-                    android:textSize="17sp"
+                    android:imeOptions="actionDone"
                     android:inputType="number|phone"
                     android:textColor="#ffaaaaaa"
-                    android:imeOptions="actionDone" />
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout17"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
@@ -89,61 +64,51 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="6"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:layout_weight="9"
+            android:orientation="vertical" />
 
         <LinearLayout
-            android:baselineAligned="false"
-            android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="19"
+            android:layout_weight="21"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout18"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout19"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="88"
+                android:layout_weight="8"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="85"
                 android:orientation="vertical" >
 
                 <ScrollView
                     android:id="@+id/scrollView1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
 
                     <TextView
                         android:id="@+id/textView1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="본 서비스는... 약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다.약관 1번입니다."
+                        android:layout_height="match_parent"
+                        android:text="본 약관1번은..."
                         android:textColor="#ff464646" />
                 </ScrollView>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout20"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:orientation="vertical" >
-            </LinearLayout>
+                android:layout_weight="7"
+                android:orientation="vertical" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout99"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -151,25 +116,22 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout5"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            android:baselineAligned="false"
             android:orientation="horizontal" >
 
             <LinearLayout
                 android:id="@+id/linearLayout21"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout22"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="17"
                 android:orientation="vertical" >
 
@@ -188,7 +150,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout23"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="78"
@@ -197,77 +158,66 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout6"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="10"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
-            android:baselineAligned="false"
-            android:id="@+id/linearLayout7"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="19"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout24"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout25"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="88"
+                android:layout_weight="85"
                 android:orientation="vertical" >
 
                 <ScrollView
                     android:id="@+id/scrollView2"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
 
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="본 서비스는... 약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다.약관 2 번입니다."
+                        android:layout_height="match_parent"
+                        android:text="본 서비스는... ."
                         android:textColor="#ff464646" />
                 </ScrollView>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout26"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="7"
                 android:orientation="vertical" >
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout98"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:layout_weight="3"
+            android:orientation="vertical" />
 
         <LinearLayout
-            android:id="@+id/linearLayout8"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            android:baselineAligned="false"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout27"
+                android:id="@+id/linearLayout21"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
@@ -275,7 +225,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout28"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="17"
@@ -296,7 +245,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout29"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="78"
@@ -305,23 +253,19 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout9"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
-            android:baselineAligned="false"
-            android:id="@+id/linearLayout10"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="8"
             android:orientation="horizontal" >
-
+            
+            
             <LinearLayout
-                android:id="@+id/linearLayout12"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="15"
@@ -329,7 +273,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout13"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="70"
@@ -344,21 +287,19 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout14"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="15"
                 android:orientation="vertical" >
             </LinearLayout>
+            
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout11"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:orientation="vertical" />
     </LinearLayout>
 
 </LinearLayout>

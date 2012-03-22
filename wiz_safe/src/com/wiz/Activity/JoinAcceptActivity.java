@@ -52,7 +52,7 @@ public class JoinAcceptActivity extends Activity {
 					btn_blank2.setVisibility(View.GONE);
 					btn_check2.setVisibility(View.VISIBLE);
 				}
-		  });  
+		  });
 		  
         Button btn_accept = (Button)findViewById(R.id.btn_accept);
         btn_accept.setOnClickListener(new Button.OnClickListener() {
