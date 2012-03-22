@@ -27,7 +27,7 @@ public class JoinAuthActivity extends Activity {
         // 01XYYYYZZZZ 양식으로 변환 - 국가번호제거
         String ctn = WizSafeUtil.androidParseCtn(returnValue, true);
         TextView textView1 = (TextView)findViewById(R.id.textView1);
-        textView1.setText("　 " + WizSafeUtil.setPhoneNum(ctn) + " 번호로 인증번호가 발송 되었습니다.");
+        textView1.setText("　 " + WizSafeUtil.setPhoneNum(ctn) + " 번호로\n인증번호가 발송되었습니다.");
          
         
         Button btn_join = (Button)findViewById(R.id.btn_join);

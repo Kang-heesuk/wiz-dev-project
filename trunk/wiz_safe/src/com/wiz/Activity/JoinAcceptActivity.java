@@ -59,7 +59,7 @@ public class JoinAcceptActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(JoinAcceptActivity.this, JoinAuthActivity.class);
 				startActivity(intent);
-			} 
+			}
 		}); 
         
     }
