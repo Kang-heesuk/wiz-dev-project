@@ -15,8 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +31,6 @@ import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.nmapmodel.NMapPlacemark;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.maps.overlay.NMapPOIitem;
-import com.nhn.android.mapviewer.NMapPOIflagType;
 import com.nhn.android.mapviewer.NMapViewerResourceProvider;
 import com.nhn.android.mapviewer.overlay.NMapCalloutCustomOverlay;
 import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
@@ -54,7 +52,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 
     double longitude01 = 127.12201246666667;
 	double latitude01 = 37.495217644444445;
-	
+	  
     
 	//최초 맵 기준  지정 변수 -> 현재는 시청으로 나중에는 자신의 위치로 변경하자.
 	private NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude01, latitude01);
@@ -109,11 +107,13 @@ public class ChildLocationViewActivity extends NMapActivity {
         }
          
         //이탈알림 이미지 버튼 처리
-        /*ImageButton btn_alarm = (ImageButton)findViewById(R.id.btn_alarm);
-        btn_alarm.setOnClickListener(new ImageButton.OnClickListener() {
+        Button btn_alarm = (Button)findViewById(R.id.btn_retry);
+        btn_alarm.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				//Toast.makeText(LocationViewActivity.this, "이탈 알림 버튼 눌렀으!!!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ChildLocationViewActivity.this, "리프레쉬지~!!!", Toast.LENGTH_SHORT).show();
 				
+				/*
+				//자체 지원하는 팝업 띄우기 위한 메소드
 				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
 				String title = "이탈 알림";	
 				String message = "현재 시간부터 24시간 이내에 해당 위치에서 이탈 시 알려드립니다.";	
@@ -128,8 +128,9 @@ public class ChildLocationViewActivity extends NMapActivity {
 				});
 				ad.setNegativeButton(R.string.btn_cancel, null);
 				ad.show();
+				*/
 			}
-		});*/
+		});
         
     	// create map view
     	//mMapView = new NMapView(this);
@@ -272,7 +273,9 @@ public class ChildLocationViewActivity extends NMapActivity {
 		String placeInfo01 = "IT Becher Tower";
 		
 		// Markers for POI item
-		int markerId = NMapPOIflagType.PIN;
+		//int markerId = NMapPOIflagType.PIN;
+		//System.out.format("%02x%n", markerId);
+		int markerId = 0x0102;
 
 		// set POI data
 		NMapPOIdata poiData = new NMapPOIdata(2, mMapViewerResourceProvider);
