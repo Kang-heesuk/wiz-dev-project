@@ -15,11 +15,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
@@ -34,9 +39,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nhn.android.maps.NMapActivity;
@@ -92,7 +95,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	//최초 맵 기준  지정 변수 -> 현재는 시청으로 나중에는 자신의 위치로 변경하자.
 	private NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude01, latitude01);
 	//private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(127.12201246666667, 37.495217644444445);
-	private static final int NMAP_ZOOMLEVEL_DEFAULT = 12;
+	private static final int NMAP_ZOOMLEVEL_DEFAULT = 14; 
 	private static final int NMAP_VIEW_MODE_DEFAULT = NMapView.VIEW_MODE_VECTOR;
 	private static final boolean NMAP_TRAFFIC_MODE_DEFAULT = false;
 	private static final boolean NMAP_BICYCLE_MODE_DEFAULT = false;
@@ -128,13 +131,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
-		//top-navigation 값 정의
-        TextView topTitle = (TextView)findViewById(R.id.textTitle);
-        if(topTitle != null){
-        	topTitle.setText(R.string.title_saftyzone_setup);
-        }
-
-        
         //body
         
         //검색창 영역 
@@ -154,6 +150,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	    				goSearch(searchArea.getText().toString());
 	    				break;
     			}
+    			Toast.makeText(ChildSafezoneAddActivity.this, "clicked search btn!!", Toast.LENGTH_SHORT).show();
     		}
 
     	    public void goSearch(String searchStr){
@@ -184,18 +181,20 @@ public class ChildSafezoneAddActivity extends NMapActivity {
         });
         
         //반경 정보 변경 버튼
-        ImageButton btn_radius = (ImageButton)findViewById(R.id.btn_radius);
-        btn_radius.setOnClickListener(new ImageButton.OnClickListener() {
+        final Button btn_radius = (Button)findViewById(R.id.btn_radius);
+        btn_radius.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				
 				if(radiusValue == 200){
 					radiusValue = 500;
+					btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector); 
 				}else if(radiusValue == 500){
 					radiusValue = 1000;
+					btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector);
 				}else{
 					radiusValue = 200;
+					btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
 				}
-				//Toast.makeText(ChildSafezoneAddActivity.this, "반경="+radiusValue, Toast.LENGTH_SHORT).show();
 				
 				//radius overlay 를 다시 그린다.
 				// 맵뷰에 있는 오버레이를 모두 가져온다.
@@ -210,8 +209,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		});
         
         //설정 버튼
-        ImageButton btn_setup = (ImageButton)findViewById(R.id.btn_setup);
-        btn_setup.setOnClickListener(new ImageButton.OnClickListener() {
+        Button btn_setup = (Button)findViewById(R.id.btn_setup);
+        btn_setup.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
 				String title = "안심존 등록";	
@@ -236,8 +235,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		});
         
         //취소 버튼
-        ImageButton btn_cancel = (ImageButton)findViewById(R.id.btn_cancel);
-        btn_cancel.setOnClickListener(new ImageButton.OnClickListener() {
+        Button btn_cancel = (Button)findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				
 				ChildSafezoneAddActivity.this.finish();
@@ -552,13 +551,15 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
 		boolean trafficMode = mPreferences.getBoolean(KEY_TRAFFIC_MODE, NMAP_TRAFFIC_MODE_DEFAULT);
 		boolean bicycleMode = mPreferences.getBoolean(KEY_BICYCLE_MODE, NMAP_BICYCLE_MODE_DEFAULT);
-
+		
 		mMapController.setMapViewMode(viewMode);
 		mMapController.setMapViewTrafficMode(trafficMode);
 		mMapController.setMapViewBicycleMode(bicycleMode);
+		//시작 축척 레벨을 10로 고정
+		level = 10;
 		mMapController.setMapCenter(new NGeoPoint(longitudeE6, latitudeE6), level);
 	}
-
+ 
 	private void saveInstanceState() {
 		if (mPreferences == null) {
 			return;
@@ -716,6 +717,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		public RadiusOverlay(int raidusValue){
 			current_x = windowWidth / 2;
 			current_y = windowHeight / 2;
+			
 			if(raidusValue != 200){
 				radius = raidusValue;
 			}
@@ -740,27 +742,52 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				NGeoPoint geop = mapView.getMapProjection().fromPixels(current_x, current_y);
 				
 				//원을 그리기 위한 paint 정보 선언
-				Paint p = new Paint();
-				p.setARGB(70,0,0,200);
-				p.setAntiAlias(true); 
+				Paint p1 = new Paint();
+				p1.setARGB(60,255,93,64);
+				p1.setAntiAlias(true); 
+				
+				//테두리를 그리기 위한 paint 정보 선언
+				Paint p2 = new Paint();
+				p2.setColor(Color.GRAY);
+				p2.setStyle(Paint.Style.STROKE);
+				p2.setStrokeWidth(4);
 				
 				// GeoPoint를 스크린 좌표로 변환
 				point = projection.toPixels(geop,point);
 
 				float radiusPixel = projection.metersToPixels(radius);
-				canvas.drawCircle(current_x, current_y-110, radiusPixel, p);
+				canvas.drawCircle(current_x, current_y-110, radiusPixel, p1);
+				canvas.drawCircle(current_x, current_y-110, radiusPixel, p2);
 				
-				//글씨를 위한 paint 정보 선언
-				Paint p2 = new Paint();
-				p2.setARGB(255,0,0,0);
-				p2.setTextAlign(Align.CENTER);
-				p2.setTextSize(25);
+				
+				//범위 중앙에 +표시를 위한 paint 정보 선언
+				Paint p3 = new Paint();
+				p3.setARGB(200,255,44,44);
+				p3.setTextAlign(Align.CENTER);
+				p3.setTypeface(Typeface.create((String)null, Typeface.BOLD));
+				p3.setTextSize(50);
+				canvas.drawText("+", current_x, current_y - 100, p3);
+				//중앙에 +표시를 이미지로 하려면 아래 코드를 사용
+				//Drawable centerMark = getResources().getDrawable(R.drawable.notice_popup_ck);
+				//Bitmap bitmap = ((BitmapDrawable)centerMark).getBitmap();
+				//canvas.drawBitmap(bitmap, current_x, current_y - 100, null);
+				
+				
 				//반경 원 위쪽에 미터 정보를 표시
-				canvas.drawText(radius+"M", current_x, current_y - 110 - radiusPixel, p2);
+				Drawable dis_info = getResources().getDrawable(R.drawable.d_200m);
+				switch (radius) {
+					case 200 : dis_info = getResources().getDrawable(R.drawable.d_200m);
+						break;
+					case 500 : dis_info = getResources().getDrawable(R.drawable.d_500m);
+						break;
+					case 1000 : dis_info = getResources().getDrawable(R.drawable.d_1km);
+						break;
+					default : dis_info = getResources().getDrawable(R.drawable.d_200m);
+						break;
+				}
 				
-				//중심점에 + 표시
-				p2.setTextSize(40);
-				canvas.drawText("+", current_x, current_y - 100, p2);
+				Bitmap bitmap2 = ((BitmapDrawable)dis_info).getBitmap();
+				canvas.drawBitmap(bitmap2, current_x - 55, current_y - radiusPixel - 120, null);
 				
 			}
 			super.draw(canvas,mapView,shadow);
