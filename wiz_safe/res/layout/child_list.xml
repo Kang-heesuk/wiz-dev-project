@@ -42,6 +42,7 @@
         android:layout_height="0dp"
         android:layout_weight="16"
         android:orientation="vertical"
+        android:background="#000000"
         android:visibility="gone" >
 
         <LinearLayout
@@ -62,21 +63,21 @@
             <Button
                 android:id="@+id/deleteButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="33"
                 android:background="@drawable/b_menu_1_selector" />
 
             <Button
                 android:id="@+id/childAdditionButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="34"
                 android:background="@drawable/b_menu_2_selector" />
 
             <Button
                 android:id="@+id/useInfoButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="33"
                 android:background="@drawable/b_menu_3_selector" />
         </LinearLayout>
