@@ -336,7 +336,7 @@ public class ChildListActivity extends Activity {
   		}
   		
   		//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
-  		childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childList, deleteMenuToggle);
+  		childListAdapter listAdapter = new childListAdapter(this, R.layout.child_list_customlist, childList, deleteMenuToggle);
   		ListView listView = (ListView)findViewById(R.id.list1);
     	listView.setAdapter(listAdapter);
     }
