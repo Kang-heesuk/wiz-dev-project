@@ -30,32 +30,34 @@ public class SetupActivity extends Activity {
         Button btn02 = (Button)findViewById(R.id.btn2);
         btn02.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(SetupActivity.this, "22222222222 = ", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(SetupActivity.this, UseInfoListActivity.class);
+				startActivity(intent);
 			}
 		});
-        
+         
         Button btn03 = (Button)findViewById(R.id.btn3);
         btn03.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(SetupActivity.this, "33333333333 = ", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(SetupActivity.this, FaqListActivity.class);
+				startActivity(intent);
 			}
 		});
         
-        Button btn04 = (Button)findViewById(R.id.btn3);
+        Button btn04 = (Button)findViewById(R.id.btn4);
         btn04.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				Toast.makeText(SetupActivity.this, "44444444444444 = ", Toast.LENGTH_SHORT).show();
 			}
 		});
         
-        Button btn05 = (Button)findViewById(R.id.btn3);
+        Button btn05 = (Button)findViewById(R.id.btn5);
         btn05.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				Toast.makeText(SetupActivity.this, "55555555555 = ", Toast.LENGTH_SHORT).show();
 			}
 		});
         
-        Button btn06 = (Button)findViewById(R.id.btn3);
+        Button btn06 = (Button)findViewById(R.id.btn6);
         btn06.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				Toast.makeText(SetupActivity.this, "6666666666 = ", Toast.LENGTH_SHORT).show();
