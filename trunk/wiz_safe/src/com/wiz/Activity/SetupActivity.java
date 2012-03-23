@@ -3,6 +3,7 @@ package com.wiz.Activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +22,8 @@ public class SetupActivity extends Activity {
         Button btn01 = (Button)findViewById(R.id.btn1);
         btn01.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(SetupActivity.this, "1111111111 = ", Toast.LENGTH_SHORT).show();
-				//Intent intent = new Intent(SetupActivity.this, ChildListActivity.class);
-				//startActivity(intent);
+				Intent intent = new Intent(SetupActivity.this, NoticeListActivity.class);
+				startActivity(intent);
 			}
 		});
 
