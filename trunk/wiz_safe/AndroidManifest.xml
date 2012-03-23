@@ -120,8 +120,21 @@
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
-        
-    
+        <activity
+            android:name=".NoticeListActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+    	<activity
+            android:name=".UseInfoListActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".FaqListActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
         
     </application>
 
