@@ -46,9 +46,6 @@ public class NoticeListActivity extends Activity {
     	
     	for(int i = 0 ; i < tempHardCoding.length ; i++){
     		
-    		System.out.println("0=="+tempHardCoding[i][0]);
-    		System.out.println("1=="+tempHardCoding[i][1]);
-    		System.out.println("2=="+tempHardCoding[i][2]);
     		noticeDetail addNoticeList = new noticeDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
     		noticeList.add(addNoticeList);
     	}

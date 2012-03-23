@@ -145,7 +145,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
         findViewById(R.id.btn_search).setOnClickListener(new Button.OnClickListener() {
     		public void onClick(View v) {
     			switch(v.getId()){
-	    			case R.id.btn_search:
+	    			case R.id.btn_search: 
 	    				mImm.hideSoftInputFromWindow(searchArea.getWindowToken(),0);	//키보드를 숨기고
 	    				goSearch(searchArea.getText().toString());
 	    				break;
