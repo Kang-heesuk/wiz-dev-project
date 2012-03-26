@@ -26,27 +26,26 @@ public class ChildTraceAddActivity extends Activity {
 	
 	//전역변수로써 API 통신할 변수들을 셋팅한다.
 	String phonenum = "";
-	String startDay = "1";		//시작요일
-	String endDay = "5";		//종료요일
-	String startTime = "13";	//시작시간
-	String endTime = "19";		//종료시간
-	String timeInterval = "60";	//간격(분단위)
-	String textDay = "월~금요일";		//설정경고창에 뿌려질 문구 - 설정요일
-	String textStartTime = "오후1시";	//설정경고창에 뿌려질 문구 - 설정시간
-	String textEndTime = "오후7시";		//설정경고창에 뿌려질 문구 - 설정시간
-	String textTimeInterval = "1시간";	//설정경고창에 뿌려질 문구 - 설정간격
-	
+	String childName = "";
+	String startDay = "";			//시작요일
+	String endDay = "";				//종료요일
+	String startTime = "";			//시작시간
+	String endTime = "";			//종료시간
+	String interval = "";			//간격(분단위)
+	String nowOperationState = "";	//현재 발자취 서비스가 동작중인지 아닌지 판단
+	String textDay = "";			//설정경고창에 뿌려질 문구 - 설정요일
+	String textStartTime = "";		//설정경고창에 뿌려질 문구 - 설정시간
+	String textEndTime = "";		//설정경고창에 뿌려질 문구 - 설정시간
+	String textInterval = "";	//설정경고창에 뿌려질 문구 - 설정간격
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.child_trace_add);
 		
-        TextView textView1 = (TextView)findViewById(R.id.textTitle);
-        textView1.setText(R.string.title_log_setup);
-        
         //전단계에서 값을 넘겨 받은 부분을 처리
    		Intent intent = getIntent();
    		phonenum = intent.getStringExtra("phonenum");
+   		childName = intent.getStringExtra("childName");
    		if(intent.getStringExtra("startDay") != null){
    			startDay = intent.getStringExtra("startDay");
    		}
@@ -60,14 +59,14 @@ public class ChildTraceAddActivity extends Activity {
 			endTime = intent.getStringExtra("endTime");
 		}
 		if(intent.getStringExtra("interval") != null){
-			timeInterval = intent.getStringExtra("interval");
+			interval = intent.getStringExtra("interval");
+		}
+		if(intent.getStringExtra("nowOperationState") != null){
+			nowOperationState = intent.getStringExtra("nowOperationState");
 		}
         
         
-        //여기부터 body 구성
-        TextView bodyTopText = (TextView)findViewById(R.id.bodyTopText);
-        bodyTopText.setText("자녀의 발자취를 확인하고 싶은 시간을 설정해 주세요.(1일 100포인트 소진)"); 
-		
+        		
         
         //셀렉트 박스 구성(요일설정)
         Spinner weekSpiner = (Spinner)findViewById(R.id.weekSpinner);
@@ -166,24 +165,30 @@ public class ChildTraceAddActivity extends Activity {
         timeIntervalAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeIntervalSpinner.setAdapter(timeIntervalAdspin);
         if(intent.getStringExtra("interval") != null){
-        	timeIntervalSpinner.setSelection((Integer.parseInt(timeInterval)/60)-1);
+        	timeIntervalSpinner.setSelection((Integer.parseInt(interval)/60)-1);
         }
         
         
         timeIntervalSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
         	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        		timeInterval = Integer.toString((position + 1) * 60);
-        		textTimeInterval = timeIntervalAdspin.getItem(position).toString();
+        		interval = Integer.toString((position + 1) * 60);
+        		textInterval = timeIntervalAdspin.getItem(position).toString();
 			}
         	
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
         
+        //노출되는 버튼 이미지 변경
+        if(intent.getStringExtra("nowOperationState") != null){
+        	findViewById(R.id.btn_setup).setBackgroundResource(R.drawable.btn_modify_selector);
+        }
+        
         //버튼 액션 정의
         findViewById(R.id.btn_setup).setOnClickListener(mClickListener);
         findViewById(R.id.btn_cancel).setOnClickListener(mClickListener);
+
 	}
 	
 	Button.OnClickListener mClickListener = new Button.OnClickListener(){
@@ -193,10 +198,10 @@ public class ChildTraceAddActivity extends Activity {
 				//경고창 출력
 				AlertDialog.Builder submitAlert = new AlertDialog.Builder(ChildTraceAddActivity.this);
 				submitAlert.setTitle("발자취 설정");
-				submitAlert.setMessage("휴대폰 번호 : "+WizSafeUtil.setPhoneNum(phonenum)+"\n설정 요일 : " + textDay + "\n설정 시간 : " + textStartTime + "~" + textEndTime + "까지" + "\n설정 간격 : " + textTimeInterval + "\n※ 1일 100포인트 씩 자동 소진 됩니다.");
+				submitAlert.setMessage("휴대폰 번호 : "+WizSafeUtil.setPhoneNum(phonenum)+"\n설정 요일 : " + textDay + "\n설정 시간 : " + textStartTime + "~" + textEndTime + "까지" + "\n설정 간격 : " + textInterval + "\n※ 1일 100포인트 씩 자동 소진 됩니다.");
 				submitAlert.setPositiveButton("등록", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Log.i("childTraceAdd",startDay + "===" + endDay + "====" + startTime + "====" + endTime + "====" + timeInterval);
+						Log.i("childTraceAdd",startDay + "===" + endDay + "====" + startTime + "====" + endTime + "====" + interval);
 						Log.i("childTraceAdd","==========통신시작!");
 					}
 				});
