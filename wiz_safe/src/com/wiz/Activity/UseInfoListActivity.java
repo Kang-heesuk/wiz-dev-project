@@ -29,7 +29,7 @@ public class UseInfoListActivity extends Activity {
         setContentView(R.layout.useinfo_list);
         
         
-        //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
+        //이용안내 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getUseInfoList();
 
         useInfoListAdapter listAdapter = new useInfoListAdapter(this, R.layout.useinfo_list_customlist, useInfoList);

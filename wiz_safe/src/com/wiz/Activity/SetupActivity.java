@@ -46,7 +46,8 @@ public class SetupActivity extends Activity {
         Button btn04 = (Button)findViewById(R.id.btn4);
         btn04.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(SetupActivity.this, "44444444444444 = ", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(SetupActivity.this, QuestionActivity.class);
+				startActivity(intent);
 			}
 		});
         
