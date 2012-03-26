@@ -242,6 +242,26 @@ public class ChildListActivity extends Activity {
 				imgNum.setBackgroundResource(R.drawable.img_num_9);
 			}else if((position + 1) == 10){
 				imgNum.setBackgroundResource(R.drawable.img_num_10);
+			}else if((position + 1) == 11){
+				imgNum.setBackgroundResource(R.drawable.img_num_11);
+			}else if((position + 1) == 12){
+				imgNum.setBackgroundResource(R.drawable.img_num_12);
+			}else if((position + 1) == 13){
+				imgNum.setBackgroundResource(R.drawable.img_num_13);
+			}else if((position + 1) == 14){
+				imgNum.setBackgroundResource(R.drawable.img_num_14);
+			}else if((position + 1) == 15){
+				imgNum.setBackgroundResource(R.drawable.img_num_15);
+			}else if((position + 1) == 16){
+				imgNum.setBackgroundResource(R.drawable.img_num_16);
+			}else if((position + 1) == 17){
+				imgNum.setBackgroundResource(R.drawable.img_num_17);
+			}else if((position + 1) == 18){
+				imgNum.setBackgroundResource(R.drawable.img_num_18);
+			}else if((position + 1) == 19){
+				imgNum.setBackgroundResource(R.drawable.img_num_19);
+			}else if((position + 1) == 20){
+				imgNum.setBackgroundResource(R.drawable.img_num_20);
 			}
 			
 			//각 버튼 이름 및 노출 여부 정의

@@ -19,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,27 +29,19 @@ public class ChildTraceDetailListActivity extends Activity {
 	//발자취 리스트
 	ArrayList<String> childLogList = new ArrayList<String>();
 	ArrayAdapter<String> childAdapter;
-
 	
     public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState);  
         setContentView(R.layout.child_trace_detail_list);
-        
-        TextView textView1 = (TextView)findViewById(R.id.textTitle);
-        textView1.setText(R.string.title_child_log);
-        
        
         //여기부터 body 구성
-        TextView bodyTopText = (TextView)findViewById(R.id.bodyTopText);
-        bodyTopText.setText("알고계세요? 1주일 이전의 발자취 정보는 자동 삭제 됩니다.");
         
         //1주일간 발자취 리스트를 가져온다. 진행하면 arrayList에 담긴다.
         getLogList();
-        
    
         if(childLogList.size() > 0){
-			childListAdapter listAdapter = new childListAdapter(this, R.layout.safe_list, childLogList);
-			ListView listView = (ListView)findViewById(R.id.list);
+			childListAdapter listAdapter = new childListAdapter(this, R.layout.child_trace_detail_list_customlist, childLogList);
+			ListView listView = (ListView)findViewById(R.id.list1);
 			listView.setAdapter(listAdapter);
 			listView.setOnItemClickListener(new infoListSelection());
         }else{
@@ -91,11 +84,8 @@ public class ChildTraceDetailListActivity extends Activity {
     }
     
     class infoListSelection implements OnItemClickListener{
-        public void onItemClick(AdapterView<?> parent, View view, int position,    long id) {
-            Toast.makeText(getApplicationContext(), "리스트뷰 "+Integer.toString(position+1)+"번째 눌렀다응", Toast.LENGTH_SHORT).show();
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             
-            Intent intent = new Intent(ChildTraceDetailListActivity.this, ChildTraceViewActivity.class);
-			startActivity(intent);
         }
     }
 
@@ -135,24 +125,66 @@ public class ChildTraceDetailListActivity extends Activity {
 			}
 			
 			//각 위젯 정의
-			ImageView img = (ImageView)convertView.findViewById(R.id.ePhoto);
-			//넘버링의 이미지를 셋팅한다.
-			//img.setImageDrawable();
-			TextView eName = (TextView)convertView.findViewById(R.id.eName);
-			//나머지는 안보이게 처리하고 리스트뷰를 사용한다.
-			Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
-			btn_accept.setVisibility(View.GONE);
-			Button btn_nowLocation = (Button)convertView.findViewById(R.id.btn_nowLocation);
-			btn_nowLocation.setVisibility(View.GONE);
-			Button btn_history = (Button)convertView.findViewById(R.id.btn_history);
-			btn_history.setVisibility(View.GONE);
-			Button btn_safeZone = (Button)convertView.findViewById(R.id.btn_safeZone);
-			btn_safeZone.setVisibility(View.GONE);
+			LinearLayout layout1 = (LinearLayout)convertView.findViewById(R.id.layout1); 
+			Button imgNum = (Button)convertView.findViewById(R.id.imgNum);
+			TextView textArea = (TextView)convertView.findViewById(R.id.textArea);
 			
-			TextView info1 = (TextView)convertView.findViewById(R.id.info1);
-			info1.setVisibility(View.GONE);
+			//커스텀 리스트 뷰 앞쪽 이미지 숫자
+			if((position + 1) == 1){
+				imgNum.setBackgroundResource(R.drawable.img_num_1);
+			}else if((position + 1) == 2){
+				imgNum.setBackgroundResource(R.drawable.img_num_2);
+			}else if((position + 1) == 3){
+				imgNum.setBackgroundResource(R.drawable.img_num_3);
+			}else if((position + 1) == 4){
+				imgNum.setBackgroundResource(R.drawable.img_num_4);
+			}else if((position + 1) == 5){
+				imgNum.setBackgroundResource(R.drawable.img_num_5);
+			}else if((position + 1) == 6){
+				imgNum.setBackgroundResource(R.drawable.img_num_6);
+			}else if((position + 1) == 7){
+				imgNum.setBackgroundResource(R.drawable.img_num_7);
+			}else if((position + 1) == 8){
+				imgNum.setBackgroundResource(R.drawable.img_num_8);
+			}else if((position + 1) == 9){
+				imgNum.setBackgroundResource(R.drawable.img_num_9);
+			}else if((position + 1) == 10){
+				imgNum.setBackgroundResource(R.drawable.img_num_10);
+			}else if((position + 1) == 11){
+				imgNum.setBackgroundResource(R.drawable.img_num_11);
+			}else if((position + 1) == 12){
+				imgNum.setBackgroundResource(R.drawable.img_num_12);
+			}else if((position + 1) == 13){
+				imgNum.setBackgroundResource(R.drawable.img_num_13);
+			}else if((position + 1) == 14){
+				imgNum.setBackgroundResource(R.drawable.img_num_14);
+			}else if((position + 1) == 15){
+				imgNum.setBackgroundResource(R.drawable.img_num_15);
+			}else if((position + 1) == 16){
+				imgNum.setBackgroundResource(R.drawable.img_num_16);
+			}else if((position + 1) == 17){
+				imgNum.setBackgroundResource(R.drawable.img_num_17);
+			}else if((position + 1) == 18){
+				imgNum.setBackgroundResource(R.drawable.img_num_18);
+			}else if((position + 1) == 19){
+				imgNum.setBackgroundResource(R.drawable.img_num_19);
+			}else if((position + 1) == 20){
+				imgNum.setBackgroundResource(R.drawable.img_num_20);
+			}
 			
-			eName.setText(arSrc.get(pos));
+			textArea.setText(arSrc.get(position));
+			
+			//각 버튼 액션 정의
+			layout1.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						//삭제하기 버튼을 클릭하였을 경우
+						Toast.makeText(getApplicationContext(), "리스트뷰 "+Integer.toString(pos + 1)+"번째 눌렀다응", Toast.LENGTH_SHORT).show();
+			            Intent intent = new Intent(ChildTraceDetailListActivity.this, ChildTraceViewActivity.class);
+						startActivity(intent);
+					}
+				}
+			);
 			
 			return convertView;
 		}
