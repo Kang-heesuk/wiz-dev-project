@@ -4,7 +4,7 @@
  * Copyright 2010 NHN Corp. All rights Reserved. 
  * NHN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms. 
  */
-
+                    
 package com.wiz.Activity;
 
 import java.text.SimpleDateFormat;
@@ -103,10 +103,15 @@ public class ChildTraceViewActivity extends NMapActivity {
 		//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
+		
+		//top-navigation 값 정의
+        TextView topTitle = (TextView)findViewById(R.id.textTitle);
+        if(topTitle != null){
+        	topTitle.setText(R.string.title_current_loca);
+        }
 
         //body
         //현재 시간 출력
-		/*
         TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
         if(tv_checkTime != null){
         	GregorianCalendar calendar = new GregorianCalendar();
@@ -114,8 +119,6 @@ public class ChildTraceViewActivity extends NMapActivity {
         	
         	tv_checkTime.setText("조회시간 : "+sdf.format(calendar.getTime()));
         }
-        */
-		
 		//=====================================================//
 		// 여기부터 맵 생성 및 보여주기
 		//=====================================================//		
