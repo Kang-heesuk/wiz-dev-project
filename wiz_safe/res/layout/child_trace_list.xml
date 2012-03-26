@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_weight="7"
         android:gravity="center"
         android:orientation="vertical" >
     </LinearLayout>
@@ -16,69 +16,286 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical" >
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/listArea"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
         android:layout_weight="93"
         android:orientation="vertical" >
-
-        <ListView
-            android:id="@+id/list1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:cacheColorHint="#00000000"
-            android:divider="#00000000" >
-        </ListView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/bottomMenuArea"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="16"
-        android:orientation="vertical"
-        android:visibility="gone" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
-            android:background="#cccc0000"
-            >
+            android:layout_weight="43"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="68"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="90"
+                    android:background="@drawable/trace_playlist_bg"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="7"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="20"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/childNameArea"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="자녀1"
+                            android:textColor="#ff000000"
+                            android:textSize="16dp" />
+
+                        <TextView
+                            android:id="@+id/phonenumArea"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="(010-2932-5100)"
+                            android:textColor="#ff000000"
+                            android:textSize="16dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="7"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="47"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="26"
+                            android:orientation="vertical" >
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="59"
+                            android:orientation="vertical" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="5"
+                                android:orientation="vertical" >
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="30"
+                                android:orientation="horizontal" >
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="6"
+                                    android:orientation="vertical" >
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="94"
+                                    android:orientation="vertical" >
+
+                                    <TextView
+                                        android:id="@+id/weekendArea"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text="요일 : 월 ~ 금 요일"
+                                        android:textColor="#ff000000"
+                                        android:textSize="13sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="30"
+                                android:orientation="horizontal" >
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="6"
+                                    android:orientation="vertical" >
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="94"
+                                    android:orientation="vertical" >
+
+                                    <TextView
+                                        android:id="@+id/timeArea"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text="시간 : 오후1시 ~ 오후 7시"
+                                        android:textColor="#ff000000"
+                                        android:textSize="13sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="30"
+                                android:orientation="horizontal" >
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="6"
+                                    android:orientation="vertical" >
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="94"
+                                    android:orientation="vertical" >
+
+                                    <TextView
+                                        android:id="@+id/intervalArea"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text="간격 : 1시간"
+                                        android:textColor="#ff000000"
+                                        android:textSize="13sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="5"
+                                android:orientation="vertical" >
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="15"
+                            android:orientation="vertical" >
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="19"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="22"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="45"
+                    android:orientation="vertical" >
+
+                    <Button
+                        android:id="@+id/btn_modify"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/btn_s_modify_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="45"
+                    android:orientation="vertical" >
+
+                    <Button
+                        android:id="@+id/btn_delete"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/btn_s_del_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="96"
-            android:orientation="horizontal"
-            >
-
-            <Button
-                android:id="@+id/deleteButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:background="@drawable/b_menu_1_selector" />
-
-            <Button
-                android:id="@+id/childAdditionButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="34"
-                android:background="@drawable/b_menu_2_selector" />
-
-            <Button
-                android:id="@+id/useInfoButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:background="@drawable/b_menu_3_selector" />
+            android:layout_weight="57"
+            android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>
 
