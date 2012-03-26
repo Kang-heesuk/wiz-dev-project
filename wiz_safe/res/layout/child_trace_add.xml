@@ -2,128 +2,280 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_trace_setup"
     android:orientation="vertical" >
-    
-    <!-- include -->
-	<include 
-	    layout="@layout/top_navigation"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" 
-	    />
-	
-	<TextView
-	    android:id="@+id/bodyTopText"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:textSize="15sp"
-    	android:textColor="#FFFFFF"
-    	android:typeface="serif"
-    	android:lineSpacingExtra="10px"	 
-    	/>
-	
-	<TextView
-	    android:id="@+id/weekSetupText"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:paddingTop="10dp"
-    	android:textSize="20sp"
-    	android:textColor="#FFFFFF"
-    	android:typeface="serif"
-    	android:text="요일설정"
-    	/>
-	
-	<Spinner
-	    android:id="@+id/weekSpinner"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" 
-	    />
-	
-	<TextView
-	    android:id="@+id/timeSetupText"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:paddingTop="10dp"
-    	android:textSize="20sp"
-    	android:textColor="#FFFFFF"
-    	android:typeface="serif"
-    	android:text="설정시간"
-    	/>
-	
-	<LinearLayout
-	    android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="horizontal"
-    	android:gravity="center_vertical"
-	    >
-	    <TextView
-		   	android:layout_width="wrap_content"
-		   	android:layout_height="wrap_content"
-		   	android:textSize="20sp"
-		   	android:textColor="#FFFFFF"
-		   	android:typeface="serif"
-		   	android:text="시\n작"
-		   	/>
-	    <Spinner
-		    android:id="@+id/timeStartSpinner"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content" 
-		    />
-	    <TextView
-		    android:layout_width="wrap_content"
-		   	android:layout_height="wrap_content"
-		   	android:textSize="20sp"
-		   	android:textColor="#FFFFFF"
-		   	android:typeface="serif"
-		   	android:text="~"
-		   	/>
-	    <TextView
-		   	android:layout_width="wrap_content"
-		   	android:layout_height="wrap_content"
-		   	android:textSize="20sp"
-		   	android:textColor="#FFFFFF"
-		   	android:typeface="serif"
-		   	android:text="종\n료"
-		   	/>
-	    <Spinner
-		    android:id="@+id/timeEndSpinner"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content" 
-		    />
-	</LinearLayout>	
 
-	<TextView
-	    android:id="@+id/timeIntervalText"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:paddingTop="10dp"
-    	android:textSize="20sp"
-    	android:textColor="#FFFFFF"
-    	android:typeface="serif"
-    	android:text="간격"
-    	/>
-	<Spinner
-	    android:id="@+id/timeIntervalSpinner"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" 
-	    />
-	
-	<LinearLayout
-	    android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="horizontal"
-    	android:gravity="center_vertical|center_horizontal"
-	    >
-	    <Button
-	        android:id="@+id/btn_setup"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/btn_setup"  
-	        />
-	    <Button
-	        android:id="@+id/btn_cancel"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/btn_cancel"  
-	        />
-	</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:gravity="center"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="93"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="90"
+                android:orientation="horizontal" >
+
+                <Spinner
+                    android:id="@+id/weekSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/listmenu" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="8"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="34"
+                android:orientation="horizontal" >
+
+                <Spinner
+                    android:id="@+id/timeStartSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/listmenu_s" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="10"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="34"
+                android:orientation="horizontal" >
+
+                <Spinner
+                    android:id="@+id/timeEndSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/listmenu_s" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="8"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="90"
+                android:orientation="horizontal" >
+
+                <Spinner
+                    android:id="@+id/timeIntervalSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/listmenu" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="26"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="43"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/btn_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/btn_set_selector" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="43"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/btn_cancel_selector" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>
