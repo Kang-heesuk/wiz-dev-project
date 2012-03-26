@@ -127,13 +127,12 @@ public class ChildListActivity extends Activity {
     }
     
     
-    //현재는 자녀를 3명 까지 등록가능하다고 하고 개발하는것임다.
     public void getMyChildren() {
     	//API 연동하여 현재 나에게 등록되어있는 자녀를 가져온다.
     	//연동 API 는 자녀가 있으면 자녀이름 과 인증여부를 가져오고 없다면 ""(공백)을 가져온다.
     	//요건 로직을 짜지 않았으므로 일단은 하드코딩한다.
     	
-    	//가져온 값	[2] = 1 승인완료 / 2 승인대기 / 3 승인거절
+    	//가져온 값	[2] = 01 승인완료 / 02 승인대기 / 03 승인거절
     	String[][] tempHardCoding = {{"박재하","01","01012345678"},{"꽃분이","02","0105484565"},{"정용진","03","01024882698"},{"반홍","01","01084464664"}};
     	
     	for(int i = 0 ; i < tempHardCoding.length ; i++){
@@ -337,6 +336,7 @@ public class ChildListActivity extends Activity {
 						if("02".equals(arSrc.get(pos).getChildRelation())){
 							Intent intent = new Intent(ChildListActivity.this, ChildSafezoneListActivity.class);
 							intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
+							intent.putExtra("childName", arSrc.get(pos).getChildName());
 							startActivity(intent);
 						}
 					}
