@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
@@ -32,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="94"
-                android:background="@drawable/btn_child" />
+                android:background="@drawable/btn_safezone_selector" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -47,5 +47,6 @@
             android:layout_weight="2" >
         </LinearLayout>
     </LinearLayout>
+    
 
 </LinearLayout>
