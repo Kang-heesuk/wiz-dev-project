@@ -304,6 +304,7 @@ public class ChildListActivity extends Activity {
 						if("02".equals(arSrc.get(pos).getChildRelation())){
 							Intent intent = new Intent(ChildListActivity.this, ChildTraceListActivity.class);
 							intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
+							intent.putExtra("childName", arSrc.get(pos).getChildName());
 							startActivity(intent);
 						}
 					}
