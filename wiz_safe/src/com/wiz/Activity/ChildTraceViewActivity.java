@@ -7,9 +7,6 @@
                     
 package com.wiz.Activity;
 
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -22,9 +19,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nhn.android.maps.NMapActivity;
@@ -104,21 +99,12 @@ public class ChildTraceViewActivity extends NMapActivity {
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
-		//top-navigation 값 정의
-        TextView topTitle = (TextView)findViewById(R.id.textTitle);
-        if(topTitle != null){
-        	topTitle.setText(R.string.title_current_loca);
-        }
+		
+		
+		
+		
 
         //body
-        //현재 시간 출력
-        TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
-        if(tv_checkTime != null){
-        	GregorianCalendar calendar = new GregorianCalendar();
-        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일  aa hh:ss");
-        	
-        	tv_checkTime.setText("조회시간 : "+sdf.format(calendar.getTime()));
-        }
 		//=====================================================//
 		// 여기부터 맵 생성 및 보여주기
 		//=====================================================//		
@@ -209,29 +195,29 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 	//이동 경로를 표현하는 오버레이
 	private void testPathDataOverlay() {
-
+		/*
 		// set path data points
 		NMapPathData pathData = new NMapPathData(8);
 		 
 		pathData.initPathData();	//경로리스트 초기화
 		//경로위치점을 x좌표,y좌표 양식으로 입력:마지막 파라메터는 표현방식 solid는 선, dash는 점선, 앞에서 선언한 양식으로 0까지 선을 연결한다. 
-		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.133012, 37.496217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_DASH);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
-		pathData.addPathPoint(127.132012, 37.495217, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.132012, 37.495217, 0);
+		pathData.addPathPoint(127.132112, 37.495117, NMapPathLineStyle.TYPE_SOLID);
+		pathData.addPathPoint(127.132212, 37.495227, 0);
+		pathData.addPathPoint(127.132312, 37.495337, 0);
+		pathData.addPathPoint(127.132412, 37.495447, NMapPathLineStyle.TYPE_DASH);
+		pathData.addPathPoint(127.132512, 37.495557, 0);
+		pathData.addPathPoint(127.132612, 37.495667, 0);
+		pathData.addPathPoint(127.132712, 37.495777, NMapPathLineStyle.TYPE_SOLID);
+		pathData.addPathPoint(127.132812, 37.495887, 0);
 		pathData.endPathData();
 
 		//위에서 입력한 경로데이터를 가진 오버레이를 생성
 		NMapPathDataOverlay pathDataOverlay = mOverlayManager.createPathDataOverlay(pathData);
-
+		*/
 
 	}
 
-	//이동경로 중에 중요 지점을 오버레이로 표시하기 위한 메소드 - 경로 item보다 한개 더 많아야 합니다.
+	//이동경로 중에 중요 지점을 오버레이로 표시하기 위한 메소드 
 	private void testPathPOIdataOverlay() {
 
 		// set POI data
@@ -239,15 +225,16 @@ public class ChildTraceViewActivity extends NMapActivity {
 		poiData.beginPOIdata(8);
 		//poiData.addPOIitem(127.132012, 37.495217, "시작 주소는 IT벤처", NMapPOIflagType.FROM, null);
 		//poiData.addPOIitem(127.132012, 37.495217, "끝나는 구나~", NMapPOIflagType.TO, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 1, null);
-		poiData.addPOIitem(127.133012, 37.496217, null, NMapPOIflagType.NUMBER_BASE + 2, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 3, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 4, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 5, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 6, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 7, null);
-		poiData.addPOIitem(127.132012, 37.495217, null, NMapPOIflagType.NUMBER_BASE + 8, null);
-
+		poiData.addPOIitem(127.132112, 37.495117, null, NMapPOIflagType.FROM, null);
+		poiData.addPOIitem(127.132212, 37.495227, null, NMapPOIflagType.NUMBER_BASE + 2, null);
+		poiData.addPOIitem(127.132312, 37.495337, null, NMapPOIflagType.NUMBER_BASE + 3, null);
+		poiData.addPOIitem(127.132412, 37.495447, null, NMapPOIflagType.NUMBER_BASE + 4, null);
+		poiData.addPOIitem(127.132512, 37.495557, null, NMapPOIflagType.NUMBER_BASE + 5, null);
+		poiData.addPOIitem(127.132612, 37.495667, null, NMapPOIflagType.NUMBER_BASE + 6, null);
+		poiData.addPOIitem(127.132712, 37.495777, null, NMapPOIflagType.NUMBER_BASE + 7, null);
+		poiData.addPOIitem(127.132812, 37.495887, null, NMapPOIflagType.TO, null);
+		poiData.addPOIitem(127.132812, 37.495887, "test place", NMapPOIflagType.PIN, 0);
+		
 		
 		poiData.endPOIdata();
 
@@ -337,7 +324,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 			if (errorInfo == null) { // success
 				// restore map view state such as map center position and zoom level.
-				restoreInstanceState();
+				//restoreInstanceState();
 
 			} else { // fail
 				Log.e(LOG_TAG, "onFailedToInitializeWithError: " + errorInfo.toString());
@@ -504,6 +491,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 		mMapController.setMapViewMode(viewMode);
 		mMapController.setMapViewTrafficMode(trafficMode);
 		mMapController.setMapViewBicycleMode(bicycleMode);
+	
 		mMapController.setMapCenter(new NGeoPoint(longitudeE6, latitudeE6), level);
 	}
 
@@ -531,177 +519,5 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 	}
 
-	/* Menus */
-	private static final int MENU_ITEM_CLEAR_MAP = 10;
-	private static final int MENU_ITEM_MAP_MODE = 20;
-	private static final int MENU_ITEM_MAP_MODE_SUB_VECTOR = MENU_ITEM_MAP_MODE + 1;
-	private static final int MENU_ITEM_MAP_MODE_SUB_SATELLITE = MENU_ITEM_MAP_MODE + 2;
-	private static final int MENU_ITEM_MAP_MODE_SUB_HYBRID = MENU_ITEM_MAP_MODE + 3;
-	private static final int MENU_ITEM_MAP_MODE_SUB_TRAFFIC = MENU_ITEM_MAP_MODE + 4;
-	private static final int MENU_ITEM_MAP_MODE_SUB_BICYCLE = MENU_ITEM_MAP_MODE + 5;
-	private static final int MENU_ITEM_ZOOM_CONTROLS = 30;
-	private static final int MENU_ITEM_MY_LOCATION = 40;
-
-	private static final int MENU_ITEM_TEST_MODE = 50;
-	private static final int MENU_ITEM_TEST_POI_DATA = MENU_ITEM_TEST_MODE + 1;
-	private static final int MENU_ITEM_TEST_PATH_DATA = MENU_ITEM_TEST_MODE + 2;
-	private static final int MENU_ITEM_TEST_FLOATING_DATA = MENU_ITEM_TEST_MODE + 3;
-	private static final int MENU_ITEM_TEST_AUTO_ROTATE = MENU_ITEM_TEST_MODE + 4;
-	//추가한 메뉴 버튼에 사용되는 상수
-	private static final int MENU_ITEM_HONG_TEST = 60;
-
-	/**
-	 * Invoked during init to give the Activity a chance to set up its Menu.
-	 * 
-	 * @param menu the Menu to which entries may be added
-	 * @return true
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
-		MenuItem menuItem = null;
-		SubMenu subMenu = null;
-
-		menuItem = menu.add(Menu.NONE, MENU_ITEM_CLEAR_MAP, Menu.CATEGORY_SECONDARY, "Clear Map");
-		menuItem.setAlphabeticShortcut('c');
-		menuItem.setIcon(android.R.drawable.ic_menu_revert);
-
-		subMenu = menu.addSubMenu(Menu.NONE, MENU_ITEM_MAP_MODE, Menu.CATEGORY_SECONDARY, "Map mode");
-		subMenu.setIcon(android.R.drawable.ic_menu_mapmode);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_VECTOR, Menu.NONE, "Standard");
-		menuItem.setAlphabeticShortcut('m');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_SATELLITE, Menu.NONE, "Satellite");
-		menuItem.setAlphabeticShortcut('s');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_HYBRID, Menu.NONE, "Hybrid");
-		menuItem.setAlphabeticShortcut('h');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_TRAFFIC, Menu.NONE, "Traffic");
-		menuItem.setAlphabeticShortcut('t');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_BICYCLE, Menu.NONE, "Bicycle");
-		menuItem.setAlphabeticShortcut('b');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = menu.add(0, MENU_ITEM_ZOOM_CONTROLS, Menu.CATEGORY_SECONDARY, "Zoom Controls");
-		menuItem.setAlphabeticShortcut('z');
-		menuItem.setIcon(android.R.drawable.ic_menu_zoom);
-
-		menuItem = menu.add(0, MENU_ITEM_MY_LOCATION, Menu.CATEGORY_SECONDARY, "My Location");
-		menuItem.setAlphabeticShortcut('l');
-		menuItem.setIcon(android.R.drawable.ic_menu_mylocation);
-
-		subMenu = menu.addSubMenu(Menu.NONE, MENU_ITEM_TEST_MODE, Menu.CATEGORY_SECONDARY, "Test mode");
-		subMenu.setIcon(android.R.drawable.ic_menu_more);
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_POI_DATA, Menu.NONE, "Test POI data");
-		menuItem.setAlphabeticShortcut('p');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_PATH_DATA, Menu.NONE, "Test Path data");
-		menuItem.setAlphabeticShortcut('t');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_FLOATING_DATA, Menu.NONE, "Test Floating data");
-		menuItem.setAlphabeticShortcut('f');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_AUTO_ROTATE, Menu.NONE, "Test Auto Rotate");
-		menuItem.setAlphabeticShortcut('a');
-
-		//여섯번째 테스트 버튼 추가
-		menuItem = menu.add(0, MENU_ITEM_HONG_TEST, Menu.CATEGORY_SECONDARY, "Hong TEST");
-		menuItem.setAlphabeticShortcut('h');	//단축키 설정
-		menuItem.setIcon(android.R.drawable.ic_menu_mylocation); //아이콘 이미지 설정
-
-		
-		return true;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu pMenu) {
-		super.onPrepareOptionsMenu(pMenu);
-
-		int viewMode = mMapController.getMapViewMode();
-		boolean isTraffic = mMapController.getMapViewTrafficMode();
-		boolean isBicycle = mMapController.getMapViewBicycleMode();
-
-		pMenu.findItem(MENU_ITEM_CLEAR_MAP).setEnabled(
-			(viewMode != NMapView.VIEW_MODE_VECTOR) || isTraffic || mOverlayManager.sizeofOverlays() > 0);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_VECTOR).setChecked(viewMode == NMapView.VIEW_MODE_VECTOR);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_SATELLITE).setChecked(viewMode == NMapView.VIEW_MODE_SATELLITE);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_HYBRID).setChecked(viewMode == NMapView.VIEW_MODE_HYBRID);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_TRAFFIC).setChecked(isTraffic);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_BICYCLE).setChecked(isBicycle);
-
-		if (mMyLocationOverlay == null) {
-			pMenu.findItem(MENU_ITEM_MY_LOCATION).setEnabled(false);
-		}
-
-		return true;
-	}
-
 	
-
-	/** 
-	 * Container view class to rotate map view.
-	 */
-	private class MapContainerView extends ViewGroup {
-
-		public MapContainerView(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-			final int width = getWidth();
-			final int height = getHeight();
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++) {
-				final View view = getChildAt(i);
-				final int childWidth = view.getMeasuredWidth();
-				final int childHeight = view.getMeasuredHeight();
-				final int childLeft = (width - childWidth) / 2;
-				final int childTop = (height - childHeight) / 2;
-				view.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
-			}
-
-			if (changed) {
-				mOverlayManager.onSizeChanged(width, height);
-			}
-		}
-
-		@Override
-		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			int w = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
-			int h = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-			int sizeSpecWidth = widthMeasureSpec;
-			int sizeSpecHeight = heightMeasureSpec;
-
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++) {
-				final View view = getChildAt(i);
-
-				if (view instanceof NMapView) {
-					if (mMapView.isAutoRotateEnabled()) {
-						int diag = (((int)(Math.sqrt(w * w + h * h)) + 1) / 2 * 2);
-						sizeSpecWidth = MeasureSpec.makeMeasureSpec(diag, MeasureSpec.EXACTLY);
-						sizeSpecHeight = sizeSpecWidth;
-					}
-				}
-
-				view.measure(sizeSpecWidth, sizeSpecHeight);
-			}
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		}
-	}
 }
