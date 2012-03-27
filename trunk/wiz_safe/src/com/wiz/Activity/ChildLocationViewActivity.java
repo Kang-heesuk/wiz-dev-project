@@ -268,7 +268,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 		//double 형 변수 , double 형 변수, 해당 위치 표현할 string
 		double longitude01 = 127.12201246666667;
 		double latitude01 = 37.495217644444445;
-		String placeInfo01 = "IT Becher Tower";
+		String placeInfo01 = "IT Bencher Tower";
 		
 		// Markers for POI item
 		//int markerId = NMapPOIflagType.PIN;
