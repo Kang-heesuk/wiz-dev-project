@@ -64,7 +64,7 @@ public class ChildListActivity extends Activity {
 			}
 		);
         
-      //자녀등록하기(리스트 없는경우)
+        //자녀등록하기(리스트 없는경우)
         findViewById(R.id.btn_noElements).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
@@ -125,23 +125,44 @@ public class ChildListActivity extends Activity {
     public void bottomMenuToggle(){
     	LinearLayout bodyArea = (LinearLayout)findViewById(R.id.bodyArea);
 		LinearLayout bottomMenuArea = (LinearLayout)findViewById(R.id.bottomMenuArea);
+		LinearLayout subArea1 = (LinearLayout)findViewById(R.id.subArea1);
+		LinearLayout subArea2 = (LinearLayout)findViewById(R.id.subArea2);
+		LinearLayout subArea3 = (LinearLayout)findViewById(R.id.subArea3);
 		bodyArea.setEnabled(true);
 		bottomMenuArea.setEnabled(true);
+		subArea1.setEnabled(true);
+		subArea2.setEnabled(true);
+		subArea3.setEnabled(true);
 		LinearLayout.LayoutParams bodyAreaParams = (LinearLayout.LayoutParams)bodyArea.getLayoutParams();
 		LinearLayout.LayoutParams bottomAreaParams = (LinearLayout.LayoutParams)bottomMenuArea.getLayoutParams();
+		LinearLayout.LayoutParams subArea1Params = (LinearLayout.LayoutParams)subArea1.getLayoutParams();
+		LinearLayout.LayoutParams subArea2Params = (LinearLayout.LayoutParams)subArea2.getLayoutParams();
+		LinearLayout.LayoutParams subArea3Params = (LinearLayout.LayoutParams)subArea3.getLayoutParams();
 		if(bottomMenuArea.getVisibility() == View.VISIBLE){
 			bottomAreaIsOn = false;
 			bodyAreaParams.weight = 93;
 			bottomAreaParams.weight = 0;
+			subArea1Params.weight = 28;
+			subArea2Params.weight = 16;
+			subArea3Params.weight = 56;
 			bodyArea.setLayoutParams(bodyAreaParams);
 			bottomMenuArea.setLayoutParams(bottomAreaParams);
+			subArea1.setLayoutParams(subArea1Params);
+			subArea2.setLayoutParams(subArea2Params);
+			subArea3.setLayoutParams(subArea3Params);
 			bottomMenuArea.setVisibility(View.GONE);
 		}else{
 			bottomAreaIsOn = true;
 			bodyAreaParams.weight = 77;
 			bottomAreaParams.weight = 16;
+			subArea1Params.weight = (float)33.8;
+			subArea2Params.weight = (float)19.2;
+			subArea3Params.weight = 47;
 			bodyArea.setLayoutParams(bodyAreaParams);
 			bottomMenuArea.setLayoutParams(bottomAreaParams);
+			subArea1.setLayoutParams(subArea1Params);
+			subArea2.setLayoutParams(subArea2Params);
+			subArea3.setLayoutParams(subArea3Params);
 			bottomMenuArea.setVisibility(View.VISIBLE);
 		}
     }

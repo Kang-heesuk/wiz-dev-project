@@ -23,6 +23,9 @@ public class ChildTraceListActivity extends Activity {
 	String endTime = "";
 	String interval = "";
 	String nowOperationState = "";
+	
+	//현재 발자취등록을 하였는지 판단.
+	boolean isRegisterTrace = false;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -40,8 +43,17 @@ public class ChildTraceListActivity extends Activity {
         endTime = "07";
         interval = "60";
         nowOperationState = "1";
+        isRegisterTrace = true;
         
-        
+        //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
+        if(!isRegisterTrace){
+        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
+        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
+        	bgArea.setBackgroundResource(R.drawable.bg_trace1);
+        	visibleArea1.setVisibility(View.GONE);
+        	visibleArea2.setVisibility(View.VISIBLE);
+        }
         
         LinearLayout layout_1 = (LinearLayout)findViewById(R.id.layout_1);
         
@@ -120,17 +132,16 @@ public class ChildTraceListActivity extends Activity {
 		);        
         
         //자녀등록하기 버튼액션
-        /*
-        findViewById(R.id.btn_addTrace).setOnClickListener(
+        findViewById(R.id.btn_noElements).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
 					Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceAddActivity.class);
 					intent.putExtra("phonenum", phonenum);
+					intent.putExtra("childName", childName);
 					startActivity(intent);
 				}
 			}
 		);
-		*/
 
 	}
 
