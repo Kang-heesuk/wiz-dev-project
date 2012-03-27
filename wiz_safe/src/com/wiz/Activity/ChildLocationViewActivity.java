@@ -26,6 +26,7 @@ import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.nmapmodel.NMapPlacemark;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.maps.overlay.NMapPOIitem;
+import com.nhn.android.mapviewer.NMapPOIflagType;
 import com.nhn.android.mapviewer.NMapViewerResourceProvider;
 import com.nhn.android.mapviewer.overlay.NMapCalloutCustomOverlay;
 import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
@@ -271,8 +272,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 		
 		// Markers for POI item
 		//int markerId = NMapPOIflagType.PIN;
-		//System.out.format("%02x%n", markerId);
-		int markerId = 0x0102;
+		int markerId = NMapPOIflagType.CUSTOM_BASE + 1;
 
 		// set POI data
 		NMapPOIdata poiData = new NMapPOIdata(2, mMapViewerResourceProvider);

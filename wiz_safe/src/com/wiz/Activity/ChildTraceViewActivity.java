@@ -225,15 +225,15 @@ public class ChildTraceViewActivity extends NMapActivity {
 		poiData.beginPOIdata(8);
 		//poiData.addPOIitem(127.132012, 37.495217, "시작 주소는 IT벤처", NMapPOIflagType.FROM, null);
 		//poiData.addPOIitem(127.132012, 37.495217, "끝나는 구나~", NMapPOIflagType.TO, null);
-		poiData.addPOIitem(127.132112, 37.495117, null, NMapPOIflagType.FROM, null);
-		poiData.addPOIitem(127.132212, 37.495227, null, NMapPOIflagType.NUMBER_BASE + 2, null);
-		poiData.addPOIitem(127.132312, 37.495337, null, NMapPOIflagType.NUMBER_BASE + 3, null);
-		poiData.addPOIitem(127.132412, 37.495447, null, NMapPOIflagType.NUMBER_BASE + 4, null);
-		poiData.addPOIitem(127.132512, 37.495557, null, NMapPOIflagType.NUMBER_BASE + 5, null);
-		poiData.addPOIitem(127.132612, 37.495667, null, NMapPOIflagType.NUMBER_BASE + 6, null);
-		poiData.addPOIitem(127.132712, 37.495777, null, NMapPOIflagType.NUMBER_BASE + 7, null);
-		poiData.addPOIitem(127.132812, 37.495887, null, NMapPOIflagType.TO, null);
-		poiData.addPOIitem(127.132812, 37.495887, "test place", NMapPOIflagType.PIN, 0);
+		poiData.addPOIitem(127.132112, 37.495117, null, NMapPOIflagType.CUSTOM_BASE + 2, null);
+		poiData.addPOIitem(127.132212, 37.495227, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
+		poiData.addPOIitem(127.132312, 37.495337, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
+		poiData.addPOIitem(127.132412, 37.495447, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
+		poiData.addPOIitem(127.132512, 37.495557, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
+		poiData.addPOIitem(127.132612, 37.495667, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
+		poiData.addPOIitem(127.132712, 37.495777, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
+		poiData.addPOIitem(127.132812, 37.495887, null, NMapPOIflagType.CUSTOM_BASE + 3, null);
+		//poiData.addPOIitem(127.132812, 37.495887, "test place", NMapPOIflagType.PIN, 0);
 		
 		
 		poiData.endPOIdata();
