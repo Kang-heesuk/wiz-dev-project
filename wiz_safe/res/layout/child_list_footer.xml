@@ -12,13 +12,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2" >
+            android:layout_weight="20" >
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="6"
+            android:layout_weight="60"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -32,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="94"
-                android:background="@drawable/btn_child" />
+                android:background="@drawable/btn_child_selector" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -44,7 +44,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2" >
+            android:layout_weight="20" >
         </LinearLayout>
     </LinearLayout>
 
