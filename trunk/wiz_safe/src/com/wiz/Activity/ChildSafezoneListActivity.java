@@ -1,11 +1,7 @@
 package com.wiz.Activity;
 
 import java.util.ArrayList;
-
-import com.wiz.Activity.ChildListActivity.childDetail;
-import com.wiz.Activity.ChildListActivity.childListAdapter;
 import com.wiz.util.WizSafeUtil;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,10 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ChildSafezoneListActivity extends Activity {
 	
@@ -46,14 +41,34 @@ public class ChildSafezoneListActivity extends Activity {
         //등록된 안심존 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getSafeZoneList();
         
+        //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
+        if(safetyList.size() <= 0){
+        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
+        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
+        	bgArea.setBackgroundResource(R.drawable.bg_safezone1);
+        	visibleArea1.setVisibility(View.GONE);
+        	visibleArea2.setVisibility(View.VISIBLE);
+        }
+        
         childListAdapter listAdapter = new childListAdapter(this, R.layout.child_safezone_list_customlist, safetyList);
         ListView listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.child_safezone_list_footer, null, false);
         listView.addFooterView(footer);
         listView.setAdapter(listAdapter);
         
-      //자녀등록하기 버튼액션
+        //안심존 등록 버튼액션(리스트 있는경우)
         findViewById(R.id.btn_addChild).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+					startActivity(intent);
+				}
+			}
+		);
+        
+        //안심존 등록 버튼액션(리스트 없는경우)
+        findViewById(R.id.btn_noElements).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
 					Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
@@ -71,9 +86,11 @@ public class ChildSafezoneListActivity extends Activity {
     	//가져온 값	[1] = 시퀀스 넘버이다.  [3] = 안심존에 진입한 경우 날짜 + 시간이 들어오고, 아닌경우 공백이 들어온다.
     	String[][] tempHardCoding = {{"2",phonenum,"서울시특별시 송파구 가락동 78","2012030216"},{"1",phonenum,"서울특별시 송파구 가락동 81-5","0"}};
     	
-    	for(int i = 0 ; i < tempHardCoding.length ; i++){
-    		safeList addSafeList = new safeList(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2], tempHardCoding[i][3]);
-    		safetyList.add(addSafeList);
+    	if(tempHardCoding != null){
+	    	for(int i = 0 ; i < tempHardCoding.length ; i++){
+	    		safeList addSafeList = new safeList(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2], tempHardCoding[i][3]);
+	    		safetyList.add(addSafeList);
+	    	}
     	}
     }
 	
