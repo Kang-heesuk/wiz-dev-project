@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:text="자녀1"
                         android:textColor="#ff000000"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/childPhonenum"
@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:text="(010-2932-5100)"
                         android:textColor="#ff000000"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout

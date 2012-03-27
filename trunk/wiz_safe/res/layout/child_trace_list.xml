@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bgArea"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_trace2"
@@ -26,7 +27,8 @@
             android:id="@+id/visibleArea1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:visibility="visible" >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -316,18 +318,21 @@
         <LinearLayout
             android:id="@+id/visibleArea2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone" >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="0dp"
+                android:layout_weight="28"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="0dp"
+                android:layout_weight="16"
                 android:orientation="vertical" >
 
                 <LinearLayout
@@ -353,7 +358,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="94"
-                        android:background="@drawable/btn_child_selector" />
+                        android:background="@drawable/btn_trace_selector" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -367,6 +372,13 @@
                     android:layout_height="0dp"
                     android:layout_weight="20" >
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="56"
+                android:orientation="vertical" >
             </LinearLayout>
         </LinearLayout>
         <!-- END : 발자취 등록을 하지 않았을 경우 보이는 뷰 -->

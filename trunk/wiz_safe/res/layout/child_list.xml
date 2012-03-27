@@ -46,19 +46,23 @@
         <LinearLayout
             android:id="@+id/visibleArea2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone" >
-            
+
             <LinearLayout
+                android:id="@+id/subArea1"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="0dp"
+                android:layout_weight="28"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/subArea2"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="0dp"
+                android:layout_weight="16"
                 android:orientation="vertical" >
 
                 <LinearLayout
@@ -98,6 +102,14 @@
                     android:layout_height="0dp"
                     android:layout_weight="20" >
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/subArea3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="56"
+                android:orientation="vertical" >
             </LinearLayout>
         </LinearLayout>
         <!-- END : 자녀가 없을 경우 보이는 뷰 -->
