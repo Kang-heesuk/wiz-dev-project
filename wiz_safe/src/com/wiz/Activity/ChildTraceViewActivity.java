@@ -7,17 +7,11 @@
                     
 package com.wiz.Activity;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -34,16 +28,13 @@ import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.nmapmodel.NMapPlacemark;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.maps.overlay.NMapPOIitem;
-import com.nhn.android.maps.overlay.NMapPathData;
-import com.nhn.android.maps.overlay.NMapPathLineStyle;
+import com.nhn.android.mapviewer.NMapCalloutBasicOverlay;
 import com.nhn.android.mapviewer.NMapPOIflagType;
 import com.nhn.android.mapviewer.NMapViewerResourceProvider;
-import com.nhn.android.mapviewer.overlay.NMapCalloutCustomOverlay;
 import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
-import com.nhn.android.mapviewer.overlay.NMapPathDataOverlay;
 
 /**
  * Sample class for map viewer library.
@@ -89,6 +80,9 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private NMapPOIdataOverlay mFloatingPOIdataOverlay;
 	private NMapPOIitem mFloatingPOIitem;
 
+
+	
+	
 	/** Called when the activity is first created. */ 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -225,17 +219,15 @@ public class ChildTraceViewActivity extends NMapActivity {
 		poiData.beginPOIdata(8);
 		//poiData.addPOIitem(127.132012, 37.495217, "시작 주소는 IT벤처", NMapPOIflagType.FROM, null);
 		//poiData.addPOIitem(127.132012, 37.495217, "끝나는 구나~", NMapPOIflagType.TO, null);
-		poiData.addPOIitem(127.132112, 37.495117, null, NMapPOIflagType.CUSTOM_BASE + 2, null);
-		poiData.addPOIitem(127.132212, 37.495227, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
-		poiData.addPOIitem(127.132312, 37.495337, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
-		poiData.addPOIitem(127.132412, 37.495447, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
-		poiData.addPOIitem(127.132512, 37.495557, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
-		poiData.addPOIitem(127.132612, 37.495667, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
-		poiData.addPOIitem(127.132712, 37.495777, null, NMapPOIflagType.CUSTOM_BASE + 4, null);
-		poiData.addPOIitem(127.132812, 37.495887, null, NMapPOIflagType.CUSTOM_BASE + 3, null);
+		poiData.addPOIitem(127.132112, 37.495117, "1월 29일 오후12시", NMapPOIflagType.CUSTOM_BASE + 2, 0);
+		poiData.addPOIitem(127.132212, 37.495227, "1/29 오후6시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
+		poiData.addPOIitem(127.132312, 37.495337, "1/29 오후7시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
+		poiData.addPOIitem(127.132412, 37.495447, "1/29 오후8시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
+		poiData.addPOIitem(127.132512, 37.495557, "1/29 오후10시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
+		poiData.addPOIitem(127.132612, 37.495667, "1/29 오후11시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
+		poiData.addPOIitem(127.132712, 37.495777, "1/29 오후12시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
+		poiData.addPOIitem(127.132812, 37.495887, "1월 29일 오후12시", NMapPOIflagType.CUSTOM_BASE + 4, 0);
 		//poiData.addPOIitem(127.132812, 37.495887, "test place", NMapPOIflagType.PIN, 0);
-		
-		
 		poiData.endPOIdata();
 
 		// create POI data overlay
@@ -413,7 +405,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 			if (DEBUG) {
 				Log.i(LOG_TAG, "onCalloutClick: title=" + item.getTitle());
 			}
-
+			
 			// [[TEMP]] handle a click event of the callout
 			Toast.makeText(ChildTraceViewActivity.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
 		}
@@ -450,6 +442,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 						// skip selected item
 						if (poiItem == overlayItem) {
+							//맵 위에 오버레이를 선택했을때 수행되는 메소드 영역
 							continue;
 						}
 
@@ -460,18 +453,19 @@ public class ChildTraceViewActivity extends NMapActivity {
 					}
 
 					if (countOfOverlappedItems > 1) {
-						String text = countOfOverlappedItems + " overlapped items for " + overlayItem.getTitle();
-						Toast.makeText(ChildTraceViewActivity.this, text, Toast.LENGTH_LONG).show();
-						return null;
+						//오버랩 되있는 아이템이 1개 이상이면 이곳을 수행한다.
+						//String text = countOfOverlappedItems + " overlapped items for " + overlayItem.getTitle();
+						//Toast.makeText(ChildTraceViewActivity.this, text, Toast.LENGTH_LONG).show();
+						//return null;
 					}
 				}
 			}
 
 			// use custom callout overlay
-			return new NMapCalloutCustomOverlay(itemOverlay, overlayItem, itemBounds, mMapViewerResourceProvider);
+			//return new NMapCalloutCustomOverlay(itemOverlay, overlayItem, itemBounds, mMapViewerResourceProvider);
 
 			// set basic callout overlay
-			//return new NMapCalloutBasicOverlay(itemOverlay, overlayItem, itemBounds);			
+			return new NMapCalloutBasicOverlay(itemOverlay, overlayItem, itemBounds, ChildTraceViewActivity.this);	 		
 		}
 
 	};

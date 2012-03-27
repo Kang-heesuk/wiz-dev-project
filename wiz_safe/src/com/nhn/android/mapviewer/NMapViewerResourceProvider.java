@@ -197,16 +197,16 @@ public class NMapViewerResourceProvider extends NMapResourceProvider {
 			//custom icon's rscId definition.
 			if(markerId == NMapPOIflagType.CUSTOM_BASE + 1){
 				//현위치 핀 이미지
-				resourceId = 0x7f0200a8;
+				resourceId = R.drawable.icon_child;
 			}else if(markerId == NMapPOIflagType.CUSTOM_BASE + 2){
 				//시작 핀 이미지
-				resourceId = 0x7f0200ae;
+				resourceId = R.drawable.icon_start_trace;
 			}else if(markerId == NMapPOIflagType.CUSTOM_BASE + 3){
-				//종료 핀 이미지
-				resourceId = 0x7f0200ac;
-			}else if(markerId == NMapPOIflagType.CUSTOM_BASE + 4){
 				//무표시 핀 이미지
-				resourceId = 0x7f0200ad;
+				resourceId = R.drawable.icon_num_trace;
+			}else if(markerId == NMapPOIflagType.CUSTOM_BASE + 4){
+				//종료 핀 이미지
+				resourceId = R.drawable.icon_end_trace;
 			}
 		}
 
