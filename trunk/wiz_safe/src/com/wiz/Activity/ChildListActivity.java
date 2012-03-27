@@ -1,5 +1,5 @@
 package com.wiz.Activity;
-
+ 
 import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
@@ -22,6 +22,7 @@ public class ChildListActivity extends Activity {
 	
 	//메뉴버튼에서 DELETE 버튼을 눌렀을때 삭제하기 or 승인대기중 등을 보여주는 토글변수
 	boolean deleteMenuToggle = false;
+	boolean bottomAreaIsOn = false;
 	
 	//등록된 자녀의 이름
 	ArrayList<childDetail> childList = new ArrayList<childDetail>();
@@ -34,15 +35,24 @@ public class ChildListActivity extends Activity {
                
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
-       
+        
+        //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
+        if(childList.size() <= 0){
+        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
+        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
+        	bgArea.setBackgroundResource(R.drawable.bg_child1);
+        	visibleArea1.setVisibility(View.GONE);
+        	visibleArea2.setVisibility(View.VISIBLE);
+        }
+        
         childListAdapter listAdapter = new childListAdapter(this, R.layout.child_list_customlist, childList);
         ListView listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.child_list_footer, null, false);
         listView.addFooterView(footer);
         listView.setAdapter(listAdapter);
         
-        
-        //자녀등록하기 버튼액션
+        //자녀등록하기(리스트 있는경우)
         findViewById(R.id.btn_addChild).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
@@ -54,15 +64,33 @@ public class ChildListActivity extends Activity {
 			}
 		);
         
+      //자녀등록하기(리스트 없는경우)
+        findViewById(R.id.btn_noElements).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					int whereFlag = childList.size() + 1;
+					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
+					intent.putExtra("whereFlag", whereFlag);
+					startActivity(intent);
+				}
+			}
+		);
         
         
         //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의
         //1. 삭제
+        if(childList.size() <= 0){
+        	findViewById(R.id.deleteButton).setBackgroundResource(R.drawable.b_menub_1_off);
+        }
         findViewById(R.id.deleteButton).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
-					bottomMenuToggle();
-					onClickdeleteButtonAction();
+					if(childList.size() > 0){
+						bottomMenuToggle();
+						onClickdeleteButtonAction();
+					}else{
+						
+					}
 				}
 			}
 		);
@@ -85,7 +113,7 @@ public class ChildListActivity extends Activity {
 			new Button.OnClickListener(){
 				public void onClick(View v) {
 					bottomMenuToggle();
-					Intent intent = new Intent(ChildListActivity.this, MainActivity.class);
+					Intent intent = new Intent(ChildListActivity.this, UseInfoListActivity.class);
 					startActivity(intent);
 				}
 			}
@@ -95,22 +123,24 @@ public class ChildListActivity extends Activity {
     
     //메뉴키 눌렀을경우 하단의 메뉴영역이 보이고 안보이고에 따라 레이아웃 조절
     public void bottomMenuToggle(){
-    	LinearLayout listArea = (LinearLayout)findViewById(R.id.listArea);
+    	LinearLayout bodyArea = (LinearLayout)findViewById(R.id.bodyArea);
 		LinearLayout bottomMenuArea = (LinearLayout)findViewById(R.id.bottomMenuArea);
-		listArea.setEnabled(true);
+		bodyArea.setEnabled(true);
 		bottomMenuArea.setEnabled(true);
-		LinearLayout.LayoutParams listAreaParams = (LinearLayout.LayoutParams)listArea.getLayoutParams();
+		LinearLayout.LayoutParams bodyAreaParams = (LinearLayout.LayoutParams)bodyArea.getLayoutParams();
 		LinearLayout.LayoutParams bottomAreaParams = (LinearLayout.LayoutParams)bottomMenuArea.getLayoutParams();
 		if(bottomMenuArea.getVisibility() == View.VISIBLE){
-			listAreaParams.weight = 93;
+			bottomAreaIsOn = false;
+			bodyAreaParams.weight = 93;
 			bottomAreaParams.weight = 0;
-			listArea.setLayoutParams(listAreaParams);
+			bodyArea.setLayoutParams(bodyAreaParams);
 			bottomMenuArea.setLayoutParams(bottomAreaParams);
 			bottomMenuArea.setVisibility(View.GONE);
 		}else{
-			listAreaParams.weight = 77;
+			bottomAreaIsOn = true;
+			bodyAreaParams.weight = 77;
 			bottomAreaParams.weight = 16;
-			listArea.setLayoutParams(listAreaParams);
+			bodyArea.setLayoutParams(bodyAreaParams);
 			bottomMenuArea.setLayoutParams(bottomAreaParams);
 			bottomMenuArea.setVisibility(View.VISIBLE);
 		}
@@ -118,6 +148,13 @@ public class ChildListActivity extends Activity {
    
     //메뉴키 눌렀을경우 레이아웃 정의(하단 바가 나온다. 하단 바가 나오면서 상단의 weight 값이 재조정된다.)
     public boolean onKeyDown(int keyCode, KeyEvent event){
+    	
+    	if(bottomAreaIsOn){
+    		if(keyCode == 4){
+        		bottomMenuToggle();    		
+        		return true;
+        	}
+    	}
     	
     	if(keyCode == 82){
     		bottomMenuToggle();    		
@@ -135,11 +172,12 @@ public class ChildListActivity extends Activity {
     	//가져온 값	[2] = 01 승인완료 / 02 승인대기 / 03 승인거절
     	String[][] tempHardCoding = {{"박재하","01","01012345678"},{"꽃분이","02","0105484565"},{"정용진","03","01024882698"},{"반홍","01","01084464664"}};
     	
-    	for(int i = 0 ; i < tempHardCoding.length ; i++){
-    		childDetail addChildList = new childDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
-    		childList.add(addChildList);
+    	if(tempHardCoding != null){
+    		for(int i = 0 ; i < tempHardCoding.length ; i++){
+        		childDetail addChildList = new childDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
+        		childList.add(addChildList);
+        	}
     	}
-    	
     }
     
     class childDetail {

@@ -7,9 +7,12 @@ import com.wiz.Activity.ChildListActivity.childListAdapter;
 import com.wiz.util.WizSafeUtil;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +52,16 @@ public class ChildSafezoneListActivity extends Activity {
         listView.addFooterView(footer);
         listView.setAdapter(listAdapter);
         
+      //자녀등록하기 버튼액션
+        findViewById(R.id.btn_addChild).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+					startActivity(intent);
+				}
+			}
+		);
+        
 	}
 	
     public void getSafeZoneList() {
@@ -56,7 +69,7 @@ public class ChildSafezoneListActivity extends Activity {
     	//요건 로직을 짜지 않았으므로 일단은 하드코딩한다.
     	
     	//가져온 값	[1] = 시퀀스 넘버이다.  [3] = 안심존에 진입한 경우 날짜 + 시간이 들어오고, 아닌경우 공백이 들어온다.
-    	String[][] tempHardCoding = {{"2",phonenum,"서울시특별시 송파구 가락동 78","2012032616"},{"1",phonenum,"서울특별시 송파구 가락동 81-5","0"}};
+    	String[][] tempHardCoding = {{"2",phonenum,"서울시특별시 송파구 가락동 78","2012030216"},{"1",phonenum,"서울특별시 송파구 가락동 81-5","0"}};
     	
     	for(int i = 0 ; i < tempHardCoding.length ; i++){
     		safeList addSafeList = new safeList(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2], tempHardCoding[i][3]);
@@ -99,6 +112,106 @@ public class ChildSafezoneListActivity extends Activity {
 			if(convertView == null){
 				convertView = Inflater.inflate(layout, parent, false);
 			}
+			
+			//각 위젯 정의
+			Button imgNum = (Button)convertView.findViewById(R.id.imgNum);
+			TextView textArea1 = (TextView)convertView.findViewById(R.id.textArea1);
+			TextView textArea2 = (TextView)convertView.findViewById(R.id.textArea2);
+			Button btn_modify = (Button)convertView.findViewById(R.id.btn_modify);
+			Button btn_delete = (Button)convertView.findViewById(R.id.btn_delete);
+			
+			//커스텀 리스트 뷰 앞쪽 이미지 숫자
+			if((position + 1) == 1){
+				imgNum.setBackgroundResource(R.drawable.img_num_1);
+			}else if((position + 1) == 2){
+				imgNum.setBackgroundResource(R.drawable.img_num_2);
+			}else if((position + 1) == 3){
+				imgNum.setBackgroundResource(R.drawable.img_num_3);
+			}else if((position + 1) == 4){
+				imgNum.setBackgroundResource(R.drawable.img_num_4);
+			}else if((position + 1) == 5){
+				imgNum.setBackgroundResource(R.drawable.img_num_5);
+			}else if((position + 1) == 6){
+				imgNum.setBackgroundResource(R.drawable.img_num_6);
+			}else if((position + 1) == 7){
+				imgNum.setBackgroundResource(R.drawable.img_num_7);
+			}else if((position + 1) == 8){
+				imgNum.setBackgroundResource(R.drawable.img_num_8);
+			}else if((position + 1) == 9){
+				imgNum.setBackgroundResource(R.drawable.img_num_9);
+			}else if((position + 1) == 10){
+				imgNum.setBackgroundResource(R.drawable.img_num_10);
+			}else if((position + 1) == 11){
+				imgNum.setBackgroundResource(R.drawable.img_num_11);
+			}else if((position + 1) == 12){
+				imgNum.setBackgroundResource(R.drawable.img_num_12);
+			}else if((position + 1) == 13){
+				imgNum.setBackgroundResource(R.drawable.img_num_13);
+			}else if((position + 1) == 14){
+				imgNum.setBackgroundResource(R.drawable.img_num_14);
+			}else if((position + 1) == 15){
+				imgNum.setBackgroundResource(R.drawable.img_num_15);
+			}else if((position + 1) == 16){
+				imgNum.setBackgroundResource(R.drawable.img_num_16);
+			}else if((position + 1) == 17){
+				imgNum.setBackgroundResource(R.drawable.img_num_17);
+			}else if((position + 1) == 18){
+				imgNum.setBackgroundResource(R.drawable.img_num_18);
+			}else if((position + 1) == 19){
+				imgNum.setBackgroundResource(R.drawable.img_num_19);
+			}else if((position + 1) == 20){
+				imgNum.setBackgroundResource(R.drawable.img_num_20);
+			}
+			
+			//문구 부분
+			textArea1.setText(arSrc.get(position).getSafeAddress());
+			String textView2 = arSrc.get(position).getsafeAlarmDate();
+			if(textView2 != null && !"".equals(textView2) && textView2.length() >= 10){
+				String year = textView2.substring(0, 4);
+				String month = textView2.substring(4, 6);
+				if("0".equals(month.substring(0,1))){
+					month = month.substring(1,2);
+				}
+				String day = textView2.substring(6, 8);
+				if("0".equals(day.substring(0,1))){
+					day = day.substring(1,2);
+				}
+				String time = textView2.substring(8, 10);
+				textArea2.setText(year + "년 " + month + "월 " + day + "일 " + WizSafeUtil.timeConvertFromNumberToString(time) + " 진입");
+				textArea2.setVisibility(View.VISIBLE);
+			}
+			
+			btn_modify.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+						intent.putExtra("phonenum", phonenum);
+						intent.putExtra("childName", childName);
+						intent.putExtra("safeZoneCode", arSrc.get(pos).getSafeZoneCode());
+						startActivity(intent);
+					}
+				}
+			);
+			
+			btn_delete.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						AlertDialog.Builder submitAlert = new AlertDialog.Builder(ChildSafezoneListActivity.this);
+						submitAlert.setTitle("안심존삭제");
+						submitAlert.setMessage("안심존 설정을 삭제 하시겠습니까?\n설정내용 : "+ arSrc.get(pos).getSafeAddress());
+						submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								Log.i("traceChild","==========통신시작!");
+							}
+						});
+						submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						});
+						submitAlert.show();
+					}
+				}
+			);			
 
 			return convertView;
 		}
