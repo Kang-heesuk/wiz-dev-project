@@ -194,7 +194,20 @@ public class NMapViewerResourceProvider extends NMapResourceProvider {
 		if (markerId >= NMapPOIflagType.NUMBER_BASE && markerId < NMapPOIflagType.NUMBER_END) { // Direction Number icons
 
 		} else if (markerId >= NMapPOIflagType.CUSTOM_BASE && markerId < NMapPOIflagType.CUSTOM_END) { // Custom POI icons
-
+			//custom icon's rscId definition.
+			if(markerId == NMapPOIflagType.CUSTOM_BASE + 1){
+				//현위치 핀 이미지
+				resourceId = 0x7f0200a8;
+			}else if(markerId == NMapPOIflagType.CUSTOM_BASE + 2){
+				//시작 핀 이미지
+				resourceId = 0x7f0200ae;
+			}else if(markerId == NMapPOIflagType.CUSTOM_BASE + 3){
+				//종료 핀 이미지
+				resourceId = 0x7f0200ac;
+			}else if(markerId == NMapPOIflagType.CUSTOM_BASE + 4){
+				//무표시 핀 이미지
+				resourceId = 0x7f0200ad;
+			}
 		}
 
 		return resourceId;
