@@ -15,6 +15,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/bodyArea"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="93"
@@ -28,13 +29,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="visible" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="6"
-                android:orientation="vertical" >
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -127,6 +121,51 @@
         </LinearLayout>
         <!-- END : 부모리스트에 아무것도 등록이 안된상태 보이는 뷰 -->
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomMenuArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="16"
+        android:background="#000000"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:background="#cccc0000" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="96"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="33"
+                android:background="@drawable/b_menu_1_selector" />
+
+            <Button
+                android:id="@+id/childAdditionButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="34"
+                android:background="@drawable/b_menu_2_selector" />
+
+            <Button
+                android:id="@+id/useInfoButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="33"
+                android:background="@drawable/b_menu_3_selector" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
