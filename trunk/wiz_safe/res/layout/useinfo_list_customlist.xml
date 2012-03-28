@@ -63,7 +63,13 @@
                             android:id="@+id/useInfoTitle"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:ellipsize="marquee"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
                             android:gravity="center_vertical"
+                            android:marqueeRepeatLimit="marquee_forever"
+                            android:scrollHorizontally="true"
+                            android:singleLine="true"
                             android:textColor="#ff000000"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -120,7 +126,7 @@
         android:id="@+id/useInfoContentArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" 
+        android:orientation="horizontal"
         android:visibility="gone" >
 
         <LinearLayout

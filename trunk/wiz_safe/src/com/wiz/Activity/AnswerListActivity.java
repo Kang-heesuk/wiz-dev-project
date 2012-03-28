@@ -155,6 +155,8 @@ public class AnswerListActivity extends Activity {
 				titleBackImgArea.setBackgroundDrawable(titleAreaImg2);
 			}
 			
+			//마퀴를 위한 추가
+			answerTitle.setSelected(true);
 			
 			answerTitleArea.setOnClickListener(
 				new Button.OnClickListener(){

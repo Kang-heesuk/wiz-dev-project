@@ -121,6 +121,9 @@ public class NoticeListActivity extends Activity {
 			noticeRegdate.setText(arSrc.get(position).getNoticeRegdate());
 			noticeContent.setText(arSrc.get(position).getNoticeContent());
 			
+			//마퀴를 위한 추가
+			noticeTitle.setSelected(true);
+			
 			noticeTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
