@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wiz.Activity.R;
@@ -52,21 +54,16 @@ public class NoticePopView extends PopView{
 	      noticeStr.setText("이놈의 사이즈는??\n가로 : "+width+"\n세로 : "+height+"\n\n이놈의 해상도는??\n가로 : "+deviceWidth+"\n세로 : "+deviceHeight+"\n밀도 : "+deviceDensity+"\n\n공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다.\n공지사항입니다. \n공지사항입니다. \n공지사항입니다. \n 아싸 퇴근시간이당 히히");
 	      
 	      //공지팝업 하단 체크  누른경우의 액션
-	      final Button btn_check = (Button)root.findViewById(R.id.btn_check);
-	      final Button btn_blank = (Button)root.findViewById(R.id.btn_blank);
-	      Drawable alpha = btn_blank.getBackground();
-	      alpha.setAlpha(0);
-	      btn_check.setOnClickListener(new Button.OnClickListener() {
+	      final LinearLayout checkLayout = (LinearLayout)root.findViewById(R.id.checkLayout);
+	      final ImageView checkImg = (ImageView)root.findViewById(R.id.btn_check);
+	      checkLayout.setOnClickListener(new Button.OnClickListener() {
 				public void onClick(View v) {
-					btn_check.setVisibility(View.GONE);
-					btn_blank.setVisibility(View.VISIBLE);
-				}
-	      });
-	      //공지팝업 하단 빈칸 누른경우의 액션
-	      btn_blank.setOnClickListener(new Button.OnClickListener() {
-				public void onClick(View v) {
-					btn_blank.setVisibility(View.GONE);
-					btn_check.setVisibility(View.VISIBLE);
+					if(checkImg.getVisibility() == View.VISIBLE){
+						checkImg.setVisibility(View.GONE);
+					}else{
+						checkImg.setVisibility(View.VISIBLE);
+					}
+					
 				}
 	      });
 	      
