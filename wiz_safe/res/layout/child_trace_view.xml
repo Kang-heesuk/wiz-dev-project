@@ -44,15 +44,56 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="96"
+                    android:background="@drawable/locate_trace_top"
                     android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/textView1"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/locate_trace_top"
-                        android:textColor="#ff000000"
-                        android:textSize="15dp" />
+                        android:layout_height="0dp"
+                        android:layout_weight="33"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="47"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="10"
+                            android:orientation="vertical" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="85"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:textColor="#ff000000"
+                                android:textSize="20sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5"
+                            android:orientation="vertical" >
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="20"
+                        android:orientation="vertical" >
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -111,7 +152,6 @@
                     android:layout_height="5dp" />
             </LinearLayout>
         </LinearLayout>
-        
     </RelativeLayout>
 
 </LinearLayout>
