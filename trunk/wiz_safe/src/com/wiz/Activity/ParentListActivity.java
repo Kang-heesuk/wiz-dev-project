@@ -60,7 +60,9 @@ public class ParentListActivity extends Activity {
         findViewById(R.id.btn_parent).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
+					int whereFlag = parentListArr.size() + 1;
 					Intent intent = new Intent(ParentListActivity.this, ParentAddActivity.class);
+					intent.putExtra("whereFlag", whereFlag);
 					startActivity(intent);
 				}
 			}
@@ -70,7 +72,9 @@ public class ParentListActivity extends Activity {
         findViewById(R.id.btn_noElements).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
+					int whereFlag = parentListArr.size() + 1;
 					Intent intent = new Intent(ParentListActivity.this, ParentAddActivity.class);
+					intent.putExtra("whereFlag", whereFlag);
 					startActivity(intent);
 				}
 			}
