@@ -18,9 +18,7 @@
         android:layout_height="0dp"
         android:layout_weight="93"
         android:orientation="vertical" >
-        
-        
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -83,7 +81,7 @@
                 android:orientation="horizontal" >
 
                 <EditText
-                    android:id="@+id/childPhone"
+                    android:id="@+id/parentPhone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
@@ -129,11 +127,11 @@
                 android:orientation="horizontal" >
 
                 <EditText
-                    android:id="@+id/childName"
+                    android:id="@+id/parentName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
-                    android:hint="미입력시 &apos;자녀1&apos; 자동 설정 됨"
+                    android:hint="미입력시 &apos;부모1&apos; 자동 설정 됨"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:textColor="#ffaaaaaa"
@@ -244,8 +242,6 @@
             android:layout_weight="24"
             android:orientation="vertical" >
         </LinearLayout>
-        
-        
     </LinearLayout>
 
 </LinearLayout>
