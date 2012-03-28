@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +19,10 @@ public class ChildAddActivity extends Activity {
 	
 	EditText childPhone;
 	EditText childName;
-	TextView waitFrame;
 	int whereFlag = -1;
 	
 	String childPhoneTemp;
-	String chileNameTemp;
+	String childNameTemp;
 	
 	SharedPreferences LocalSave;
 	SharedPreferences.Editor edit;
@@ -60,10 +57,10 @@ public class ChildAddActivity extends Activity {
 			switch(v.getId()){
 			case R.id.goSubmit:
 				childPhoneTemp = childPhone.getText().toString();
-				chileNameTemp = childName.getText().toString();
+				childNameTemp = childName.getText().toString();
 				
-				if("".equals(chileNameTemp)){
-					chileNameTemp = "자녀" + whereFlag;
+				if("".equals(childNameTemp)){
+					childNameTemp = "자녀" + whereFlag;
 				}
 				
 				//아무것도 입력안하면.. 나중엔 이것을 체크 양식으로 바꿔야하겠다.
