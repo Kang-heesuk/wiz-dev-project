@@ -125,20 +125,17 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout6"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/linearLayout7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:id="@+id/linearLayout10"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="78"
@@ -146,21 +143,21 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout11"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="25"
+                    android:layout_gravity="right"
                     android:orientation="vertical" >
 
                     <Button
                         android:id="@+id/btn_radius"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="right"
                         android:background="@drawable/btn_m_200_selector" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout12"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -169,7 +166,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout8"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:orientation="vertical" >
@@ -181,7 +177,6 @@
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:id="@+id/linearLayout1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -189,7 +184,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="47"
@@ -197,13 +191,12 @@
 
                     <Button
                         android:id="@+id/btn_setup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:background="@drawable/btn_set" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -211,7 +204,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout4"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="47"
@@ -219,13 +211,12 @@
 
                     <Button
                         android:id="@+id/btn_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:background="@drawable/btn_cancel" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -234,7 +225,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout9"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:orientation="vertical" >

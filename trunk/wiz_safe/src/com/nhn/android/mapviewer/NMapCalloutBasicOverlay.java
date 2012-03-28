@@ -94,13 +94,13 @@ public class NMapCalloutBasicOverlay extends NMapCalloutOverlay {
 		adjustTextBounds(mapView);
 
 		stepAnimations(canvas, mapView, when);
-
+ 
 		Bitmap _android = BitmapFactory.decodeResource(context.getResources(), R.drawable.speech_bubble);
 		//말풍선 백이미지의 위치를 구한다.
 		Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 	    int viewWidth = display.getWidth();
 	    int viewHeight = display.getHeight();
-		canvas.drawBitmap(_android, mTempRectF.centerX() - (float)(viewWidth * 0.1), mTempRectF.centerY() - (float)(viewHeight * 0.05), null);
+		canvas.drawBitmap(_android,  mOffsetX + (float)(viewWidth * 0.05), mOffsetY - (float)(viewHeight * 0.04), null);
 		
 		//  Draw title
 		canvas.drawText(mOverlayItem.getTitle(), mOffsetX + (float)(viewWidth * 0.07), mOffsetY - (float)(viewHeight * 0.01), mTextPaint);
