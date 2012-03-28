@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 				startActivity(intent);
 			} 
 		}); 
-  
+   
         Button btn02 = (Button)findViewById(R.id.btn2);
         btn02.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {

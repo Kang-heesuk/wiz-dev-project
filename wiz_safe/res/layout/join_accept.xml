@@ -140,7 +140,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:src="@drawable/check"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -231,7 +231,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:src="@drawable/check"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout

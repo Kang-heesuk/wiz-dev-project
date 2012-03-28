@@ -7,41 +7,42 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="5"
         android:orientation="vertical" >
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="16"
+        android:layout_weight="12"
         android:orientation="horizontal" >
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="84"
+            android:layout_weight="83"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="16"
+            android:layout_weight="12"
             android:layout_gravity="center_vertical|center_horizontal"
             android:orientation="vertical" >
 
             <Button
                 android:id="@+id/btn_close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:background="@drawable/close_btn_selector" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="8dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="5"
             android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>
@@ -49,7 +50,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="5"
         android:orientation="vertical" >
     </LinearLayout>
 
