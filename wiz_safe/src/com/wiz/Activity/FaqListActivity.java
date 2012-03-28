@@ -121,6 +121,9 @@ public class FaqListActivity extends Activity {
 			faqRegdate.setText(arSrc.get(position).getFaqRegdate());
 			faqContent.setText(arSrc.get(position).getFaqContent());
 			
+			//마퀴를 위한 추가
+			faqTitle.setSelected(true);
+			
 			faqTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
