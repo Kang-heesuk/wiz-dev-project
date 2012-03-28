@@ -68,7 +68,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="92"
+            android:layout_weight="90"
             android:orientation="vertical" >
 
             <ScrollView
@@ -88,8 +88,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="notice area"
-                        android:textColor="#ff000000" 
-                    	android:textSize="18dp"	/>
+                        android:textColor="#ff000000"
+                        android:textSize="18dp" />
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
@@ -105,7 +105,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8"
+        android:layout_weight="6"
         android:orientation="vertical" >
     </LinearLayout>
 
@@ -113,7 +113,7 @@
         android:id="@+id/checkLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_weight="10"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -136,7 +136,6 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:src="@drawable/notice_popup_ck" />
-
         </LinearLayout>
 
         <LinearLayout
