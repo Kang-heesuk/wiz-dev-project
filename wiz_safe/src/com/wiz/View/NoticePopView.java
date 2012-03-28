@@ -63,11 +63,10 @@ public class NoticePopView extends PopView{
 					}else{
 						checkImg.setVisibility(View.VISIBLE);
 					}
-					
 				}
 	      });
 	      
-	}
+	   }
 	   
 	   
 	   private final Context context;
