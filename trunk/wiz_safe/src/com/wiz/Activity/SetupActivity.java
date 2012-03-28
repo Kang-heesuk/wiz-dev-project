@@ -54,14 +54,16 @@ public class SetupActivity extends Activity {
         Button btn05 = (Button)findViewById(R.id.btn5);
         btn05.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(SetupActivity.this, "55555555555 = ", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(SetupActivity.this, PointLogActivity.class);
+				startActivity(intent);
 			}
 		});
         
         Button btn06 = (Button)findViewById(R.id.btn6);
         btn06.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(SetupActivity.this, "6666666666 = ", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(SetupActivity.this, LocationLogActivity.class);
+				startActivity(intent);
 			}
 		});
          
