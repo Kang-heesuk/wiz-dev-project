@@ -17,8 +17,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,15 +42,6 @@ public class ChildTraceDetailListActivity extends Activity {
 			ListView listView = (ListView)findViewById(R.id.list1);
 			listView.setAdapter(listAdapter);
 			listView.setOnItemClickListener(new infoListSelection());
-        }else{
-			TextView bodyText = (TextView)findViewById(R.id.bodyText);
-			if(bodyText != null){
-				bodyText.setText("등록된 발자취 설정 이력이 없습니다.");
-			}
-			bodyText.setVisibility(View.VISIBLE);
-			
-			ListView listView = (ListView)findViewById(R.id.list);
-			listView.setVisibility(View.GONE);
         }
     }
     

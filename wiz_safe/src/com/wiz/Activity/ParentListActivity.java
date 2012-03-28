@@ -2,61 +2,77 @@ package com.wiz.Activity;
 
 import java.util.ArrayList;
 
+import com.wiz.util.WizSafeUtil;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ParentListActivity extends Activity {
-
-	ParentListAdapter parentListAdapter;
-	//부모 리스트 정보를 담는 리스트
-	final ArrayList<ParentDetail> parentList = new ArrayList<ParentDetail>();
 	
-    /** Called when the activity is first created. */
-    @Override
+	//등록된 부모리스트의 리스트
+	ArrayList<ParentDetail> parentListArr = new ArrayList<ParentDetail>();
+	
+	ArrayAdapter<ParentDetail> parentAdapter;
+    
     public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.parent_list);
-         
-        //top-navigation 값 정의
-        TextView topTitle = (TextView)findViewById(R.id.textTitle);
-        if(topTitle != null){
-        	topTitle.setText(R.string.title_parent);
-        }
         
-        //body 정의
-        
-        //서버와 통신하여 리스트 정보를 가져온다.
-        //서버와 통신하여 리스트 정보를 가져온다.        
-        //서버와 통신하여 리스트 정보를 가져온다.
         getParentList();
         
-        //어댑터 정의
-        parentListAdapter = new ParentListAdapter(this, R.layout.safe_list, parentList);
-        ListView listView = (ListView)findViewById(R.id.list);
-        //실행하면 화면에 listview를 보여준다.
-        listView.setAdapter(parentListAdapter);
+      //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
+        if(parentListArr.size() <= 0){
+        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
+        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
+        	bgArea.setBackgroundResource(R.drawable.bg_parents1);
+        	visibleArea1.setVisibility(View.GONE);
+        	visibleArea2.setVisibility(View.VISIBLE);
+        }
+        
+        parentListAdapter listAdapter = new parentListAdapter(this, R.layout.parent_list_customlist, parentListArr);
+        ListView listView = (ListView)findViewById(R.id.list1);
+        View footer = getLayoutInflater().inflate(R.layout.parent_list_footer, null, false);
+        listView.addFooterView(footer);
+        listView.setAdapter(listAdapter);
+        
+        //부모등록하기(리스트 있는경우)
+        findViewById(R.id.btn_parent).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					Intent intent = new Intent(ParentListActivity.this, ChildAddActivity.class);
+					startActivity(intent);
+				}
+			}
+		);
+        
+        //부모등록하기(리스트 없는경우)
+        findViewById(R.id.btn_noElements).setOnClickListener(
+			new Button.OnClickListener(){
+				public void onClick(View v) {
+					Intent intent = new Intent(ParentListActivity.this, ChildAddActivity.class);
+					startActivity(intent);
+				}
+			}
+		);
         
     } 
-    
 	
-	@Override
 	protected void onRestart() {
-		// TODO Auto-generated method stub
+
 		super.onRestart();
-	
+		/*
 		//body 정의
 		//리스트를 초기화 하고 서버를 통하여 다시 가져온다.
 		parentList.clear();
@@ -70,49 +86,43 @@ public class ParentListActivity extends Activity {
         ListView listView = (ListView)findViewById(R.id.list);
         //실행하면 화면에 listview를 보여준다.
         listView.setAdapter(parentListAdapter);
+        */
 	}
 
 	//부모리스트를 가져오는 로직 - 실행하면 통신하여 리스트를 가져와서  arraylist에 담긴다.
 	public void getParentList(){
-		ParentDetail ne1 = new ParentDetail("Mia","010-1111-1111", R.drawable.check);
-        parentList.add(ne1);
-        ParentDetail ne2 = new ParentDetail("Char","010-2222-3333", R.drawable.check);
-        parentList.add(ne2);
+		//API 연동하여 현재 나에게 등록되어 있는 부모의 리스트를 가져온다.
+    	//요건 로직을 짜지 않았으므로 일단은 하드코딩한다.
+    	
+    	//가져온 값 [3] = 부모리스트에서의 현재 상태
+    	String[][] tempHardCoding = {{"소독용","01029325100","02"},{"에탄올","01028283669","01"}};
+    	
+    	if(tempHardCoding != null){
+	    	for(int i = 0 ; i < tempHardCoding.length ; i++){
+	    		ParentDetail addParentList = new ParentDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
+	    		parentListArr.add(addParentList);
+	    	}
+    	}
 	}
-
-/*    
-    @Override
-    proteted void onListItemClick (ListView l, View v, int position, long id){ 
-    	super.onListItemClick(l, v, position, id);
-    	//커스텀 리스트 뷰의 인덱스를 확인
-    	//Toast.makeText(ParentListActivity.this, "==="+position+"===", Toast.LENGTH_SHORT).show();
-    	
-    	//커스텀 리스트뷰의 phone 정보를 가져온다.
-    	ParentDetail data = parentAdapter.getItem(position);
-    	
-    	Intent intent = new Intent(ParentListActivity.this, ParentAcceptActivity.class);
-		intent.putExtra("phonenum", data.getPhoneNo());
-    	startActivity(intent);
-    	
-    }
- */  
-    
 	
-	//custom list adapter 를 inner class 로 선언하여 사용
-	class ParentListAdapter extends BaseAdapter {       
-		
-		Context maincon;
+	class parentListAdapter extends BaseAdapter {
+
+    	//메뉴에서 삭제 버튼을 눌렀는지에 대한 여부
+    	boolean menuClickDelete = false;
+    	
+    	Context maincon;
     	LayoutInflater Inflater;
     	ArrayList<ParentDetail> arSrc;
     	int layout;
-		 
-		public ParentListAdapter(Context context, int alayout, ArrayList<ParentDetail> aarSrc) {
-			maincon = context;
+    	
+    	//최초 커스텀리스트 뷰를 보여줄때
+    	public parentListAdapter(Context context, int alayout, ArrayList<ParentDetail> aarSrc){
+    		maincon = context;
     		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		arSrc = aarSrc;
-    		layout = alayout; 
-		}
-		
+    		layout = alayout;
+    	}
+    	
 		public int getCount() {
 			return arSrc.size();
 		}
@@ -124,57 +134,74 @@ public class ParentListActivity extends Activity {
 		public long getItemId(int position) {
 			return position;
 		} 
-		
-		@Override    
-		public View getView(final int position, View convertView, ViewGroup parent) {
+
+		public View getView(int position, View convertView, ViewGroup parent) {
 			final int pos = position;
 			if(convertView == null){
 				convertView = Inflater.inflate(layout, parent, false);
-			}       
+			}
 			
-			ParentDetail parentDetail = getItem(position);
+			//각 위젯 정의
+			Button imgNum = (Button)convertView.findViewById(R.id.imgNum);
+			TextView textArea1 = (TextView)convertView.findViewById(R.id.textArea1);
+			TextView textArea2 = (TextView)convertView.findViewById(R.id.textArea2);
+			Button imgState = (Button)convertView.findViewById(R.id.imgState);
 			
-			if (parentDetail != null) {             //하나의 이미지뷰와 2개의 텍스트뷰와 버튼 한개 정보를 받아온다.
-				
-				((TextView)convertView.findViewById(R.id.eName)).setText(parentDetail.getName());
-	            
-				((TextView)convertView.findViewById(R.id.info1)).setText(parentDetail.getPhoneNo());
-	           
-				if (arSrc.get(pos).getPhotoId() != -1) {
-	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(parentDetail.getPhotoId());                
-	            } else {
-	            	((ImageView)convertView.findViewById(R.id.ePhoto)).setImageResource(R.drawable.check);  
-	            }
-
-				Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
-				btn_accept.setVisibility(View.VISIBLE);
-				btn_accept.setText(R.string.btn_accept);
-				
-			}            
+			//커스텀 리스트 뷰 앞쪽 이미지 숫자
+			if((position + 1) == 1){
+				imgNum.setBackgroundResource(R.drawable.img_num_1);
+			}else if((position + 1) == 2){
+				imgNum.setBackgroundResource(R.drawable.img_num_2);
+			}else if((position + 1) == 3){
+				imgNum.setBackgroundResource(R.drawable.img_num_3);
+			}else if((position + 1) == 4){
+				imgNum.setBackgroundResource(R.drawable.img_num_4);
+			}else if((position + 1) == 5){
+				imgNum.setBackgroundResource(R.drawable.img_num_5);
+			}else if((position + 1) == 6){
+				imgNum.setBackgroundResource(R.drawable.img_num_6);
+			}else if((position + 1) == 7){
+				imgNum.setBackgroundResource(R.drawable.img_num_7);
+			}else if((position + 1) == 8){
+				imgNum.setBackgroundResource(R.drawable.img_num_8);
+			}else if((position + 1) == 9){
+				imgNum.setBackgroundResource(R.drawable.img_num_9);
+			}else if((position + 1) == 10){
+				imgNum.setBackgroundResource(R.drawable.img_num_10);
+			}else if((position + 1) == 11){
+				imgNum.setBackgroundResource(R.drawable.img_num_11);
+			}else if((position + 1) == 12){
+				imgNum.setBackgroundResource(R.drawable.img_num_12);
+			}else if((position + 1) == 13){
+				imgNum.setBackgroundResource(R.drawable.img_num_13);
+			}else if((position + 1) == 14){
+				imgNum.setBackgroundResource(R.drawable.img_num_14);
+			}else if((position + 1) == 15){
+				imgNum.setBackgroundResource(R.drawable.img_num_15);
+			}else if((position + 1) == 16){
+				imgNum.setBackgroundResource(R.drawable.img_num_16);
+			}else if((position + 1) == 17){
+				imgNum.setBackgroundResource(R.drawable.img_num_17);
+			}else if((position + 1) == 18){
+				imgNum.setBackgroundResource(R.drawable.img_num_18);
+			}else if((position + 1) == 19){
+				imgNum.setBackgroundResource(R.drawable.img_num_19);
+			}else if((position + 1) == 20){
+				imgNum.setBackgroundResource(R.drawable.img_num_20);
+			}
 			
-			//Button 기능 셋팅
-			Button btn_accept = (Button)convertView.findViewById(R.id.btn_accept);
-			btn_accept.setTag(position);
-			//승낙하기 클릭 리스너
-			btn_accept.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					String phonenum = (String)getItem(position).getPhoneNo();
-					
-					Intent intent = new Intent(ParentListActivity.this, ParentAcceptActivity.class);
-					intent.putExtra("phonenum", phonenum);
-					startActivity(intent);
-					
-				}
-
-			});
+			textArea1.setText(arSrc.get(pos).getName());
+			textArea2.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(pos).getPhoneNo()) + ")");
 			
-			return convertView;     
+			if("01".equals(arSrc.get(pos).getState())){
+				imgState.setBackgroundResource(R.drawable.icon_6);
+			}else if("02".equals(arSrc.get(pos).getState())){
+				imgState.setBackgroundResource(R.drawable.icon_7);
 			}
 
-		}  
+			return convertView;
+		}
+    }
 	
 	
 	//custom list data 를 inner class 로 선언
@@ -182,12 +209,12 @@ public class ParentListActivity extends Activity {
 		
 		private String name;
 	    private String phoneNo;
-	    private int photo;
+	    private String relationState;
 	    
-	    public ParentDetail(String _name, String _pn, int _photo) {
+	    public ParentDetail(String _name, String _pn, String _relationState) {
 	        this.name = _name;
 	        this.phoneNo = _pn;
-	        this.photo = _photo;
+	        this.relationState = _relationState;
 	    }
 	    
 	    public String getName() {
@@ -197,15 +224,11 @@ public class ParentListActivity extends Activity {
 	    public String getPhoneNo() {
 	        return phoneNo;
 	    }
-
-	    public int getPhotoId() {
-	        return photo;
+	    
+	    public String getState() {
+	        return relationState;
 	    }
 
 	}
-	
-	
-	
-	
 	
 }
