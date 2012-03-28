@@ -59,8 +59,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:orientation="vertical" >
-            </LinearLayout>
+                android:orientation="vertical" />
         </LinearLayout>
 
         <LinearLayout
@@ -96,7 +95,7 @@
                         android:id="@+id/textView1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은...본 약관1번은..."
+                        android:text="본 약관1번은..."
                         android:textColor="#ff464646" />
                 </ScrollView>
             </LinearLayout>
@@ -111,48 +110,42 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:layout_weight="3"
+            android:orientation="vertical" />
 
         <LinearLayout
+            android:id="@+id/check1Layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout21"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="6"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="17"
+                android:layout_weight="8"
                 android:orientation="vertical" >
 
-                <Button
+                <ImageView
                     android:id="@+id/btn_check1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/check"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/btn_blank1"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:src="@drawable/check"
+                    android:visibility="visible" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="78"
+                android:layout_weight="86"
                 android:orientation="vertical" >
             </LinearLayout>
         </LinearLayout>
@@ -191,7 +184,7 @@
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... .본 서비스는... ."
+                        android:text="본 서비스는..."
                         android:textColor="#ff464646" />
                 </ScrollView>
             </LinearLayout>
@@ -207,47 +200,42 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:orientation="vertical" />
 
         <LinearLayout
+            android:id="@+id/check2Layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/linearLayout21"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="6"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="17"
+                android:layout_weight="8"
                 android:orientation="vertical" >
 
-                <Button
+                <ImageView
                     android:id="@+id/btn_check2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/check"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/btn_blank2"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:src="@drawable/check"
+                    android:visibility="visible" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="78"
+                android:layout_weight="86"
                 android:orientation="vertical" >
             </LinearLayout>
         </LinearLayout>
@@ -255,7 +243,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="3"
             android:orientation="vertical" />
 
         <LinearLayout
@@ -263,8 +251,7 @@
             android:layout_height="0dp"
             android:layout_weight="8"
             android:orientation="horizontal" >
-            
-            
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -292,7 +279,6 @@
                 android:layout_weight="15"
                 android:orientation="vertical" >
             </LinearLayout>
-            
         </LinearLayout>
 
         <LinearLayout
