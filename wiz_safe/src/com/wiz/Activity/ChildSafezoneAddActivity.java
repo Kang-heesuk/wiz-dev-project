@@ -787,7 +787,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				}
 				
 				Bitmap bitmap2 = ((BitmapDrawable)dis_info).getBitmap();
-				canvas.drawBitmap(bitmap2, current_x - 55, current_y - radiusPixel - 120, null);
+				canvas.drawBitmap(bitmap2, current_x - ((windowWidth*6)/58), current_y - radiusPixel - (windowHeight*12)/99, null);
 				
 			}
 			super.draw(canvas,mapView,shadow);
