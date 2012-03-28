@@ -1,5 +1,8 @@
 package com.wiz.Activity;
 
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nhn.android.maps.NMapActivity;
@@ -93,16 +97,16 @@ public class ChildLocationViewActivity extends NMapActivity {
 		parentView.removeView(mMapView);
 		
         //body 
-        //현재 시간 출력
-    	/*
-        TextView tv_checkTime = (TextView)findViewById(R.id.tv_checkTime); 
+        TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
         if(tv_checkTime != null){
         	GregorianCalendar calendar = new GregorianCalendar();
-        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일  aa hh:ss");
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
+        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
+        	String gap = "오차범위 : 50m ~2km";
         	
-        	tv_checkTime.setText("조회시간 : "+sdf.format(calendar.getTime()));
+        	tv_checkTime.setText("일자 : "+sdf.format(calendar.getTime()) +"\n"+ gap);
         }
-        */
+
          
         //이탈알림 이미지 버튼 처리
         Button btn_alarm = (Button)findViewById(R.id.btn_retry);

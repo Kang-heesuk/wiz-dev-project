@@ -7,6 +7,9 @@
                     
 package com.wiz.Activity;
 
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nhn.android.maps.NMapActivity;
@@ -93,12 +97,19 @@ public class ChildTraceViewActivity extends NMapActivity {
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
-		
-		
-		
-		
-
         //body
+		TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
+        if(tv_checkTime != null){
+        	GregorianCalendar calendar = new GregorianCalendar();
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
+        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
+        	String gap = "오차범위 : 50m ~2km";
+        	
+        	tv_checkTime.setText("일자 : "+sdf.format(calendar.getTime()) +"\n"+ gap);
+        }
+
+	         
+	        
 		//=====================================================//
 		// 여기부터 맵 생성 및 보여주기
 		//=====================================================//		
