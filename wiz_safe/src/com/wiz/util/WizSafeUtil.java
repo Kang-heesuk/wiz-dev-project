@@ -1,5 +1,8 @@
 package com.wiz.util;
 
+import com.wiz.Seed.BASE64Decoder;
+import com.wiz.Seed.BASE64Encoder;
+
 public class WizSafeUtil {
 	
 	//스트링 값이 숫자값인지 체크
@@ -224,5 +227,50 @@ public class WizSafeUtil {
 			}
 			
 			return ctn;
+		}
+		
+		
+		
+		public static String encode(byte[] encodeBytes) {
+			  byte[] buf = null;
+			  String strResult = null;
+			  
+			  BASE64Encoder base64Encoder = new BASE64Encoder();
+			  java.io.ByteArrayInputStream bin = new java.io.ByteArrayInputStream(encodeBytes);
+			  java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();
+			  
+			  try {
+			   base64Encoder.encodeBuffer(bin, bout);
+			  } catch (Exception e) {
+			   System.out.println("Exception");
+			   e.printStackTrace();
+			  }
+			  buf = bout.toByteArray();
+			  strResult = new String(buf).trim();
+			  return strResult;
+			}
+
+		/**
+		  * Base64Decoding 방식으로 아스키 문자열을 바이트 배열로 디코딩한다. 
+		  * In-Ascii, Out-Binany
+		  * 
+		  * @param  strDecode 디코딩할 아스키 문자열(String)
+		  * @return  디코딩된 바이트 배열(byte[])
+		  */
+		public static byte[] decode(String strDecode) {
+		  byte[] buf = null;
+		  
+		  BASE64Decoder base64Decoder = new BASE64Decoder();
+		  java.io.ByteArrayInputStream bin = new java.io.ByteArrayInputStream(strDecode.getBytes());
+		  java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();
+
+		  try {
+		   base64Decoder.decodeBuffer(bin, bout);
+		  } catch (Exception e) {
+		   System.out.println("Exception");
+		   e.printStackTrace();
+		  }
+		  buf = bout.toByteArray();
+		  return buf;
 		}
 }
