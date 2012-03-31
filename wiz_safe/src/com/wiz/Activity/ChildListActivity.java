@@ -1,6 +1,7 @@
 package com.wiz.Activity;
  
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,10 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.wiz.util.WizSafeUtil;
 
 public class ChildListActivity extends Activity {
-	
+	  
 	//메뉴버튼에서 DELETE 버튼을 눌렀을때 삭제하기 or 승인대기중 등을 보여주는 토글변수
 	boolean deleteMenuToggle = false;
 	boolean bottomAreaIsOn = false;
@@ -35,7 +37,7 @@ public class ChildListActivity extends Activity {
                
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
-        
+
         //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
         if(childList.size() <= 0){
         	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
