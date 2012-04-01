@@ -1,5 +1,11 @@
 package com.wiz.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.wiz.Activity.ChildListActivity;
 import com.wiz.Seed.BASE64Decoder;
 import com.wiz.Seed.BASE64Encoder;
 
@@ -194,83 +200,106 @@ public class WizSafeUtil {
 		}
 		return str.toString();
 	}
-	//폰번호에 '-' 추가
-		public static String androidParseCtn(String num, boolean cutNationNum)
-		{
-			String ctn = "";
-			
-			if(num != null){
-				//국가번호 컷팅값이 false or 자릿수가 9자리 미만 이면 그대로 return한다.
-				if(cutNationNum == false || num.length() < 12)
-				{
+	
+	
+	// 폰번호에 '-' 추가
+	public static String androidParseCtn(String num, boolean cutNationNum) {
+		String ctn = "";
+
+		if (num != null) {
+			// 국가번호 컷팅값이 false or 자릿수가 9자리 미만 이면 그대로 return한다.
+			if (cutNationNum == false || num.length() < 12) {
+				ctn = num;
+			} else {
+				// 국가번호 컷팅값이 true 이면
+				if (num.startsWith("+82")) {
+					// 한국ctn 경우(국가번호 : +82)
+					try {
+						ctn = replaceStr(num, "+82", "0");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					// 한국ctn 아닌 경우 -> 차후 개발. 일단은 그대로 리턴
 					ctn = num;
 				}
-				else
-				{
-				//국가번호 컷팅값이 true 이면 
-					if(num.startsWith("+82"))
-					{
-						//한국ctn 경우(국가번호 : +82)
-						try {
-							ctn = replaceStr(num, "+82", "0");
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					else
-					{
-						//한국ctn 아닌 경우 -> 차후 개발. 일단은 그대로 리턴
-						ctn = num;
-					}
-				}
 			}
-			
-			return ctn;
 		}
-		
-		
-		
-		public static String encode(byte[] encodeBytes) {
-			  byte[] buf = null;
-			  String strResult = null;
-			  
-			  BASE64Encoder base64Encoder = new BASE64Encoder();
-			  java.io.ByteArrayInputStream bin = new java.io.ByteArrayInputStream(encodeBytes);
-			  java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();
-			  
-			  try {
-			   base64Encoder.encodeBuffer(bin, bout);
-			  } catch (Exception e) {
-			   System.out.println("Exception");
-			   e.printStackTrace();
-			  }
-			  buf = bout.toByteArray();
-			  strResult = new String(buf).trim();
-			  return strResult;
-			}
 
-		/**
-		  * Base64Decoding 방식으로 아스키 문자열을 바이트 배열로 디코딩한다. 
-		  * In-Ascii, Out-Binany
-		  * 
-		  * @param  strDecode 디코딩할 아스키 문자열(String)
-		  * @return  디코딩된 바이트 배열(byte[])
-		  */
-		public static byte[] decode(String strDecode) {
-		  byte[] buf = null;
-		  
-		  BASE64Decoder base64Decoder = new BASE64Decoder();
-		  java.io.ByteArrayInputStream bin = new java.io.ByteArrayInputStream(strDecode.getBytes());
-		  java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();
+		return ctn;
+	}
+	
+	/**
+	  * 스마트안심자녀 서비스에 관하여 인증까지 완료된 단말기인지 아닌지 판별한다. 
+	  * In-Context, Out-boolean
+	  * 
+	  * @param  해당 액티비티나 서비스의 Context
+	  * @return  boolean
+	  */
+	public static boolean isAuthOkUser(Context context) {
+		boolean returnVal = false;
+		SharedPreferences LocalSave;
+    	LocalSave = context.getSharedPreferences("WizSafeLocalVal", 0);
+    	String tempString = LocalSave.getString("isAuthOkUser", "02");
+    	//01 = 인증완료된사람, 그외 인증비완료    	
+    	if("01".equals(tempString)){
+    		returnVal = true;
+    	}else{
+    		returnVal = false;
+    	}
+		return returnVal;
+	}
+	
+	/**
+	  * Base64Encoding 방식으로 바이트 배열을 아스키 문자열로 인코딩한다. 
+	  * In-Binary, Out-아스키문자열
+	  * 
+	  * @param  인코딩할 바이트배열 문자열(byte[])
+	  * @return  인코딩된 아스키문자열 배열(String)
+	  */
+	public static String base64encode(byte[] encodeBytes) {
+		byte[] buf = null;
+		String strResult = null;
 
-		  try {
-		   base64Decoder.decodeBuffer(bin, bout);
-		  } catch (Exception e) {
-		   System.out.println("Exception");
-		   e.printStackTrace();
-		  }
-		  buf = bout.toByteArray();
-		  return buf;
+		BASE64Encoder base64Encoder = new BASE64Encoder();
+		java.io.ByteArrayInputStream bin = new java.io.ByteArrayInputStream(
+				encodeBytes);
+		java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();
+
+		try {
+			base64Encoder.encodeBuffer(bin, bout);
+		} catch (Exception e) {
+			System.out.println("Exception");
+			e.printStackTrace();
 		}
+		buf = bout.toByteArray();
+		strResult = new String(buf).trim();
+		return strResult;
+	}
+
+	/**
+	  * Base64Decoding 방식으로 아스키 문자열을 바이트 배열로 디코딩한다. 
+	  * In-Ascii, Out-Binany
+	  * 
+	  * @param  strDecode 디코딩할 아스키 문자열(String)
+	  * @return  디코딩된 바이트 배열(byte[])
+	  */
+	public static byte[] base64decode(String strDecode) {
+		byte[] buf = null;
+
+		BASE64Decoder base64Decoder = new BASE64Decoder();
+		java.io.ByteArrayInputStream bin = new java.io.ByteArrayInputStream(
+				strDecode.getBytes());
+		java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();
+
+		try {
+			base64Decoder.decodeBuffer(bin, bout);
+		} catch (Exception e) {
+			System.out.println("Exception");
+			e.printStackTrace();
+		}
+		buf = bout.toByteArray();
+		return buf;
+	}
 }
