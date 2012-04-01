@@ -2,10 +2,6 @@ package com.wiz.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.wiz.Activity.ChildListActivity;
 import com.wiz.Seed.BASE64Decoder;
 import com.wiz.Seed.BASE64Encoder;
 
