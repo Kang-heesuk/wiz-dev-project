@@ -22,17 +22,11 @@ public class ParentAddActivity extends Activity {
 	
 	String parentPhoneTemp;
 	String parentNameTemp;
-	
-	SharedPreferences LocalSave;
 	SharedPreferences.Editor edit;
 	
 	public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.parent_add);
-        
-        //단말기 안에서 필요한 정보를 추출한다.
-        LocalSave = getSharedPreferences("isAuthCheck", 0);
-		edit = LocalSave.edit();
 		
 		//앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();

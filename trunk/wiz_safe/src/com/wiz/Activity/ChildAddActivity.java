@@ -32,7 +32,7 @@ public class ChildAddActivity extends Activity {
         setContentView(R.layout.child_add);
         
         //단말기 안에서 필요한 정보를 추출한다.
-        LocalSave = getSharedPreferences("isAuthCheck", 0);
+        LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
 		edit = LocalSave.edit();
         
         //앞 페이지에서 필요한 정보를 추출한다.
