@@ -34,7 +34,6 @@ public class BASE64Encoder extends CharacterEncoder
         {
             byte byte0 = abyte0[i];
             int k = 0;
-            boolean flag = false;
             outputstream.write(pem_array[byte0 >>> 2 & 0x3f]);
             outputstream.write(pem_array[(byte0 << 4 & 0x30) + (k >>> 4 & 0xf)]);
             outputstream.write(61);
