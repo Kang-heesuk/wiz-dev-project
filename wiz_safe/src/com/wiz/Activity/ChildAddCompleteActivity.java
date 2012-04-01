@@ -100,7 +100,7 @@ public class ChildAddCompleteActivity extends Activity {
 		boolean returnVal = false;
 		
 		//단말기 안에서 필요한 정보를 추출한다. 최근 요청한 시간
-        LocalSave = getSharedPreferences("isAuthCheck", 0);
+        LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
 		edit = LocalSave.edit();
 		getRecentRequestTime = LocalSave.getString(selectChildPhonenum, "0000000000000");
 		//현재시간

@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wiz.util.WizSafeUtil;
+
 
 public class ChildListActivity extends Activity {
 	  
@@ -37,7 +39,7 @@ public class ChildListActivity extends Activity {
                
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
-
+        
         //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
         if(childList.size() <= 0){
         	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
