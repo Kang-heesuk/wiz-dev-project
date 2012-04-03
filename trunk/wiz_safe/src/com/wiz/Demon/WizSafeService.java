@@ -2,15 +2,13 @@ package com.wiz.Demon;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
-import com.wiz.Seed.WizSafeSeed;
-import com.wiz.util.WizSafeUtil;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -27,6 +25,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeUtil;
 
 public class WizSafeService extends Service implements LocationListener {
 	
@@ -151,10 +152,9 @@ public class WizSafeService extends Service implements LocationListener {
 	
 	public void callInsertLoactionApi(String lat, String lon, String addr, String hiddenUser){
 		try{
-			String regdate = WizSafeUtil.getInsertDbDate();
 			String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(WizSafeService.this));
 			String type = provider;
-			URL url = new URL("https://www.heream.com/api/insertLocation.jsp?ctn="+ enc_ctn + "&regdate=" + regdate + "&lat=" + lat + "&lon=" + lon + "&addr=" + addr + "&type=" + type + "&hiddenUser=" + hiddenUser);
+			URL url = new URL("https://www.heream.com/api/insertLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&lat=" + URLEncoder.encode(lat) + "&lon=" + URLEncoder.encode(lon) + "&addr=" + URLEncoder.encode(addr) + "&type=" + URLEncoder.encode(type) + "&hiddenUser=" + URLEncoder.encode(hiddenUser));
 			URLConnection url_conn = null;
 			url_conn = (HttpURLConnection)url.openConnection();
 			BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(url_conn.getInputStream()));
