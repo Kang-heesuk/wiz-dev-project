@@ -4,15 +4,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class SetupActivity extends Activity {
-
 	
-    /** Called when the activity is first created. */ 
+	SharedPreferences LocalSave;
+	SharedPreferences.Editor edit;
+ 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setup_list);
@@ -95,21 +96,28 @@ public class SetupActivity extends Activity {
 					ad.setTitle(title);
 					ad.setMessage(message);
 					ad.setPositiveButton("켜기", new DialogInterface.OnClickListener() {
-						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
+							//휴대폰안에 저장된 위치 수신 플래그를 변경하여 재 저장한다.
+							LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+							edit = LocalSave.edit();
+							edit.putString("isHiddenOnUser", "0");
+							edit.commit();
 							findViewById(R.id.btn_hide).setBackgroundResource(R.drawable.btn_on);
-							findViewById(R.id.btn_hide).setTag(R.drawable.btn_on); 
+							findViewById(R.id.btn_hide).setTag(R.drawable.btn_on);
 						}
 					});
 					ad.setNegativeButton(R.string.btn_cancel, null);
 					ad.show();
 				}else{
+					//휴대폰안에 저장된 위치 수신 플래그를 변경하여 재 저장한다.
+					LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+					edit = LocalSave.edit();
+					edit.putString("isHiddenOnUser", "1");
+					edit.commit();
 					findViewById(R.id.btn_hide).setBackgroundResource(R.drawable.btn_off);
 					findViewById(R.id.btn_hide).setTag(R.drawable.btn_off);
 				}
 			}
 		});
-        
     }
 }
