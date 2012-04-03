@@ -1,7 +1,15 @@
 package com.wiz.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.telephony.TelephonyManager;
+
 import com.wiz.Seed.BASE64Decoder;
 import com.wiz.Seed.BASE64Encoder;
 
@@ -198,7 +206,7 @@ public class WizSafeUtil {
 	}
 	
 	
-	// 폰번호에 '-' 추가
+	//안드로이드 폰번호를 +82xxxxxxx => 010xxxxxxxx형태로 바꿈
 	public static String androidParseCtn(String num, boolean cutNationNum) {
 		String ctn = "";
 
@@ -246,6 +254,78 @@ public class WizSafeUtil {
     	}
 		return returnVal;
 	}
+	
+	
+	/**
+	  * 스마트 안심자녀 서비스어플을 설치한 현재 휴대폰 폰번호 추출 
+	  * In-Context, Out-String
+	  * 
+	  * @param  해당 액티비티나 서비스의 Context
+	  * @return  String
+	  */
+	public static String getCtn(Context context) {
+		String returnVal = "";
+		TelephonyManager telManager = (TelephonyManager)context.getSystemService(context.TELEPHONY_SERVICE);
+		returnVal = WizSafeUtil.androidParseCtn(telManager.getLine1Number(), true);
+		return returnVal;
+	}
+	
+	/**
+	  * DB에 insert 할때 날짜를 셋팅한다. 꼭 이 형식을 사용하도록 한다. 
+	  * In-Context, Out-String
+	  * 
+	  * @param  해당 액티비티나 서비스의 Context
+	  * @return  String
+	  */
+	public static String getInsertDbDate() {
+		SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
+		Date current = new Date();
+		String date = formater.format(current);
+		Calendar cal = new GregorianCalendar();
+	
+		int mHour = cal.get(Calendar.HOUR_OF_DAY);
+		String tempHour = Integer.toString(mHour);
+		if(mHour < 10){
+			tempHour = "0" + tempHour;
+		}
+		
+		int mMinute = cal.get(Calendar.MINUTE);
+		String tempMinute = Integer.toString(mMinute);
+		if(mMinute < 10){
+			tempMinute = "0" + tempMinute;
+		}
+		
+		int mSecond = cal.get(Calendar.SECOND);
+		String tempSecond = Integer.toString(mSecond);
+		if(mSecond < 10){
+			tempSecond = "0" + tempSecond;
+		}
+		String nowDate = date + tempHour + tempMinute + tempSecond;
+		return nowDate;
+	}
+	
+	
+	/**
+	  * 스마트 안심자녀 서비스 설정에서 위치숨김 기능을 사용하는사람(위치정보 제공X인사람)을 판별 
+	  * In-Context, Out-boolean
+	  * 
+	  * @param  해당 액티비티나 서비스의 Context
+	  * @return  boolean
+	  */
+	public static boolean isHiddenOnUser(Context context) {
+		boolean returnVal = false;
+		SharedPreferences LocalSave;
+	   	LocalSave = context.getSharedPreferences("WizSafeLocalVal", 0);
+	   	String tempString = LocalSave.getString("isHiddenOnUser", "1");
+	   	//01 = 인증완료된사람, 그외 인증비완료    	
+	   	if("0".equals(tempString)){
+	   		returnVal = true;
+	   	}else{
+	   		returnVal = false;
+	   	}
+		return returnVal;
+	}
+	
 	
 	/**
 	  * Base64Encoding 방식으로 바이트 배열을 아스키 문자열로 인코딩한다. 
