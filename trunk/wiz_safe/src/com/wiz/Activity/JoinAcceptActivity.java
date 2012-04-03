@@ -2,6 +2,7 @@ package com.wiz.Activity;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wiz.Seed.WizSafeSeed;
-import com.wiz.util.*;
+import com.wiz.util.WizSafeUtil;
 
 public class JoinAcceptActivity extends Activity {
 
@@ -280,8 +281,7 @@ public class JoinAcceptActivity extends Activity {
     	InputStream is = null;
 		try{
 			String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(JoinAcceptActivity.this));
-			String regdate = WizSafeUtil.getInsertDbDate();
-			String url = "https://www.heream.com/api/sendAuthSMS.jsp?ctn="+ enc_ctn + "&regdate=" + regdate;
+			String url = "https://www.heream.com/api/sendAuthSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn);
 			is = (new URL(url)).openStream();
 		}catch(Exception e){
 			
