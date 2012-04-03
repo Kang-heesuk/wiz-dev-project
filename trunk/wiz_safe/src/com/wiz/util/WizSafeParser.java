@@ -19,7 +19,7 @@ public class WizSafeParser {
 				temp.trim();
 				if (temp.indexOf(tag) >= 0)
 				{
-					temp = temp.substring(tag.length(),temp.lastIndexOf("</"));
+					temp = temp.substring(temp.indexOf(">") + 1 , temp.lastIndexOf("</"));
 					returnVal = temp; 
 				}
 			}
@@ -46,7 +46,7 @@ public class WizSafeParser {
 				temp.trim();
 				if (temp.indexOf(tag) >= 0)
 				{
-					temp = temp.substring(tag.length(),temp.lastIndexOf("</"));
+					temp = temp.substring(temp.indexOf(">") + 1 , temp.lastIndexOf("</"));
 					xml.add(temp);
 				}				
 			}
