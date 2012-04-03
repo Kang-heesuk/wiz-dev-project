@@ -102,7 +102,6 @@ public abstract class CharacterDecoder
         throws IOException
     {
         byte abyte0[] = new byte[s.length()];
-        s.getBytes(0, s.length(), abyte0, 0);
         ByteArrayInputStream bytearrayinputstream = new ByteArrayInputStream(abyte0);
         ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
         decodeBuffer(((InputStream) (bytearrayinputstream)), ((OutputStream) (bytearrayoutputstream)));
