@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -81,8 +82,7 @@ public class JoinAuthActivity extends Activity {
 		try{
 			String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(JoinAuthActivity.this));
 			String enc_authNum = WizSafeSeed.seedEnc(tempEditText);
-			String regdate = WizSafeUtil.getInsertDbDate();
-			String url = "https://www.heream.com/api/authComplete.jsp?ctn="+ enc_ctn + "&authNum=" + enc_authNum + "&regdate=" + regdate;
+			String url = "https://www.heream.com/api/authComplete.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&authNum=" + URLEncoder.encode(enc_authNum);
 			HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
 			BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
 			String temp;
@@ -92,9 +92,8 @@ public class JoinAuthActivity extends Activity {
 				returnXML.add(new String(temp));
 			}
 			String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-			authResult = Integer.parseInt(resultCode);			
+			authResult = Integer.parseInt(resultCode);		
 		}catch(Exception e){
-			
 		}finally{
 			if(is != null){ try{is.close();}catch(Exception e){} }
 		}
