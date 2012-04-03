@@ -1,17 +1,25 @@
 package com.wiz.Demon;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeUtil;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,6 +33,8 @@ public class WizSafeService extends Service implements LocationListener {
 	boolean Quit;
 	private LocationManager mLocationManager;
 	private Location mLocation = null;
+	Geocoder geoCoder;
+	String provider = "null";
 	
 	//절전모드일경우에도 사용가능하도록 셋팅에 필요
 	PowerManager.WakeLock wakeLock;
@@ -60,13 +70,14 @@ public class WizSafeService extends Service implements LocationListener {
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
 		criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
-		String provider = mLocationManager.getBestProvider(criteria, true);
-		
-		Log.i("childList","== provider : " + provider);
+		provider = mLocationManager.getBestProvider(criteria, true);
 		
 		mLocationManager.requestLocationUpdates(provider, 5000, 0, this);
 		mLocation = mLocationManager.getLastKnownLocation(provider);
 
+		//해당 위치의 주소를 가져오기 위한 객체 선언
+		geoCoder = new Geocoder(WizSafeService.this, Locale.KOREAN);
+		
 		//쓰레드 시작
 		DemonThread thread = new DemonThread(); 
 		thread.start();
@@ -83,22 +94,67 @@ public class WizSafeService extends Service implements LocationListener {
 	class DemonThread extends Thread{ 
 		public void run(){
 			for(int i = 0 ; Quit == false ; i++){
+				Log.i("childList" , "==mLocation : " + mLocation);
 				if(mLocation != null){
 					double lat = mLocation.getLatitude();
 					double lon = mLocation.getLongitude();
-					String enc_lat = Double.toString(lat);
-					String enc_lon = Double.toString(lon);
-					callInsertLoactionApi(enc_lat, enc_lon);
+					
+					//해당좌표의 주소 가져오기
+					String temp_addr = "";
+					try {
+						
+						List<Address> addresses = geoCoder.getFromLocation(lat, lon, 1);
+						
+						if(addresses.size() > 0){
+							Address address = addresses.get(0);
+							StringBuilder trace = new StringBuilder();
+							trace.append(address.getLocality()).append(" ");
+							trace.append(address.getThoroughfare()).append(" ");
+							trace.append(address.getFeatureName());
+							temp_addr = trace.toString();
+						}else{
+							temp_addr = "해당 위치의 주소가 존재하지 않습니다.";
+						}
+					
+					} catch (IOException e) {
+						temp_addr = "주소찾기에 실패하였습니다.";
+					}
+					
+					//해당 단말의 설정 에서 위치 숨김 기능을 사용하는 사람인지 아닌지 판별
+					String temp_hiddenUser = "1";
+					if(WizSafeUtil.isHiddenOnUser(WizSafeService.this)){
+						temp_hiddenUser = "0";
+					}else{
+						temp_hiddenUser = "1";
+					}
+					
+					//암호화
+					String enc_lat = WizSafeSeed.seedEnc(Double.toString(lat));
+					String enc_lon = WizSafeSeed.seedEnc(Double.toString(lon));
+					String enc_addr = WizSafeSeed.seedEnc(temp_addr); 
+					String hiddenUser = temp_hiddenUser;
+					
+					callInsertLoactionApi(enc_lat, enc_lon, enc_addr, hiddenUser);
 				}else{
+					mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+					Criteria criteria = new Criteria();
+					criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+					criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
+					provider = mLocationManager.getBestProvider(criteria, true);
+					mLocation = mLocationManager.getLastKnownLocation(provider);
 				}
+				
 				try{Thread.sleep(1000 * 60 * 5);}catch(Exception e){}
 			}
 		}
 	}
 	
-	public void callInsertLoactionApi(String lat, String lon){
+	public void callInsertLoactionApi(String lat, String lon, String addr, String hiddenUser){
 		try{
-			URL url = new URL("http://210.109.111.213/test/JYJ/APItest.jsp?lat=" + lat + "&lon=" + lon);
+			String regdate = WizSafeUtil.getInsertDbDate();
+			String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(WizSafeService.this));
+			String type = provider;
+			URL url = new URL("https://www.heream.com/api/insertLocation.jsp?ctn="+ enc_ctn + "&regdate=" + regdate + "&lat=" + lat + "&lon=" + lon + "&addr=" + addr + "&type=" + type + "&hiddenUser=" + hiddenUser);
 			URLConnection url_conn = null;
 			url_conn = (HttpURLConnection)url.openConnection();
 			BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(url_conn.getInputStream()));
