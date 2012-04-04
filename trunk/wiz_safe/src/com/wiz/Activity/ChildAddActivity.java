@@ -52,7 +52,7 @@ public class ChildAddActivity extends Activity {
         //앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
         whereFlag = intent.getIntExtra("whereFlag", 1);		//몇번째 자리인지
-        alreadyRegCtn = intent.getStringExtra("alreadyRegCtn");		//몇번째 자리인지
+        alreadyRegCtn = intent.getStringExtra("alreadyRegCtn");		//앞에 등록한 번호가 있는지
         
         childPhone = (EditText)findViewById(R.id.childPhone);
         childName = (EditText)findViewById(R.id.childName);
@@ -125,7 +125,7 @@ public class ChildAddActivity extends Activity {
 				
 				//API 통신 쓰레드 시작한다.
 		        WizSafeDialog.showLoading(ChildAddActivity.this);	//Dialog 보이기
-				callChildAddApiThread thread = new callChildAddApiThread();
+				CallChildAddApiThread thread = new CallChildAddApiThread();
 				thread.start();
 				
 				break;
@@ -152,7 +152,7 @@ public class ChildAddActivity extends Activity {
 	
 	
 	//API 호출 쓰레드
-  	class callChildAddApiThread extends Thread{
+  	class CallChildAddApiThread extends Thread{
   		public void run(){
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildAddActivity.this));
@@ -172,7 +172,7 @@ public class ChildAddActivity extends Activity {
   				addApiResult = Integer.parseInt(resultCode);
   				
   				if(haveCheck){
-  					url = "https://www.heream.com/api/sendAppDownSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&d_ctn=" + URLEncoder.encode(enc_childCtn);
+  					url = "https://www.heream.com/api/sendAppDownSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&d_ctn=" + URLEncoder.encode(enc_childCtn) + "&type=" + URLEncoder.encode("자녀");
   					urlConn = (HttpURLConnection) new URL(url).openConnection();
   	  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
   				}
