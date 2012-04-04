@@ -326,6 +326,70 @@ public class WizSafeUtil {
 		return returnVal;
 	}
 	
+	/**
+	  * [yyyyMMdd24hmiss] 를 넣으면 [MM월 dd 일 오전(오후) hh시 mi분] 으로 리턴 하는 함수
+	  * In-String, Out-String
+	  * 
+	  * @param  yyyyMMdd24hmiss 양식의 String
+	  * @return  String
+	  */
+	public static String getDateFormat(String orgDate) {
+		String returnVal = "";
+		try{
+			if(orgDate.length() == 14){
+			
+				String yyyy = Integer.parseInt(orgDate.substring(0, 4)) + "년 ";
+	    		String mm = Integer.parseInt(orgDate.substring(4, 6)) + "월 ";
+	    		String dd = Integer.parseInt(orgDate.substring(6, 8)) + "일 ";
+	    		String hour24 = orgDate.substring(8, 10);
+	    		String AMPM_hour = "";
+	    		if(Integer.parseInt(hour24) > 12){
+	    			AMPM_hour = "오후" + (Integer.parseInt(hour24) - 12) + "시 ";
+	    		}else{
+	    			AMPM_hour = "오전" + Integer.parseInt(hour24) + "시 ";
+	    		}
+	    		hour24 += "시 ";
+	    		String min = Integer.parseInt(orgDate.substring(10, 12)) + "분 ";
+	    		String sec = orgDate.substring(12, 14) + "초";
+				
+				//필요한 결과를 조합
+				returnVal = mm + dd + AMPM_hour + min;
+			}
+		}catch(Exception e){
+			returnVal = "확인불가";
+		}
+		return returnVal;
+	}
+	
+	
+	/**
+	  * 현재 네트워크 상태에 따라 위치정보 오차 값을 리턴하는 함수
+	  * In-String, Out-String
+	  * 
+	  * @param  yyyyMMdd24hmiss 양식의 String
+	  * @return  String
+	  */
+	public static String getGapValue(String networkState) {
+		String returnVal = "";
+		
+		if(networkState != null){
+			
+			if("GPS".equals(networkState)){
+				returnVal = "50m 이내";
+			}else if("WIFI".equals(networkState)){
+				returnVal = "200m 이내";
+			}else if("3G".equals(networkState)){
+				returnVal = "1km 이내";
+			}else if("4G".equals(networkState)){
+				returnVal = "1km 이내";
+			}else{
+				returnVal = "알수없음";
+			}
+			
+		}
+		return returnVal;
+	}
+	
 	
 	/**
 	  * Base64Encoding 방식으로 바이트 배열을 아스키 문자열로 인코딩한다. 
