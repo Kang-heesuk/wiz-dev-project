@@ -73,7 +73,7 @@ public class JoinAuthActivity extends Activity {
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(JoinAuthActivity.this));
   				String enc_authNum = WizSafeSeed.seedEnc(tempEditText);
-  				String url = "https://www.heream.com/api/authComplete.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&authNum=" + URLEncoder.encode(enc_authNum);
+  				String url = "https://www.heream.com/api/authComplete.jsp?ctn=" + URLEncoder.encode(enc_ctn) + "&authNum=" + URLEncoder.encode(enc_authNum);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
