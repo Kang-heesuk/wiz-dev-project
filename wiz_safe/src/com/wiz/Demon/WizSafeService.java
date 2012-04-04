@@ -114,11 +114,11 @@ public class WizSafeService extends Service implements LocationListener {
 							trace.append(address.getFeatureName());
 							temp_addr = trace.toString();
 						}else{
-							temp_addr = "해당 위치의 주소가 존재하지 않습니다.";
+							temp_addr = "noAddress";
 						}
 					
 					} catch (IOException e) {
-						temp_addr = "주소찾기에 실패하였습니다.";
+						temp_addr = "failAddress";
 					}
 					
 					//해당 단말의 설정 에서 위치 숨김 기능을 사용하는 사람인지 아닌지 판별
