@@ -28,14 +28,16 @@ public class WizSafeSeed {
 	public static String seedDec(String text)
 	{
 		String returnVal = "";
-		String tempText = text;
-		byte[] byte_dec = null;
-		SeedCipher seed = new SeedCipher();
-		try {
-			byte_dec = WizSafeUtil.base64decode(tempText);
-			returnVal = seed.decryptAsString(byte_dec, key.getBytes(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		if(!"".equals(text)){
+			String tempText = text;
+			byte[] byte_dec = null;
+			SeedCipher seed = new SeedCipher();
+			try {
+				byte_dec = WizSafeUtil.base64decode(tempText);
+				returnVal = seed.decryptAsString(byte_dec, key.getBytes(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 		}
 		return returnVal;
 	}
