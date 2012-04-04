@@ -1,15 +1,21 @@
 package com.wiz.Activity;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import com.wiz.Activity.ChildListActivity.childDetail;
-import com.wiz.Activity.ChildListActivity.childListAdapter;
-import com.wiz.util.WizSafeUtil;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +28,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeUtil;
+
 public class ParentListActivity extends Activity {
 	
 	//메뉴버튼에서 DELETE 버튼을 눌렀을때 삭제하기 or 대기중 등을 보여주는 토글변수
 	boolean deleteMenuToggle = false;
 	boolean bottomAreaIsOn = false;
-	
+
+	//API 통신 성공유무 변수 
+	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	String[][] parentList;
 	
 	//등록된 부모리스트의 리스트
 	ArrayList<ParentDetail> parentListArr = new ArrayList<ParentDetail>();
@@ -38,7 +52,12 @@ public class ParentListActivity extends Activity {
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.parent_list);
         
-        getParentList();
+        //API 호출 쓰레드 시작
+    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+    	WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
+        CallGetParentListApiThread thread = new CallGetParentListApiThread(); 
+		thread.start();
+        
         
       //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
         if(parentListArr.size() <= 0){
@@ -211,22 +230,6 @@ public class ParentListActivity extends Activity {
     	return super.onKeyDown(keyCode, event);
     }
 
-	//부모리스트를 가져오는 로직 - 실행하면 통신하여 리스트를 가져와서  arraylist에 담긴다.
-	public void getParentList(){
-		//API 연동하여 현재 나에게 등록되어 있는 부모의 리스트를 가져온다.
-    	//요건 로직을 짜지 않았으므로 일단은 하드코딩한다.
-    	
-    	//가져온 값 [3] = 부모리스트에서의 현재 상태
-    	String[][] tempHardCoding = {{"소독용","01029325100","02"},{"에탄올","01028283669","01"}};
-    	
-    	if(tempHardCoding != null){
-	    	for(int i = 0 ; i < tempHardCoding.length ; i++){
-	    		ParentDetail addParentList = new ParentDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
-	    		parentListArr.add(addParentList);
-	    	}
-    	}
-	}
-	
 	class parentListAdapter extends BaseAdapter {
 
     	//메뉴에서 삭제 버튼을 눌렀는지에 대한 여부
@@ -397,5 +400,104 @@ public class ParentListActivity extends Activity {
   		ListView listView = (ListView)findViewById(R.id.list1);
     	listView.setAdapter(listAdapter);
     }
+	
+  //API 호출 쓰레드
+  	class CallGetParentListApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ParentListActivity.this));
+  				String url = "https://www.heream.com/api/getParentList.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				ArrayList<String> encParentName = WizSafeParser.xmlParser_List(returnXML,"<PARENT_NAME>");
+  				ArrayList<String> encParentCtn = WizSafeParser.xmlParser_List(returnXML,"<PARENT_CTN>");
+  				ArrayList<String> state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
+  				
+  				//복호화 하여 2차원배열에 담는다.
+  				httpResult = Integer.parseInt(resultCode);
+  				if(encParentName.size() > 0){
+  					for(int i=0; i < encParentName.size(); i++){
+  						parentList[i][0] = WizSafeSeed.seedDec((String) encParentName.get(i));
+  					}
+  				}
+  				if(encParentCtn.size() > 0){
+  					for(int i=0; i < encParentCtn.size(); i++){
+  						parentList[i][1] = WizSafeSeed.seedDec((String) encParentCtn.get(i));
+  					}
+  				}
+  				if(state.size() > 0){
+  					for(int i=0; i < state.size(); i++){
+  						parentList[i][2] = (String) state.get(i);
+  					}
+  				}
+
+  				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  		    	if(parentList != null){
+  			    	for(int i = 0 ; i < parentList.length ; i++){
+  			    		ParentDetail addParentList = new ParentDetail(parentList[i][0], parentList[i][1], parentList[i][2]);
+  			    		parentListArr.add(addParentList);
+  			    	}
+  		    	}
+  		    	
+  				pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+  	
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+					//조회성공
+  					
+			    	
+				}else{
+					//조회실패
+					AlertDialog.Builder ad = new AlertDialog.Builder(ParentListActivity.this);
+					String title = "통신 오류";	
+					String message = "부모 리스트 정보를 조회할 수 없습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ParentListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	};
 	
 }
