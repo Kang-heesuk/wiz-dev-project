@@ -324,9 +324,9 @@ public class ParentListActivity extends Activity {
 				imgNum.setBackgroundResource(R.drawable.img_num_20);
 			}
 			
-			if("01".equals(arSrc.get(pos).getState())){
+			if(!"".equals(arSrc.get(pos).getAcceptDate())){
 				imgState.setBackgroundResource(R.drawable.icon_6);
-			}else if("02".equals(arSrc.get(pos).getState())){
+			}else{
 				imgState.setBackgroundResource(R.drawable.icon_7);
 			}
 			
@@ -366,11 +366,13 @@ public class ParentListActivity extends Activity {
 		private String name;
 	    private String phoneNo;
 	    private String relationState;
+	    private String acceptDate;
 	    
-	    public ParentDetail(String _name, String _pn, String _relationState) {
+	    public ParentDetail(String _name, String _pn, String _relationState, String _acceptDate) {
 	        this.name = _name;
 	        this.phoneNo = _pn;
 	        this.relationState = _relationState;
+	        this.acceptDate = _acceptDate;
 	    }
 	    
 	    public String getName() {
@@ -383,6 +385,10 @@ public class ParentListActivity extends Activity {
 	    
 	    public String getState() {
 	        return relationState;
+	    }
+	    
+	    public String getAcceptDate() {
+	        return acceptDate;
 	    }
 
 	}
@@ -421,6 +427,7 @@ public class ParentListActivity extends Activity {
   				ArrayList<String> encParentName = WizSafeParser.xmlParser_List(returnXML,"<PARENT_NAME>");
   				ArrayList<String> encParentCtn = WizSafeParser.xmlParser_List(returnXML,"<PARENT_CTN>");
   				ArrayList<String> state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
+  				ArrayList<String> acceptDate = WizSafeParser.xmlParser_List(returnXML,"<ACCEPT_DATE>");
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
@@ -439,11 +446,16 @@ public class ParentListActivity extends Activity {
   						parentList[i][2] = (String) state.get(i);
   					}
   				}
+  				if(acceptDate.size() > 0){
+  					for(int i=0; i < acceptDate.size(); i++){
+  						parentList[i][3] = (String) acceptDate.get(i);
+  					}
+  				}
 
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
   		    	if(parentList != null){
   			    	for(int i = 0 ; i < parentList.length ; i++){
-  			    		ParentDetail addParentList = new ParentDetail(parentList[i][0], parentList[i][1], parentList[i][2]);
+  			    		ParentDetail addParentList = new ParentDetail(parentList[i][0], parentList[i][1], parentList[i][2], parentList[i][3]);
   			    		parentListArr.add(addParentList);
   			    	}
   		    	}
