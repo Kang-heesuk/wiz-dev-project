@@ -435,6 +435,8 @@ public class ParentListActivity extends Activity {
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
+  				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
+  				parentList = new String[encParentName.size()][4];
   				if(encParentName.size() > 0){
   					for(int i=0; i < encParentName.size(); i++){
   						parentList[i][0] = WizSafeSeed.seedDec((String) encParentName.get(i));
