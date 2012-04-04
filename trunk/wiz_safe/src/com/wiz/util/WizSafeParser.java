@@ -47,7 +47,7 @@ public class WizSafeParser {
 				if (temp.indexOf(tag) >= 0)
 				{
 					temp = temp.substring(temp.indexOf(">") + 1 , temp.lastIndexOf("</"));
-					xml.add(temp);
+					returnVal.add(temp);
 				}				
 			}
 			
