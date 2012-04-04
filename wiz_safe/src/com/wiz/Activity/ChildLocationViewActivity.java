@@ -61,7 +61,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 	private NMapController mMapController;
 
 	//맵뷰위에 사용될 정보 선언 
-	private int authResult = 1;		//0 - 조회성공 , 그외 - 실패
+	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
 	private String regdate;
 	private double longitude;
 	private double latitude; 
@@ -188,7 +188,7 @@ public class ChildLocationViewActivity extends NMapActivity {
     }
 
     
-  //API 호출 쓰레드
+    //API 호출 쓰레드
   	class CallGetNowLocationApiThread extends Thread{
   		public void run(){
   			InputStream is = null;
@@ -212,7 +212,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   				String strType = WizSafeParser.xmlParser_String(returnXML,"<TYPE>");
 
   				//필요한 데이터 타입으로 형변환
-  				authResult = Integer.parseInt(resultCode);	
+  				httpResult = Integer.parseInt(resultCode);	
   				regdate = strRegdate;
   				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
   				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
@@ -234,7 +234,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 			WizSafeDialog.hideLoading();
   			if(msg.what == 0){
   				//핸들러 정상동작
-  				if(authResult == 0){
+  				if(httpResult == 0){
 					//조회성공
   					
   					TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
