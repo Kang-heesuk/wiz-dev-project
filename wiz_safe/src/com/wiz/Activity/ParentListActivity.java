@@ -48,6 +48,10 @@ public class ParentListActivity extends Activity {
 	
 	ArrayAdapter<ParentDetail> parentAdapter;
     
+	//다음액티비티로 넘길때 필요한 부분
+	int whereFlag = -1;
+	String alreadyRegCtn = "";
+	
     public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.parent_list);
@@ -59,7 +63,7 @@ public class ParentListActivity extends Activity {
 		thread.start();
         
         
-      //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
+		//리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
         if(parentListArr.size() <= 0){
         	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
         	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
@@ -79,9 +83,9 @@ public class ParentListActivity extends Activity {
         findViewById(R.id.btn_parent).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
-					int whereFlag = parentListArr.size() + 1;
 					Intent intent = new Intent(ParentListActivity.this, ParentAddActivity.class);
 					intent.putExtra("whereFlag", whereFlag);
+					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
 					startActivity(intent);
 				}
 			}
@@ -91,16 +95,16 @@ public class ParentListActivity extends Activity {
         findViewById(R.id.btn_noElements).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
-					int whereFlag = parentListArr.size() + 1;
 					Intent intent = new Intent(ParentListActivity.this, ParentAddActivity.class);
 					intent.putExtra("whereFlag", whereFlag);
+					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
 					startActivity(intent);
 				}
 			}
 		);
         
         
-      //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의
+        //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의
         //1. 삭제
         if(parentListArr.size() <= 0){
         	findViewById(R.id.deleteButton).setBackgroundResource(R.drawable.b_menub_1_off);
@@ -123,9 +127,9 @@ public class ParentListActivity extends Activity {
 			new Button.OnClickListener(){
 				public void onClick(View v) {
 					bottomMenuToggle();
-					int whereFlag = parentListArr.size() + 1;
 					Intent intent = new Intent(ParentListActivity.this, ParentAddActivity.class);
 					intent.putExtra("whereFlag", whereFlag);
+					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
 					startActivity(intent);
 				}
 			}
@@ -459,6 +463,14 @@ public class ParentListActivity extends Activity {
   			    		parentListArr.add(addParentList);
   			    	}
   		    	}
+  		    	
+  		    	whereFlag = parentListArr.size() + 1;
+  				alreadyRegCtn = "";
+  				if(parentListArr.size() > 0){
+  					for(int i = 0 ; i < parentListArr.size() ; i++){
+  						alreadyRegCtn = alreadyRegCtn + parentListArr.get(i).getparentCtn() + "|";
+  					}
+  				}
   		    	
   				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
