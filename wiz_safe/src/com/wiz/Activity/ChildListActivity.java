@@ -1,11 +1,21 @@
 package com.wiz.Activity;
  
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,6 +29,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
 import com.wiz.util.WizSafeUtil;
 
 
@@ -29,8 +42,12 @@ public class ChildListActivity extends Activity {
 	boolean bottomAreaIsOn = false;
 	
 	//등록된 자녀의 이름
-	ArrayList<childDetail> childList = new ArrayList<childDetail>();
-	ArrayAdapter<childDetail> childAdapter;
+	ArrayList<ChildDetail> childListArr = new ArrayList<ChildDetail>();
+	ArrayAdapter<ChildDetail> childAdapter;
+	
+	//API 통신 성공유무 변수 
+	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	String[][] childList;
 	
 	//다음액티비티로 넘길때 필요한 부분
 	int whereFlag = -1;
@@ -40,19 +57,22 @@ public class ChildListActivity extends Activity {
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.child_list);
                
-        //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
-        getMyChildren();
-        
-        whereFlag = childList.size() + 1;
+        //API 호출 쓰레드 시작
+    	//자녀 리스트를 가져온다.
+    	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
+        CallGetChildListApiThread thread = new CallGetChildListApiThread(); 
+		thread.start();
+		
+        whereFlag = childListArr.size() + 1;
 		alreadyRegCtn = "";
-		if(childList.size() > 0){
-			for(int i = 0 ; i < childList.size() ; i++){
-				alreadyRegCtn = alreadyRegCtn + childList.get(i).getChildPhone() + "|";
+		if(childListArr.size() > 0){
+			for(int i = 0 ; i < childListArr.size() ; i++){
+				alreadyRegCtn = alreadyRegCtn + childListArr.get(i).getChildCtn() + "|";
 			}
 		}
-        
+        Log.i("banhong", "==>>"+childListArr.size());
         //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
-        if(childList.size() <= 0){
+        if(childListArr.size() <= 0){
         	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
         	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
         	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
@@ -61,7 +81,7 @@ public class ChildListActivity extends Activity {
         	visibleArea2.setVisibility(View.VISIBLE);
         }
         
-        childListAdapter listAdapter = new childListAdapter(this, R.layout.child_list_customlist, childList);
+        ChildListAdapter listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
         ListView listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.child_list_footer, null, false);
         listView.addFooterView(footer);
@@ -94,13 +114,13 @@ public class ChildListActivity extends Activity {
         
         //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의
         //1. 삭제
-        if(childList.size() <= 0){
+        if(childListArr.size() <= 0){
         	findViewById(R.id.deleteButton).setBackgroundResource(R.drawable.b_menub_1_off);
         }
         findViewById(R.id.deleteButton).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
-					if(childList.size() > 0){
+					if(childListArr.size() > 0){
 						bottomMenuToggle();
 						onClickdeleteButtonAction();
 					}else{
@@ -199,56 +219,41 @@ public class ChildListActivity extends Activity {
     	return super.onKeyDown(keyCode, event);
     }
     
-    
-    public void getMyChildren() {
-    	//API 연동하여 현재 나에게 등록되어있는 자녀를 가져온다.
-    	//연동 API 는 자녀가 있으면 자녀이름 과 인증여부를 가져오고 없다면 ""(공백)을 가져온다.
-    	//요건 로직을 짜지 않았으므로 일단은 하드코딩한다.
-    	
-    	//가져온 값	[2] = 01 승인완료 / 02 승인대기 / 03 승인거절
-    	String[][] tempHardCoding = {{"박재하","01","01012345678"},{"꽃분이","02","0105484565"},{"정용진","03","01024882698"},{"반홍","01","01084464664"}};
-    	
-    	if(tempHardCoding != null){
-    		for(int i = 0 ; i < tempHardCoding.length ; i++){
-        		childDetail addChildList = new childDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
-        		childList.add(addChildList);
-        	}
-    	}
-    }
-    
-    class childDetail {
+    class ChildDetail {
     	private String childName;
+    	private String childCtn;
     	private String childRelation;
-    	private String childPhone;
     	
-    	public childDetail (String childName, String childRelation, String phonenum){
+    	
+    	public ChildDetail (String childName, String phonenum, String childRelation){
     		this.childName = childName;
+    		this.childCtn = phonenum;
     		this.childRelation = childRelation;
-    		this.childPhone = phonenum;
+    		
     	}
     	private String getChildName(){
 			return childName;
     	}
+    	private String getChildCtn(){
+			return childCtn;
+    	}
     	private String getChildRelation(){
 			return childRelation;
     	}
-    	private String getChildPhone(){
-			return childPhone;
-    	}
     }
     
-    class childListAdapter extends BaseAdapter {
+    class ChildListAdapter extends BaseAdapter {
 
     	//메뉴에서 삭제 버튼을 눌렀는지에 대한 여부
     	boolean menuClickDelete = false;
     	
     	Context maincon;
     	LayoutInflater Inflater;
-    	ArrayList<childDetail> arSrc;
+    	ArrayList<ChildDetail> arSrc;
     	int layout;
     	
     	//최초 커스텀리스트 뷰를 보여줄때
-    	public childListAdapter(Context context, int alayout, ArrayList<childDetail> aarSrc){
+    	public ChildListAdapter(Context context, int alayout, ArrayList<ChildDetail> aarSrc){
     		maincon = context;
     		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		arSrc = aarSrc;
@@ -256,7 +261,7 @@ public class ChildListActivity extends Activity {
     	}
     	
     	//삭제 버튼을 누른후 커스텀 리스트 뷰를 보여줄때
-    	public childListAdapter(Context context, int alayout, ArrayList<childDetail> aarSrc, boolean menuClickDelete){
+    	public ChildListAdapter(Context context, int alayout, ArrayList<ChildDetail> aarSrc, boolean menuClickDelete){
     		maincon = context;
     		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		arSrc = aarSrc;
@@ -268,7 +273,7 @@ public class ChildListActivity extends Activity {
 			return arSrc.size();
 		}
 
-		public childDetail getItem(int position) {
+		public ChildDetail getItem(int position) {
 			return arSrc.get(position);
 		}
 
@@ -292,7 +297,7 @@ public class ChildListActivity extends Activity {
 			TextView childPhonenum = (TextView)convertView.findViewById(R.id.childPhonenum);
 			
 			childName.setText(arSrc.get(position).getChildName());
-			childPhonenum.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(position).getChildPhone()) + ")");
+			childPhonenum.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(position).getChildCtn()) + ")");
 			
 			//커스텀 리스트 뷰 앞쪽 이미지 숫자
 			if((position + 1) == 1){
@@ -389,7 +394,7 @@ public class ChildListActivity extends Activity {
 					public void onClick(View v) {
 						if("02".equals(arSrc.get(pos).getChildRelation())){
 							Intent intent = new Intent(ChildListActivity.this, ChildTraceListActivity.class);
-							intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
+							intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
 							intent.putExtra("childName", arSrc.get(pos).getChildName());
 							startActivity(intent);
 						}
@@ -402,7 +407,7 @@ public class ChildListActivity extends Activity {
 					public void onClick(View v) {
 						if("02".equals(arSrc.get(pos).getChildRelation())){
 							Intent intent = new Intent(ChildListActivity.this, ChildSafezoneListActivity.class);
-							intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
+							intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
 							intent.putExtra("childName", arSrc.get(pos).getChildName());
 							startActivity(intent);
 						}
@@ -424,9 +429,113 @@ public class ChildListActivity extends Activity {
   		}
   		
   		//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
-  		childListAdapter listAdapter = new childListAdapter(this, R.layout.child_list_customlist, childList, deleteMenuToggle);
+  		ChildListAdapter listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr, deleteMenuToggle);
   		ListView listView = (ListView)findViewById(R.id.list1);
     	listView.setAdapter(listAdapter);
     }
+    
+    
+    
+  //API 호출 쓰레드
+  	class CallGetChildListApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildListActivity.this));
+  				String url = "https://www.heream.com/api/getChildList.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				ArrayList<String> encChildName = WizSafeParser.xmlParser_List(returnXML,"<CHILD_NAME>");
+  				ArrayList<String> encChildCtn = WizSafeParser.xmlParser_List(returnXML,"<CHILD_CTN>");
+  				ArrayList<String> state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
+  				
+  				//복호화 하여 2차원배열에 담는다.
+  				httpResult = Integer.parseInt(resultCode);
+  				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
+  				childList = new String[encChildName.size()][3];
+  				if(encChildName.size() > 0){
+  					for(int i=0; i < encChildName.size(); i++){
+  						childList[i][0] = WizSafeSeed.seedDec((String) encChildName.get(i));
+  					}
+  				}
+  				if(encChildCtn.size() > 0){
+  					for(int i=0; i < encChildCtn.size(); i++){
+  						childList[i][1] = WizSafeSeed.seedDec((String) encChildCtn.get(i));
+  					}
+  				}
+  				if(state.size() > 0){
+  					for(int i=0; i < state.size(); i++){
+  						childList[i][2] = (String) state.get(i);
+  					}
+  				}
+
+  				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  		    	if(childList != null){
+  			    	for(int i = 0 ; i < childList.length ; i++){
+  			    		ChildDetail addChildList = new ChildDetail(childList[i][0], childList[i][1], childList[i][2]);
+  			    		childListArr.add(addChildList);
+  			    	}
+  		    	}
+  		    	
+  				pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+  	
+
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+					//조회성공
+  					
+			    	
+				}else{
+					//조회실패
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildListActivity.this);
+					String title = "통신 오류";	
+					String message = "부모 리스트 정보를 조회할 수 없습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	};
     
 }
