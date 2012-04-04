@@ -6,7 +6,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.StringTokenizer;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -252,8 +255,47 @@ public class ChildLocationViewActivity extends NMapActivity {
   						}
   					});
   			        
-			    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
-			    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
+  			        try{
+				    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
+				    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
+				    	
+	
+				    	//몇번째 시도인지 확인
+				    	int tryCount =0;
+				    	GregorianCalendar calendar = new GregorianCalendar();
+				    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+				    	
+						SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+						
+						String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",sdf.format(calendar.getTime())+"_0");
+				    	String nowDate = "";
+						String nowCount = "0";
+				    	
+				    	StringTokenizer st = new StringTokenizer(getNowChildLocCnt, "_");
+				    	while(st.hasMoreTokens())
+				    	{
+				    		nowDate = st.nextToken();
+				    		nowCount = st.nextToken();
+				    	}
+	
+				    	if(nowDate.equals(sdf.format(calendar.getTime()))){
+				    		//오늘중에
+				    		if(3 <= Integer.parseInt(nowCount)){
+				    			//4회이상 시도 - 과금대상
+				    			Toast.makeText(ChildLocationViewActivity.this, "님하는 과금대상이심 과금 궈궈~!!!", Toast.LENGTH_SHORT).show();
+				    			Log.i("banhong","님하는 과금대상이심 과금 궈궈");
+				    		}
+				    	}
+				    	
+				    	tryCount = Integer.parseInt(nowCount)+1;
+				    	
+				    	SharedPreferences.Editor edit;
+				    	edit = LocalSave.edit();
+						
+						edit.putString("getNowChildLocCnt", sdf.format(calendar.getTime())+"_"+tryCount);
+						edit.commit();
+						
+  			        }catch(Exception e){}
 			    	
 				}else{
 					//조회실패
