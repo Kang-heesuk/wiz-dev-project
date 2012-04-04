@@ -1,7 +1,6 @@
 package com.wiz.Activity;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +10,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.wiz.Demon.WizSafeService;
 import com.wiz.View.NoticePopView;
 
 public class MainActivity extends Activity {
@@ -19,7 +17,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+                
         Button btn01 = (Button)findViewById(R.id.btn1);
         btn01.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
