@@ -30,8 +30,11 @@ public class ChildListActivity extends Activity {
 	
 	//등록된 자녀의 이름
 	ArrayList<childDetail> childList = new ArrayList<childDetail>();
-	
 	ArrayAdapter<childDetail> childAdapter;
+	
+	//다음액티비티로 넘길때 필요한 부분
+	int whereFlag = -1;
+	String alreadyRegCtn = "";
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
@@ -39,6 +42,14 @@ public class ChildListActivity extends Activity {
                
         //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
         getMyChildren();
+        
+        whereFlag = childList.size() + 1;
+		alreadyRegCtn = "";
+		if(childList.size() > 0){
+			for(int i = 0 ; i < childList.size() ; i++){
+				alreadyRegCtn = alreadyRegCtn + childList.get(i).getChildPhone() + "|";
+			}
+		}
         
         //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
         if(childList.size() <= 0){
@@ -60,9 +71,9 @@ public class ChildListActivity extends Activity {
         findViewById(R.id.btn_addChild).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
-					int whereFlag = childList.size() + 1;
 					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
 					intent.putExtra("whereFlag", whereFlag);
+					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
 					startActivity(intent);
 				}
 			}
@@ -72,9 +83,9 @@ public class ChildListActivity extends Activity {
         findViewById(R.id.btn_noElements).setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
-					int whereFlag = childList.size() + 1;
 					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
 					intent.putExtra("whereFlag", whereFlag);
+					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
 					startActivity(intent);
 				}
 			}
@@ -104,9 +115,9 @@ public class ChildListActivity extends Activity {
 			new Button.OnClickListener(){
 				public void onClick(View v) {
 					bottomMenuToggle();
-					int whereFlag = childList.size() + 1;
 					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
 					intent.putExtra("whereFlag", whereFlag);
+					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
 					startActivity(intent);
 				}
 			}
@@ -357,13 +368,6 @@ public class ChildListActivity extends Activity {
 							Intent intent = getIntent();
 							finish();
 							startActivity(intent);
-							
-						}else{	//그 외의 경우(일반적인 경우)
-							if("01".equals(arSrc.get(pos).getChildRelation())){
-								Intent intent = new Intent(ChildListActivity.this, ChildAddCompleteActivity.class);
-								intent.putExtra("phonenum", arSrc.get(pos).getChildPhone());
-								startActivity(intent);
-							}
 						}
 					}
 				}
