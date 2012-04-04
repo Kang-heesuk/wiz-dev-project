@@ -95,7 +95,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="94"
-                        android:background="@drawable/btn_child_selector" />
+                        android:background="@drawable/btn_parents_selector" />
 
                     <LinearLayout
                         android:layout_width="0dp"
