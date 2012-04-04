@@ -14,8 +14,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,6 +44,7 @@ import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
 import com.wiz.util.WizSafeUtil;
 
@@ -59,7 +61,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 	private int authResult = 1;		//0 - 조회성공 , 그외 - 실패
 	private String regdate;
 	private double longitude;
-	private double latitude;
+	private double latitude; 
 	private String address;
 	private String type;
 
@@ -103,57 +105,21 @@ public class ChildLocationViewActivity extends NMapActivity {
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
     	
-    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.	
-    	callGetNowLocationApi();
-
+    	//API 호출 쓰레드 시작
+    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+    	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+        CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
+		thread.start();
+		 
     	NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude, latitude);
     	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
-		//api 통신이 성공적일때만 계속 진행
-		if(authResult != 0){
-			
-			
-			
-			//자체 지원하는 팝업 띄우기 위한 메소드
-			AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
-			String title = "현위치조회 실패";	
-			String message = "현재 자녀의 위치를 조회할 수 없습니다.";	
-			ad.setTitle(title);
-			ad.setMessage(message); 
-			ad.setNeutralButton(R.string.btn_regist, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					//정상적으로 조회하지 못하면 자신의 위치를 보여주고 alert을 띄운다
-					finish();
-				}
-			});
-			ad.show();
-		}
+		
         //body 
-        TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
-        if(tv_checkTime != null){
-        	String showDate = WizSafeUtil.getDateFormat(regdate);
-        	String gap = WizSafeUtil.getGapValue(type);
-        	
-        	tv_checkTime.setText("일자 : "+ showDate +"\n오차범위 : "+ gap);
-        }
-
-         
-        //이탈알림 이미지 버튼 처리
-        Button btn_alarm = (Button)findViewById(R.id.btn_retry);
-        btn_alarm.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				Toast.makeText(ChildLocationViewActivity.this, "리프레쉬지~!!!", Toast.LENGTH_SHORT).show();
-				
-			}
-		});
         
     	// create map view
-    	//mMapView = new NMapView(this);
-    	
     	mMapView = (NMapView)findViewById(R.id.mapview); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
 
     	// set a registered API key for Open MapViewer Library
@@ -174,9 +140,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 
     	// register listener for map state changes 
     	mMapView.setOnMapStateChangeListener(onMapViewStateChangeListener);
-    	// mMapView.setOnMapViewTouchEventListener(onMapViewTouchEventListener);
-    	// mMapView.setOnMapViewDelegate(onMapViewTouchDelegate);
-
+    	
 
     	// use map controller to zoom in/out, pan and set map center, zoom level etc.
     	mMapController = mMapView.getMapController();
@@ -218,65 +182,110 @@ public class ChildLocationViewActivity extends NMapActivity {
 
     	mMapController.setMapViewMode(NMapView.VIEW_MODE_SATELLITE);
 
-    	if(authResult == 0){
-	    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
-	    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
-    	}
     }
 
-	private void callGetNowLocationApi() {
-		// TODO Auto-generated method stub
-		InputStream is = null;
-		try{
-			String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
-			String url = "https://www.heream.com/api/getNowLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn);
-			HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-			BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
-			String temp;
-			ArrayList<String> returnXML = new ArrayList<String>();
-			while((temp = br.readLine()) != null)
-			{
-				returnXML.add(new String(temp));
-			}
-			//결과를 XML 파싱하여 추출
-			String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-			String strRegdate = WizSafeParser.xmlParser_String(returnXML,"<REGDATE>");
-			String encLongitude = WizSafeParser.xmlParser_String(returnXML,"<LONGITUDE>");
-			String encLatitude = WizSafeParser.xmlParser_String(returnXML,"<LATITUDE>");
-			String encAddress = WizSafeParser.xmlParser_String(returnXML,"<ADDRESS>");
-			String strType = WizSafeParser.xmlParser_String(returnXML,"<TYPE>");
+    
+  //API 호출 쓰레드
+  	class CallGetNowLocationApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
+  				String url = "https://www.heream.com/api/getNowLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				String strRegdate = WizSafeParser.xmlParser_String(returnXML,"<REGDATE>");
+  				String encLongitude = WizSafeParser.xmlParser_String(returnXML,"<LONGITUDE>");
+  				String encLatitude = WizSafeParser.xmlParser_String(returnXML,"<LATITUDE>");
+  				String encAddress = WizSafeParser.xmlParser_String(returnXML,"<ADDRESS>");
+  				String strType = WizSafeParser.xmlParser_String(returnXML,"<TYPE>");
 
-			//필요한 데이터 타입으로 형변환
-			authResult = Integer.parseInt(resultCode);	
-			regdate = strRegdate;
-			longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
-			latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
-			address = WizSafeSeed.seedDec(encAddress);
-			type = strType;
-			
-		}catch(Exception e){
-		}finally{
-			if(is != null){ try{is.close();}catch(Exception e){} }
-		}
-	}
+  				//필요한 데이터 타입으로 형변환
+  				authResult = Integer.parseInt(resultCode);	
+  				regdate = strRegdate;
+  				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
+  				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
+  				address = WizSafeSeed.seedDec(encAddress);
+  				type = strType;
+  				
+  				pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+  	
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(authResult == 0){
+					//조회성공
+  					
+  					TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
+  			        if(tv_checkTime != null){
+  			        	String showDate = WizSafeUtil.getDateFormat(regdate);
+  			        	String gap = WizSafeUtil.getGapValue(type);
+  			        	
+  			        	tv_checkTime.setText("일자 : "+ showDate +"\n오차범위 : "+ gap);
+  			        }
 
-
-	//액티비티가 활성화되면 mylocation 이 중지됨
-	private void stopMyLocation() {
-		if (mMyLocationOverlay != null) {	//최초  내위치용 오버레이가 생성된 경우만 사용
-			mMapLocationManager.disableMyLocation();
-
-			if (mMapView.isAutoRotateEnabled()) {
-				mMyLocationOverlay.setCompassHeadingVisible(false);
-
-				mMapCompassManager.disableCompass();
-
-				mMapView.setAutoRotateEnabled(false, false);
-
-				mMapContainerView.requestLayout();
-			}
-		}
-	}
+  			         
+  			        //새로고침 이미지 버튼 처리
+  			        Button btn_alarm = (Button)findViewById(R.id.btn_retry);
+  			        btn_alarm.setOnClickListener(new Button.OnClickListener() {
+  						public void onClick(View v) {
+  							Toast.makeText(ChildLocationViewActivity.this, "리프레쉬지~!!!", Toast.LENGTH_SHORT).show();
+  							
+  						}
+  					});
+  			        
+			    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
+			    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
+			    	
+				}else{
+					//조회실패
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+					String title = "자녀현위치찾기실패";	
+					String message = "자녀 현위치 정보를 조회할 수 없습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	};
 
 
 	//좌표에 해당하는 주소를 지도에 표현하는 오버레이
@@ -286,10 +295,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 		//int markerId = NMapPOIflagType.PIN;
 		int markerId = NMapPOIflagType.CUSTOM_BASE + 1;
 
-		Log.i("banhong", "longitude : "+longitude);
-		Log.i("banhong", "latitude : "+latitude);
-		Log.i("banhong", "address : "+address);
-		
 		// set POI data
 		NMapPOIdata poiData = new NMapPOIdata(2, mMapViewerResourceProvider);
 		poiData.beginPOIdata(1);
@@ -414,24 +419,12 @@ public class ChildLocationViewActivity extends NMapActivity {
 
 		//@Override
 		public void onLocationUpdateTimeout(NMapLocationManager locationManager) {
-
-			// stop location updating
-			//			Runnable runnable = new Runnable() {
-			//				public void run() {										
-			//					stopMyLocation();
-			//				}
-			//			};
-			//			runnable.run();	
-
-			Toast.makeText(ChildLocationViewActivity.this, "Your current location is temporarily unavailable.", Toast.LENGTH_LONG).show();
+		
 		}
 
 		//@Override
 		public void onLocationUnavailableArea(NMapLocationManager locationManager, NGeoPoint myLocation) {
 
-			Toast.makeText(ChildLocationViewActivity.this, "Your current location is unavailable area.", Toast.LENGTH_LONG).show();
-
-			stopMyLocation();
 		}
 
 	};
@@ -482,52 +475,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 		}
 	};
     
-	private final NMapView.OnMapViewTouchEventListener onMapViewTouchEventListener = new NMapView.OnMapViewTouchEventListener() {
-
-		//@Override
-		public void onLongPress(NMapView mapView, MotionEvent ev) {
-			// TODO Auto-generated method stub
-
-		}
-
-		//@Override
-		public void onLongPressCanceled(NMapView mapView) {
-			// TODO Auto-generated method stub
-
-		}
-
-		//@Override
-		public void onSingleTapUp(NMapView mapView, MotionEvent ev) {
-			// TODO Auto-generated method stub
-
-		}
-
-		//@Override
-		public void onTouchDown(NMapView mapView, MotionEvent ev) {
-
-		}
-
-		//@Override
-		public void onScroll(NMapView mapView, MotionEvent e1, MotionEvent e2) {
-		}
-
-	};
-	
-	private final NMapView.OnMapViewDelegate onMapViewTouchDelegate = new NMapView.OnMapViewDelegate() {
-
-		//@Override
-		public boolean isLocationTracking() {
-			if (mMapLocationManager != null) {
-				if (mMapLocationManager.isMyLocationEnabled()) {
-					return mMapLocationManager.isMyLocationFixed();
-				}
-			}
-			return false;
-		}
-
-	};
-
-
 	/* POI data State Change Listener*/
 	private final NMapPOIdataOverlay.OnStateChangeListener onPOIdataStateChangeListener = new NMapPOIdataOverlay.OnStateChangeListener() {
 
