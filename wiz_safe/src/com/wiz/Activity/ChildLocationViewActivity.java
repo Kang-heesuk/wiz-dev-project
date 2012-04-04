@@ -1,14 +1,19 @@
 package com.wiz.Activity;
 
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +42,9 @@ import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeUtil;
 
 
 public class ChildLocationViewActivity extends NMapActivity {
@@ -47,15 +55,17 @@ public class ChildLocationViewActivity extends NMapActivity {
 	private NMapView mMapView; 
 	private NMapController mMapController;
 
-	//String test1 = this.getIntent().getStringExtra("reqId");
-    //String test2 = this.getIntent().getStringExtra("reqCtn");
+	//맵뷰위에 사용될 정보 선언 
+	private int authResult = 1;		//0 - 조회성공 , 그외 - 실패
+	private String regdate;
+	private double longitude;
+	private double latitude;
+	private String address;
+	private String type;
 
-    double longitude01 = 127.12201246666667;
-	double latitude01 = 37.495217644444445;
-	  
-    
+
 	//최초 맵 기준  지정 변수 -> 현재는 시청으로 나중에는 자신의 위치로 변경하자.
-	private NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude01, latitude01);
+	private NGeoPoint NMAP_LOCATION_DEFAULT;
 	//private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(127.12201246666667, 37.495217644444445);
 	
 	private static final int NMAP_ZOOMLEVEL_DEFAULT = 15;
@@ -92,19 +102,43 @@ public class ChildLocationViewActivity extends NMapActivity {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
+    	
+    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.	
+    	callGetNowLocationApi();
+
+    	NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude, latitude);
     	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
+		//api 통신이 성공적일때만 계속 진행
+		if(authResult != 0){
+			
+			
+			
+			//자체 지원하는 팝업 띄우기 위한 메소드
+			AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+			String title = "현위치조회 실패";	
+			String message = "현재 자녀의 위치를 조회할 수 없습니다.";	
+			ad.setTitle(title);
+			ad.setMessage(message); 
+			ad.setNeutralButton(R.string.btn_regist, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					//정상적으로 조회하지 못하면 자신의 위치를 보여주고 alert을 띄운다
+					finish();
+				}
+			});
+			ad.show();
+		}
         //body 
         TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
         if(tv_checkTime != null){
-        	GregorianCalendar calendar = new GregorianCalendar();
-        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
-        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
-        	String gap = "오차범위 : 50m ~2km";
+        	String showDate = WizSafeUtil.getDateFormat(regdate);
+        	String gap = WizSafeUtil.getGapValue(type);
         	
-        	tv_checkTime.setText("일자 : "+sdf.format(calendar.getTime()) +"\n"+ gap);
+        	tv_checkTime.setText("일자 : "+ showDate +"\n오차범위 : "+ gap);
         }
 
          
@@ -114,23 +148,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 			public void onClick(View v) {
 				Toast.makeText(ChildLocationViewActivity.this, "리프레쉬지~!!!", Toast.LENGTH_SHORT).show();
 				
-				/*
-				//자체 지원하는 팝업 띄우기 위한 메소드
-				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
-				String title = "이탈 알림";	
-				String message = "현재 시간부터 24시간 이내에 해당 위치에서 이탈 시 알려드립니다.";	
-				ad.setTitle(title);
-				ad.setMessage(message);
-				ad.setPositiveButton(R.string.btn_regist, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						Toast.makeText(ChildLocationViewActivity.this, "동의 눌렀다. 현재 화면의 위치를 저장하고 벗어나면 푸시해주긔 ", Toast.LENGTH_SHORT).show();
-					}
-				});
-				ad.setNegativeButton(R.string.btn_cancel, null);
-				ad.show();
-				*/
 			}
 		});
         
@@ -201,50 +218,47 @@ public class ChildLocationViewActivity extends NMapActivity {
 
     	mMapController.setMapViewMode(NMapView.VIEW_MODE_SATELLITE);
 
-    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
-    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
- 		
+    	if(authResult == 0){
+	    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
+	    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
+    	}
     }
 
+	private void callGetNowLocationApi() {
+		// TODO Auto-generated method stub
+		InputStream is = null;
+		try{
+			String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
+			String url = "https://www.heream.com/api/getNowLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+			HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+			BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+			String temp;
+			ArrayList<String> returnXML = new ArrayList<String>();
+			while((temp = br.readLine()) != null)
+			{
+				returnXML.add(new String(temp));
+			}
+			//결과를 XML 파싱하여 추출
+			String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+			String strRegdate = WizSafeParser.xmlParser_String(returnXML,"<REGDATE>");
+			String encLongitude = WizSafeParser.xmlParser_String(returnXML,"<LONGITUDE>");
+			String encLatitude = WizSafeParser.xmlParser_String(returnXML,"<LATITUDE>");
+			String encAddress = WizSafeParser.xmlParser_String(returnXML,"<ADDRESS>");
+			String strType = WizSafeParser.xmlParser_String(returnXML,"<TYPE>");
 
-	//액티비티가 활성화되면 mylocation 이 시작됨
-  	private void startMyLocation() {
-
-  		if (mMyLocationOverlay != null) {	//최초 내위치용 오버레이가 생성된 경우만 사용
-  			if (!mOverlayManager.hasOverlay(mMyLocationOverlay)) {	//현재 오버레이 매니져가 my location 오버레이를 가지고 있지 않으면
-  				mOverlayManager.addOverlay(mMyLocationOverlay);	//my location 오버레이를 추가
-  			}
-
-  			if (mMapLocationManager.isMyLocationEnabled()) {	//이미 내위치를 확인하는 오버레이가 있는 경우 나침반을 이용한 컴퍼스를 보여준다.
-
-  				if (!mMapView.isAutoRotateEnabled()) {	//나침반 기능이 활성화 되어있지 않으면
-  					mMyLocationOverlay.setCompassHeadingVisible(true);
-
-  					mMapCompassManager.enableCompass();
-
-  					mMapView.setAutoRotateEnabled(true, false);
-
-  					mMapContainerView.requestLayout();
-  				} else {	//나침반 컴퍼스가 활성화 되어 있으면 my location 정지!
-  					stopMyLocation();
-  				}
-
-  				mMapView.postInvalidate();	//별도의 스레드에서 화면갱신을 할때 사용
-  			} else {
-  				boolean isMyLocationEnabled = mMapLocationManager.enableMyLocation(false);
-  				if (!isMyLocationEnabled) {
-  					Toast.makeText(ChildLocationViewActivity.this, "Please enable a My Location source in system settings",
-  						Toast.LENGTH_LONG).show();
-
-  					Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-  					startActivity(goToSettings);
-
-  					return;
-  				}
-  			}
-  		}
-  	}
-
+			//필요한 데이터 타입으로 형변환
+			authResult = Integer.parseInt(resultCode);	
+			regdate = strRegdate;
+			longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
+			latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
+			address = WizSafeSeed.seedDec(encAddress);
+			type = strType;
+			
+		}catch(Exception e){
+		}finally{
+			if(is != null){ try{is.close();}catch(Exception e){} }
+		}
+	}
 
 
 	//액티비티가 활성화되면 mylocation 이 중지됨
@@ -268,22 +282,18 @@ public class ChildLocationViewActivity extends NMapActivity {
 	//좌표에 해당하는 주소를 지도에 표현하는 오버레이
 	private void getCurrentLocationInfoPOIdataOverlay() {
  
-		//값을 받아와서 셋팅하면 해당 위치를 표시하는 오버레이를 보여줄 수 있음
-		//double 형 변수 , double 형 변수, 해당 위치 표현할 string
-		double longitude01 = 127.12201246666667;
-		double latitude01 = 37.495217644444445;
-		String placeInfo01 = "IT Bencher Tower";
-		
 		// Markers for POI item
 		//int markerId = NMapPOIflagType.PIN;
 		int markerId = NMapPOIflagType.CUSTOM_BASE + 1;
 
+		Log.i("banhong", "longitude : "+longitude);
+		Log.i("banhong", "latitude : "+latitude);
+		Log.i("banhong", "address : "+address);
+		
 		// set POI data
 		NMapPOIdata poiData = new NMapPOIdata(2, mMapViewerResourceProvider);
-		poiData.beginPOIdata(2);
-		//poiData.addPOIitem(127.0630205, 37.5091300, "Pizza 777-111", markerId, 0);
-		//poiData.addPOIitem(127.061, 37.51, "Pizza 123-456", markerId, 0);
-		poiData.addPOIitem(longitude01, latitude01, placeInfo01, markerId, 0);
+		poiData.beginPOIdata(1);
+		poiData.addPOIitem(longitude, latitude, address.trim(), markerId, 0);
 		poiData.endPOIdata();
 
 		// create POI data overlay
@@ -317,16 +327,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 				Toast.makeText(ChildLocationViewActivity.this, errInfo.toString(), Toast.LENGTH_LONG).show();
 				return;
 			}
-/*
-			if (mFloatingPOIitem != null && mFloatingPOIdataOverlay != null) {
-				mFloatingPOIdataOverlay.deselectFocusedPOIitem();
-
-				if (placeMark != null) {
-					mFloatingPOIitem.setTitle(placeMark.toString());
-				}
-				mFloatingPOIdataOverlay.selectPOIitemBy(mFloatingPOIitem.getId(), false);
-			}
-*/			
+		
 		}
 
 	};
@@ -611,5 +612,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 		}
 	}
 
+	
 	
 }
