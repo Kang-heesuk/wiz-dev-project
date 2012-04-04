@@ -171,7 +171,7 @@ public class ParentAddActivity extends Activity {
   				addApiResult = Integer.parseInt(resultCode);
   				
   				if(haveCheck){
-  					url = "https://www.heream.com/api/sendAppDownSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&d_ctn=" + URLEncoder.encode(enc_parentCtn) + "&type=" + URLEncoder.encode("ºÎ¸ð");
+  					url = "https://www.heream.com/api/sendAppDownSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&d_ctn=" + URLEncoder.encode(enc_parentCtn) + "&stype=" + URLEncoder.encode("02");
   					urlConn = (HttpURLConnection) new URL(url).openConnection();
   	  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
   				}
