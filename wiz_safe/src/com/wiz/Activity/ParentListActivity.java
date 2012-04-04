@@ -53,7 +53,7 @@ public class ParentListActivity extends Activity {
         setContentView(R.layout.parent_list);
         
         //API 호출 쓰레드 시작
-    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+    	//부모 리스트를 가져온다.
     	WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
         CallGetParentListApiThread thread = new CallGetParentListApiThread(); 
 		thread.start();
@@ -353,7 +353,7 @@ public class ParentListActivity extends Activity {
 			);
 			
 			textArea1.setText(arSrc.get(pos).getName());
-			textArea2.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(pos).getPhoneNo()) + ")");
+			textArea2.setText("(" + WizSafeUtil.setPhoneNum(arSrc.get(pos).getparentCtn()) + ")");
 
 			return convertView;
 		}
@@ -363,24 +363,24 @@ public class ParentListActivity extends Activity {
 	//custom list data 를 inner class 로 선언
 	class ParentDetail {       
 		
-		private String name;
-	    private String phoneNo;
+		private String parentName;
+	    private String parentCtn;
 	    private String relationState;
 	    private String acceptDate;
 	    
 	    public ParentDetail(String _name, String _pn, String _relationState, String _acceptDate) {
-	        this.name = _name;
-	        this.phoneNo = _pn;
+	        this.parentName = _name;
+	        this.parentCtn = _pn;
 	        this.relationState = _relationState;
 	        this.acceptDate = _acceptDate;
 	    }
 	    
 	    public String getName() {
-	        return name;
+	        return parentName;
 	    }
 
-	    public String getPhoneNo() {
-	        return phoneNo;
+	    public String getparentCtn() {
+	        return parentCtn;
 	    }
 	    
 	    public String getState() {
@@ -407,7 +407,7 @@ public class ParentListActivity extends Activity {
     	listView.setAdapter(listAdapter);
     }
 	
-  //API 호출 쓰레드
+    //API 호출 쓰레드
   	class CallGetParentListApiThread extends Thread{
   		public void run(){
   			InputStream is = null;
