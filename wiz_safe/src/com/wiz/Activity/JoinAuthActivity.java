@@ -84,11 +84,11 @@ public class JoinAuthActivity extends Activity {
   				}
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
   				authResult = Integer.parseInt(resultCode);
+  				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
   			}
-  			pHandler.sendEmptyMessage(0);
   		}
   	}
   	
@@ -106,11 +106,11 @@ public class JoinAuthActivity extends Activity {
   				{
   					returnXML.add(new String(temp));
   				}
+  				pHandler.sendEmptyMessage(2);
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(3);
   			}
-  			pHandler.sendEmptyMessage(2);
   		}
   	}
   	
