@@ -261,10 +261,12 @@ public class ParentListActivity extends Activity {
 				imgNum.setBackgroundResource(R.drawable.img_num_20);
 			}
 			
-			if(!"".equals(arSrc.get(pos).getAcceptDate())){
-				imgState.setBackgroundResource(R.drawable.icon_6);
-			}else{
+			if("".equals(arSrc.get(pos).getAcceptDate())){
+				//날짜가 없으면 대기중
 				imgState.setBackgroundResource(R.drawable.icon_7);
+			}else{
+				//날짜가 있으면 활성화
+				imgState.setBackgroundResource(R.drawable.icon_6);
 			}
 			
 			//메뉴에서 삭제하기 눌렀을 경우 버튼 노출 문구 정의
@@ -357,15 +359,16 @@ public class ParentListActivity extends Activity {
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
-  				parentList = new String[encParentName.size()][4];
-  				if(encParentName.size() > 0){
-  					for(int i=0; i < encParentName.size(); i++){
-  						parentList[i][0] = WizSafeSeed.seedDec((String) encParentName.get(i));
-  					}
-  				}
+  				parentList = new String[encParentCtn.size()][4];
+  				
   				if(encParentCtn.size() > 0){
   					for(int i=0; i < encParentCtn.size(); i++){
   						parentList[i][1] = WizSafeSeed.seedDec((String) encParentCtn.get(i));
+  					}
+  				}
+  				if(encParentName.size() > 0){
+  					for(int i=0; i < encParentName.size(); i++){
+  						parentList[i][0] = WizSafeSeed.seedDec((String) encParentName.get(i));
   					}
   				}
   				if(state.size() > 0){
@@ -378,7 +381,7 @@ public class ParentListActivity extends Activity {
   						parentList[i][3] = (String) acceptDate.get(i);
   					}
   				}
-
+  				
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
   		    	if(parentList != null){
   			    	for(int i = 0 ; i < parentList.length ; i++){

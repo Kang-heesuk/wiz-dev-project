@@ -377,15 +377,15 @@ public class ChildListActivity extends Activity {
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
-  				childList = new String[encChildName.size()][3];
-  				if(encChildName.size() > 0){
-  					for(int i=0; i < encChildName.size(); i++){
-  						childList[i][0] = WizSafeSeed.seedDec((String) encChildName.get(i));
-  					}
-  				}
+  				childList = new String[encChildCtn.size()][3];
   				if(encChildCtn.size() > 0){
   					for(int i=0; i < encChildCtn.size(); i++){
   						childList[i][1] = WizSafeSeed.seedDec((String) encChildCtn.get(i));
+  					}
+  				}
+  				if(encChildName.size() > 0){
+  					for(int i=0; i < encChildName.size(); i++){
+  						childList[i][0] = WizSafeSeed.seedDec((String) encChildName.get(i));
   					}
   				}
   				if(state.size() > 0){
