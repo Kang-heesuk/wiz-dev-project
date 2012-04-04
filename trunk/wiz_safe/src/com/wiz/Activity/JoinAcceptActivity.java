@@ -287,6 +287,7 @@ public class JoinAcceptActivity extends Activity {
     //API 호출 쓰레드
   	class callAuthSMSApiThread extends Thread{
   		public void run(){
+  			
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(JoinAcceptActivity.this));
   				String url = "https://www.heream.com/api/sendAuthSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn);
@@ -298,11 +299,11 @@ public class JoinAcceptActivity extends Activity {
   				{
   					returnXML.add(new String(temp));
   				}
+  				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
   			}
-  			pHandler.sendEmptyMessage(0);
   		}
   	}
   	
@@ -310,9 +311,11 @@ public class JoinAcceptActivity extends Activity {
   		public void handleMessage(Message msg){
   			WizSafeDialog.hideLoading();
   			if(msg.what == 0){
+  				
   				Intent intent = new Intent(JoinAcceptActivity.this, JoinAuthActivity.class);
 				startActivity(intent);
 				JoinAcceptActivity.this.finish();
+				
   			}else if(msg.what == 1){
   				AlertDialog.Builder ad = new AlertDialog.Builder(JoinAcceptActivity.this);
 				String title = "통신 오류";	
