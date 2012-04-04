@@ -35,31 +35,31 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="18"
+                android:layout_weight="15"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="64"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="70"
+                android:gravity="center"
                 android:orientation="vertical" >
 
                 <TextView
                     android:id="@+id/textView1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="  잠시만 기다려 주세요...  "
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text=""
                     android:textColor="#ff000000"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="18"
+                android:layout_weight="15"
                 android:orientation="vertical" >
             </LinearLayout>
         </LinearLayout>
@@ -67,14 +67,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="6"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -87,7 +87,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_weight="46"
                 android:orientation="vertical" >
 
@@ -95,10 +95,11 @@
                     android:id="@+id/editText1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:gravity="center"
                    	android:maxLength="4"
                     android:background="@null"
                     android:digits="0123456789"
-                    android:hint="인증번호를 입력해 주세요."
+                    android:hint="인증번호 입력"
                     android:imeOptions="actionDone"
                     android:inputType="number|phone"
                     android:textColor="#ffaaaaaa"
