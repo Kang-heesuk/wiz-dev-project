@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +52,9 @@ public class ChildListActivity extends Activity {
 	int whereFlag = -1;
 	String alreadyRegCtn = "";
 	
+	ChildListAdapter listAdapter;
+	ListView listView;
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.child_list);
@@ -62,98 +64,25 @@ public class ChildListActivity extends Activity {
     	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
         CallGetChildListApiThread thread = new CallGetChildListApiThread(); 
 		thread.start();
-		
-        whereFlag = childListArr.size() + 1;
-		alreadyRegCtn = "";
-		if(childListArr.size() > 0){
-			for(int i = 0 ; i < childListArr.size() ; i++){
-				alreadyRegCtn = alreadyRegCtn + childListArr.get(i).getChildCtn() + "|";
-			}
-		}
-        Log.i("banhong", "==>>"+childListArr.size());
-        //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
-        if(childListArr.size() <= 0){
-        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
-        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
-        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
-        	bgArea.setBackgroundResource(R.drawable.bg_child1);
-        	visibleArea1.setVisibility(View.GONE);
-        	visibleArea2.setVisibility(View.VISIBLE);
-        }
         
-        ChildListAdapter listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
-        ListView listView = (ListView)findViewById(R.id.list1);
+        listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
+        listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.child_list_footer, null, false);
         listView.addFooterView(footer);
-        listView.setAdapter(listAdapter);
-        
-        //자녀등록하기(리스트 있는경우)
-        findViewById(R.id.btn_addChild).setOnClickListener(
-			new Button.OnClickListener(){
-				public void onClick(View v) {
-					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
-					intent.putExtra("whereFlag", whereFlag);
-					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
-					startActivity(intent);
-				}
-			}
-		);
-        
-        //자녀등록하기(리스트 없는경우)
-        findViewById(R.id.btn_noElements).setOnClickListener(
-			new Button.OnClickListener(){
-				public void onClick(View v) {
-					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
-					intent.putExtra("whereFlag", whereFlag);
-					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
-					startActivity(intent);
-				}
-			}
-		);
-        
-        
-        //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의
-        //1. 삭제
-        if(childListArr.size() <= 0){
-        	findViewById(R.id.deleteButton).setBackgroundResource(R.drawable.b_menub_1_off);
-        }
-        findViewById(R.id.deleteButton).setOnClickListener(
-			new Button.OnClickListener(){
-				public void onClick(View v) {
-					if(childListArr.size() > 0){
-						bottomMenuToggle();
-						onClickdeleteButtonAction();
-					}else{
-						
-					}
-				}
-			}
-		);
-        
-        //2. 자녀추가
-        findViewById(R.id.childAdditionButton).setOnClickListener(
-			new Button.OnClickListener(){
-				public void onClick(View v) {
-					bottomMenuToggle();
-					Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
-					intent.putExtra("whereFlag", whereFlag);
-					intent.putExtra("alreadyRegCtn", alreadyRegCtn);
-					startActivity(intent);
-				}
-			}
-		);
-        
-        //2. 이용안내
-        findViewById(R.id.useInfoButton).setOnClickListener(
-			new Button.OnClickListener(){
-				public void onClick(View v) {
-					bottomMenuToggle();
-					Intent intent = new Intent(ChildListActivity.this, UseInfoListActivity.class);
-					startActivity(intent);
-				}
-			}
-		);
-        
+    }
+    
+    //리스트뷰를 리로드
+    public void upDateListView(){
+    	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
+  		listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
+  		ListView listView = (ListView)findViewById(R.id.list1);
+    	listView.setAdapter(listAdapter);
+    }
+    public void upDateListView(boolean deleteMenuToggle){
+    	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.(삭제버튼 눌렀을경우 재호출하는것)
+  		listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr, deleteMenuToggle);
+  		ListView listView = (ListView)findViewById(R.id.list1);
+    	listView.setAdapter(listAdapter);
     }
     
     //메뉴키 눌렀을경우 하단의 메뉴영역이 보이고 안보이고에 따라 레이아웃 조절
@@ -420,23 +349,11 @@ public class ChildListActivity extends Activity {
     }
     
     
-    //메뉴에서 삭제 버튼을 눌렀을 경우 액션
-    public void onClickdeleteButtonAction(){
-  		if(deleteMenuToggle == false){
-  			deleteMenuToggle = true;
-  		}else{
-  			deleteMenuToggle = false;
-  		}
-  		
-  		//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
-  		ChildListAdapter listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr, deleteMenuToggle);
-  		ListView listView = (ListView)findViewById(R.id.list1);
-    	listView.setAdapter(listAdapter);
-    }
     
     
     
-  //API 호출 쓰레드
+    
+    //API 호출 쓰레드
   	class CallGetChildListApiThread extends Thread{
   		public void run(){
   			InputStream is = null;
@@ -503,7 +420,97 @@ public class ChildListActivity extends Activity {
   				//핸들러 정상동작
   				if(httpResult == 0){
 					//조회성공
+  					whereFlag = childListArr.size() + 1;
+  					alreadyRegCtn = "";
+  					if(childListArr.size() > 0){
+  						for(int i = 0 ; i < childListArr.size() ; i++){
+  							alreadyRegCtn = alreadyRegCtn + childListArr.get(i).getChildCtn() + "|";
+  						}
+  					}
   					
+  					//리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
+  			        if(childListArr.size() <= 0){
+  			        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
+  			        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+  			        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
+  			        	bgArea.setBackgroundResource(R.drawable.bg_child1);
+  			        	visibleArea1.setVisibility(View.GONE);
+  			        	visibleArea2.setVisibility(View.VISIBLE);
+  			        }
+  					
+  			        //자녀등록하기(리스트 있는경우)
+  			        findViewById(R.id.btn_addChild).setOnClickListener(
+  						new Button.OnClickListener(){
+  							public void onClick(View v) {
+  								Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
+  								intent.putExtra("whereFlag", whereFlag);
+  								intent.putExtra("alreadyRegCtn", alreadyRegCtn);
+  								startActivity(intent);
+  							}
+  						}
+  					);
+  			        
+  			        //자녀등록하기(리스트 없는경우)
+  			        findViewById(R.id.btn_noElements).setOnClickListener(
+  						new Button.OnClickListener(){
+  							public void onClick(View v) {
+  								Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
+  								intent.putExtra("whereFlag", whereFlag);
+  								intent.putExtra("alreadyRegCtn", alreadyRegCtn);
+  								startActivity(intent);
+  							}
+  						}
+  					);
+  			        
+  			        
+  			        //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의
+  			        //1. 삭제
+  			        if(childListArr.size() <= 0){
+  			        	findViewById(R.id.deleteButton).setBackgroundResource(R.drawable.b_menub_1_off);
+  			        }
+  			        findViewById(R.id.deleteButton).setOnClickListener(
+  						new Button.OnClickListener(){
+  							public void onClick(View v) {
+  								if(childListArr.size() > 0){
+  									bottomMenuToggle();
+  									if(deleteMenuToggle == false){
+  							  			deleteMenuToggle = true;
+  							  		}else{
+  							  			deleteMenuToggle = false;
+  							  		}
+  							  		upDateListView(deleteMenuToggle);
+  								}else{
+  									
+  								}
+  							}
+  						}
+  					);
+  			        
+  			        //2. 자녀추가
+  			        findViewById(R.id.childAdditionButton).setOnClickListener(
+  						new Button.OnClickListener(){
+  							public void onClick(View v) {
+  								bottomMenuToggle();
+  								Intent intent = new Intent(ChildListActivity.this, ChildAddActivity.class);
+  								intent.putExtra("whereFlag", whereFlag);
+  								intent.putExtra("alreadyRegCtn", alreadyRegCtn);
+  								startActivity(intent);
+  							}
+  						}
+  					);
+  			        
+  			        //2. 이용안내
+  			        findViewById(R.id.useInfoButton).setOnClickListener(
+  						new Button.OnClickListener(){
+  							public void onClick(View v) {
+  								bottomMenuToggle();
+  								Intent intent = new Intent(ChildListActivity.this, UseInfoListActivity.class);
+  								startActivity(intent);
+  							}
+  						}
+  					);
+  					
+  			      upDateListView();
 			    	
 				}else{
 					//조회실패
