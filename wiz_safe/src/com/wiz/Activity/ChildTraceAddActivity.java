@@ -1,21 +1,32 @@
 package com.wiz.Activity;
 
-import com.wiz.util.WizSafeUtil;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeUtil;
 
 public class ChildTraceAddActivity extends Activity {
 	
@@ -36,7 +47,13 @@ public class ChildTraceAddActivity extends Activity {
 	String textDay = "";			//설정경고창에 뿌려질 문구 - 설정요일
 	String textStartTime = "";		//설정경고창에 뿌려질 문구 - 설정시간
 	String textEndTime = "";		//설정경고창에 뿌려질 문구 - 설정시간
-	String textInterval = "";	//설정경고창에 뿌려질 문구 - 설정간격
+	String textInterval = "";		//설정경고창에 뿌려질 문구 - 설정간격
+	
+	//API 호출 후 리턴XML을 받는 벡터
+	ArrayList<String> returnXML;
+	
+	//API 호출 후 RESULT_CD 부분을 받는 변수
+	int addApiResult = -1;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -64,8 +81,6 @@ public class ChildTraceAddActivity extends Activity {
 		if(intent.getStringExtra("nowOperationState") != null){
 			nowOperationState = intent.getStringExtra("nowOperationState");
 		}
-        
-        
         		
         
         //셀렉트 박스 구성(요일설정)
@@ -201,8 +216,10 @@ public class ChildTraceAddActivity extends Activity {
 				submitAlert.setMessage("휴대폰 번호 : "+WizSafeUtil.setPhoneNum(phonenum)+"\n설정 요일 : " + textDay + "\n설정 시간 : " + textStartTime + "~" + textEndTime + "까지" + "\n설정 간격 : " + textInterval + "\n※ 1일 100포인트 씩 자동 소진 됩니다.");
 				submitAlert.setPositiveButton("등록", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Log.i("childTraceAdd",startDay + "===" + endDay + "====" + startTime + "====" + endTime + "====" + interval);
-						Log.i("childTraceAdd","==========통신시작!");
+						//API 통신 쓰레드 시작한다.
+				        WizSafeDialog.showLoading(ChildTraceAddActivity.this);	//Dialog 보이기
+				        CallChildTraceAddApiThread thread = new CallChildTraceAddApiThread();
+						thread.start();
 					}
 				});
 				submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
@@ -217,4 +234,85 @@ public class ChildTraceAddActivity extends Activity {
 			}
 		}
 	};
+	
+	
+	//API 호출 쓰레드
+  	class CallChildTraceAddApiThread extends Thread{
+  		public void run(){
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceAddActivity.this));
+  				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
+  				String url = "https://www.heream.com/api/addChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn) +"&childName="+ URLEncoder.encode(enc_childCtn) + "&startDay=" + URLEncoder.encode(startDay) + "&endDay=" + URLEncoder.encode(endDay) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) + "&interval=" + URLEncoder.encode(interval);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					Log.i("childList",">>" + temp);
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
+  				addApiResult = Integer.parseInt(resultCode);
+
+  				pHandler.sendEmptyMessage(0);
+  				
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}
+  		}
+  	}
+  	
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				if(addApiResult == 0){
+					finish();
+				}else if(addApiResult == 1){
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceAddActivity.this);
+					ad.setTitle("포인트 안내");
+					ad.setMessage("보유한 포인트가 부족합니다. 포인트 충전 후 다시 이용해 주세요.");
+					ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							Toast.makeText(ChildTraceAddActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
+						}
+					});
+					ad.setNegativeButton("발자취설정\n닫기", new DialogInterface.OnClickListener(){
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+				}else if(addApiResult == -1){
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceAddActivity.this);
+					String title = "등록 오류";	
+					String message = "발자취 등록 중 오류가 발생하였습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					ad.show();
+				}
+  			}if(msg.what == 1){
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceAddActivity.this);
+				String title = "등록 오류";	
+				String message = "발자취 등록 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	};
+  	
 }
