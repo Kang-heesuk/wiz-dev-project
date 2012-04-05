@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -263,10 +264,10 @@ public class ParentListActivity extends Activity {
 			
 			if("".equals(arSrc.get(pos).getAcceptDate())){
 				//날짜가 없으면 대기중
-				imgState.setBackgroundResource(R.drawable.icon_7);
+				imgState.setBackgroundResource(R.drawable.icon_6);
 			}else{
 				//날짜가 있으면 활성화
-				imgState.setBackgroundResource(R.drawable.icon_6);
+				imgState.setBackgroundResource(R.drawable.icon_7);
 			}
 			
 			//메뉴에서 삭제하기 눌렀을 경우 버튼 노출 문구 정의

@@ -56,7 +56,7 @@ public class ParentAddActivity extends Activity {
         
         parentPhone = (EditText)findViewById(R.id.parentPhone);
         parentName = (EditText)findViewById(R.id.parentName);
-        parentName.setHint("미입력시 '부모" + whereFlag + "' 자동 설정 됨");
+        parentName.setHint("미입력시 '부모' 자동 설정 됨");
         
         //버튼 액션 및 체크박스 클릭 액션 정의
         findViewById(R.id.goSubmit).setOnClickListener(mClickListener);
@@ -78,7 +78,7 @@ public class ParentAddActivity extends Activity {
 					parentPhoneTemp = "";
 				}
 				if("".equals(parentNameTemp)){
-					parentNameTemp = "부모" + whereFlag;
+					parentNameTemp = "부모";
 				}
 				
 				if("".equals(parentPhoneTemp)){
