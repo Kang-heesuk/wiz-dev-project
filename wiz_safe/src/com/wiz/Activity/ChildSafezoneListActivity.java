@@ -323,31 +323,29 @@ public class ChildSafezoneListActivity extends Activity {
   			    	}
   		    	}
   				
-  				//pHandler.sendEmptyMessage(0);
+  				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
   				//통신중 에러발생
-  				//pHandler.sendEmptyMessage(1);
+  				pHandler.sendEmptyMessage(1);
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
-  			
-  			
-  			Handler pHandler = new Handler(){
-  		  		public void handleMessage(Message msg){
-  					WizSafeDialog.hideLoading();
-  		  			if(msg.what == 0){
-  		  				//핸들러 정상동작
-  		  				if(httpResult == 0){
-  		  					
-  						}else{
-  							//조회실패
-  						}
-  		  			}else if(msg.what == 1){
-  		  				//핸들러 비정상
-  		  			}
-  		  		}
-  		  	};
   		}
   	}
-	
+
+	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+  					
+				}else{
+					//조회실패
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  			}
+  		}
+  	};
 }
