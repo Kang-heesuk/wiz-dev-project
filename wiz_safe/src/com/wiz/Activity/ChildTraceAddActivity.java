@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -43,7 +42,7 @@ public class ChildTraceAddActivity extends Activity {
 	String startTime = "";			//시작시간
 	String endTime = "";			//종료시간
 	String interval = "";			//간격(분단위)
-	String nowOperationState = "";	//현재 발자취 서비스가 동작중인지 아닌지 판단
+	String traceLogCode = "";		//등록 SEQ
 	String textDay = "";			//설정경고창에 뿌려질 문구 - 설정요일
 	String textStartTime = "";		//설정경고창에 뿌려질 문구 - 설정시간
 	String textEndTime = "";		//설정경고창에 뿌려질 문구 - 설정시간
@@ -78,10 +77,12 @@ public class ChildTraceAddActivity extends Activity {
 		if(intent.getStringExtra("interval") != null){
 			interval = intent.getStringExtra("interval");
 		}
-		if(intent.getStringExtra("nowOperationState") != null){
-			nowOperationState = intent.getStringExtra("nowOperationState");
+		if(intent.getStringExtra("traceLogCode") != null){
+			traceLogCode = intent.getStringExtra("traceLogCode");
+			findViewById(R.id.btn_setup).setBackgroundResource(R.drawable.btn_modify_selector);
+		}else{
+			traceLogCode = "INSERT";
 		}
-        		
         
         //셀렉트 박스 구성(요일설정)
         Spinner weekSpiner = (Spinner)findViewById(R.id.weekSpinner);
@@ -166,7 +167,13 @@ public class ChildTraceAddActivity extends Activity {
         		}else{
         			endTime = "0" + Integer.toString(position + 1);
         		}
+        		//24시는 00시로 대체해서 DB에 저장하기 위한 변형(종료시간만 해당됨)
+        		if("24".equals(endTime)){
+        			endTime = "00";
+        		}
+        		
         		textEndTime = endTimeAdspin.getItem(position).toString();
+        		
 			}
         	
 			public void onNothingSelected(AdapterView<?> parent) {
@@ -194,11 +201,6 @@ public class ChildTraceAddActivity extends Activity {
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
-        
-        //노출되는 버튼 이미지 변경
-        if(intent.getStringExtra("nowOperationState") != null){
-        	findViewById(R.id.btn_setup).setBackgroundResource(R.drawable.btn_modify_selector);
-        }
         
         //버튼 액션 정의
         findViewById(R.id.btn_setup).setOnClickListener(mClickListener);
@@ -242,14 +244,13 @@ public class ChildTraceAddActivity extends Activity {
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceAddActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
-  				String url = "https://www.heream.com/api/addChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn) +"&childName="+ URLEncoder.encode(enc_childCtn) + "&startDay=" + URLEncoder.encode(startDay) + "&endDay=" + URLEncoder.encode(endDay) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) + "&interval=" + URLEncoder.encode(interval);
+  				String url = "https://www.heream.com/api/addChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn) +"&childName="+ URLEncoder.encode(enc_childCtn) + "&startDay=" + URLEncoder.encode(startDay) + "&endDay=" + URLEncoder.encode(endDay) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) + "&interval=" + URLEncoder.encode(interval) + "&traceLogCode=" + URLEncoder.encode(traceLogCode);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
@@ -300,8 +301,8 @@ public class ChildTraceAddActivity extends Activity {
 				}
   			}if(msg.what == 1){
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceAddActivity.this);
-				String title = "등록 오류";	
-				String message = "발자취 등록 중 오류가 발생하였습니다.";	
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
 				String buttonName = "확인";
 				ad.setTitle(title);
 				ad.setMessage(message);

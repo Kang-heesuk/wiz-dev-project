@@ -82,7 +82,7 @@
                                 android:id="@+id/childNameArea"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="자녀1"
+                                android:text=""
                                 android:textColor="#ff000000"
                                 android:textSize="16dp" />
 
@@ -90,7 +90,7 @@
                                 android:id="@+id/phonenumArea"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="(010-2932-5100)"
+                                android:text=""
                                 android:textColor="#ff000000"
                                 android:textSize="16dp" />
                         </LinearLayout>
@@ -199,7 +199,7 @@
                                             android:id="@+id/weekendArea"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:text="요일 : 월 ~ 금 요일"
+                                            android:text=""
                                             android:textColor="#ff000000"
                                             android:textSize="13sp" />
                                     </LinearLayout>
@@ -228,7 +228,7 @@
                                             android:id="@+id/timeArea"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:text="시간 : 오후1시 ~ 오후 7시"
+                                            android:text=""
                                             android:textColor="#ff000000"
                                             android:textSize="13sp" />
                                     </LinearLayout>
@@ -257,7 +257,7 @@
                                             android:id="@+id/intervalArea"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:text="간격 : 1시간"
+                                            android:text=""
                                             android:textColor="#ff000000"
                                             android:textSize="13sp" />
                                     </LinearLayout>
