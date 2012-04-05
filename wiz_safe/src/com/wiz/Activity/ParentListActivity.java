@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
@@ -54,6 +52,12 @@ public class ParentListActivity extends Activity {
 	
 	parentListAdapter listAdapter;
 	ListView listView;
+	
+	//선택된 ROW의 번호
+	int selectedRow = -1;
+	
+	//삭제 API 호출 후의 결과값
+	int deleteApiResult = -1;
 	
     public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState); 
@@ -282,11 +286,12 @@ public class ParentListActivity extends Activity {
 					public void onClick(View v) {
 						//삭제하기 버튼을 클릭하였을 경우
 						if(menuClickDelete){
-							Toast.makeText(ParentListActivity.this, "삭제하기 API 통신", Toast.LENGTH_SHORT).show();
-							//액티비티 재시작
-							Intent intent = getIntent();
-							finish();
-							startActivity(intent);
+							selectedRow = pos;
+
+							//삭제하기 API 호출 쓰레드 시작
+					    	WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
+					        CallDeleteApiThread thread = new CallDeleteApiThread(); 
+							thread.start();
 						}
 					}
 				}
@@ -403,6 +408,37 @@ public class ParentListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+  	
+  //API 호출 쓰레드
+  	class CallDeleteApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ParentListActivity.this));
+  				String enc_selectedCtn = WizSafeSeed.seedEnc(parentListArr.get(selectedRow).getparentCtn());
+  				String url = "https://www.heream.com/api/deleteRelation.jsp?parentCtn="+ URLEncoder.encode(enc_selectedCtn) + "&childCtn=" + URLEncoder.encode(enc_ctn);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				
+  				deleteApiResult = Integer.parseInt(resultCode);
+  				
+  				pHandler.sendEmptyMessage(2);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(3);
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
@@ -527,6 +563,26 @@ public class ParentListActivity extends Activity {
 				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						finish();
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 2){
+				//액티비티 재시작
+				Intent intent = getIntent();
+				finish();
+				startActivity(intent);
+  			}else if(msg.what == 3){
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ParentListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = getIntent();
+						finish();
+						startActivity(intent);
 					}
 				});
 				ad.show();
