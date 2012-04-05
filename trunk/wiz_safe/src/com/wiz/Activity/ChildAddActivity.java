@@ -56,7 +56,7 @@ public class ChildAddActivity extends Activity {
         
         childPhone = (EditText)findViewById(R.id.childPhone);
         childName = (EditText)findViewById(R.id.childName);
-        childName.setHint("미입력시 '자녀" + whereFlag + "' 자동 설정 됨");
+        childName.setHint("미입력시 '자녀' 자동 설정 됨");
         
         //버튼 액션 및 체크박스 클릭 액션 정의
         findViewById(R.id.goSubmit).setOnClickListener(mClickListener);
@@ -76,7 +76,7 @@ public class ChildAddActivity extends Activity {
 					childPhoneTemp = "";
 				}
 				if("".equals(childNameTemp)){
-					childNameTemp = "자녀" + whereFlag;
+					childNameTemp = "자녀";
 				}
 				
 				if("".equals(childPhoneTemp)){
