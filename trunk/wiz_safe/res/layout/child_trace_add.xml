@@ -120,7 +120,7 @@
                     android:id="@+id/timeStartSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="4dp"
                     android:background="@drawable/listmenu_s" />
             </LinearLayout>
 
@@ -141,7 +141,7 @@
                     android:id="@+id/timeEndSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="4dp"
                     android:background="@drawable/listmenu_s" />
             </LinearLayout>
 
