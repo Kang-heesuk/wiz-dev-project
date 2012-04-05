@@ -202,7 +202,7 @@ public class ChildSafezoneListActivity extends Activity {
 					day = day.substring(1,2);
 				}
 				String time = textView2.substring(8, 10);
-				textArea2.setText(year + "년 " + month + "월 " + day + "일 " + WizSafeUtil.timeConvertFromNumberToString(time) + " 진입");
+				textArea2.setText(year + "년 " + month + "월 " + day + "일 " + WizSafeUtil.timeConvertFromNumberToString0to23(time) + " 진입");
 				textArea2.setVisibility(View.VISIBLE);
 			}
 			
