@@ -1,5 +1,10 @@
 package com.wiz.Activity;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -8,6 +13,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +26,19 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
 import com.wiz.util.WizSafeUtil;
 
 public class ChildSafezoneListActivity extends Activity {
 	
 	String phonenum = "";
 	String childName = "";
+
+	//API 통신 성공유무 변수 
+	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	String[][] childSafezoneList;
 	
 	//등록된 안심존 리스트
 	ArrayList<ChildSafezoneDetail> childSafezoneListArr = new ArrayList<ChildSafezoneDetail>();
@@ -37,12 +51,18 @@ public class ChildSafezoneListActivity extends Activity {
 
 		//앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
-        phonenum = intent.getStringExtra("phonenum");		
+        phonenum = intent.getStringExtra("phonenum");
         childName = intent.getStringExtra("childName");
         
         //등록된 안심존 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
-        getSafeZoneList();
-        
+        //getSafeZoneList();
+        //API 호출 쓰레드 시작
+    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+    	WizSafeDialog.showLoading(ChildSafezoneListActivity.this);	//Dialog 보이기
+        CallGetSafeZoneListApiThread thread = new CallGetSafeZoneListApiThread(); 
+		thread.start();
+		
+		
         //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
         if(childSafezoneListArr.size() <= 0){
         	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
@@ -81,20 +101,6 @@ public class ChildSafezoneListActivity extends Activity {
         
 	}
 	
-    public void getSafeZoneList() {
-    	//API 연동하여 현재 나에게 등록되어 있는 안심존 리스트를 가져온다.
-    	//요건 로직을 짜지 않았으므로 일단은 하드코딩한다.
-    	
-    	//가져온 값	[0] = 시퀀스 넘버이다.  [3] = 안심존에 진입한 경우 날짜 + 시간이 들어오고, 아닌경우 공백이 들어온다.
-    	String[][] tempHardCoding = {{"2",phonenum,"서울시특별시 송파구 가락동 78","2012030216"},{"1",phonenum,"서울특별시 송파구 가락동 81-5","0"}};
-    	
-    	if(tempHardCoding != null){
-	    	for(int i = 0 ; i < tempHardCoding.length ; i++){
-	    		ChildSafezoneDetail addSafeList = new ChildSafezoneDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2], tempHardCoding[i][3]);
-	    		childSafezoneListArr.add(addSafeList);
-	    	}
-    	}
-    }
 	
     class ChildSafezoneListAdapter extends BaseAdapter {
 
@@ -261,5 +267,87 @@ public class ChildSafezoneListActivity extends Activity {
 			return safeAlarmDate;
     	}
     }
+	
+	//API 호출 쓰레드
+  	class CallGetSafeZoneListApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String url = "https://www.heream.com/api/getNoticeInfo.jsp";
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				ArrayList<String> encParentName = WizSafeParser.xmlParser_List(returnXML,"<PARENT_NAME>");
+  				ArrayList<String> encParentCtn = WizSafeParser.xmlParser_List(returnXML,"<PARENT_CTN>");
+  				ArrayList<String> state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
+  				ArrayList<String> acceptDate = WizSafeParser.xmlParser_List(returnXML,"<ACCEPT_DATE>");
+  				
+  				//복호화 하여 2차원배열에 담는다.
+  				httpResult = Integer.parseInt(resultCode);
+  				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
+  				childSafezoneList = new String[encParentCtn.size()][4];
+  				
+  				if(encParentCtn.size() > 0){
+  					for(int i=0; i < encParentCtn.size(); i++){
+  						childSafezoneList[i][1] = WizSafeSeed.seedDec((String) encParentCtn.get(i));
+  					}
+  				}
+  				if(encParentName.size() > 0){
+  					for(int i=0; i < encParentName.size(); i++){
+  						childSafezoneList[i][0] = WizSafeSeed.seedDec((String) encParentName.get(i));
+  					}
+  				}
+  				if(state.size() > 0){
+  					for(int i=0; i < state.size(); i++){
+  						childSafezoneList[i][2] = (String) state.get(i);
+  					}
+  				}
+  				if(acceptDate.size() > 0){
+  					for(int i=0; i < acceptDate.size(); i++){
+  						childSafezoneList[i][3] = (String) acceptDate.get(i);
+  					}
+  				}
+  				
+  				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  		    	if(childSafezoneList != null){
+  			    	for(int i = 0 ; i < childSafezoneList.length ; i++){
+  			    		ChildSafezoneDetail addParentList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2], childSafezoneList[i][3]);
+  			    		childSafezoneListArr.add(addParentList);
+  			    	}
+  		    	}
+  				
+  				//pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				//pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  			
+  			
+  			Handler pHandler = new Handler(){
+  		  		public void handleMessage(Message msg){
+  					WizSafeDialog.hideLoading();
+  		  			if(msg.what == 0){
+  		  				//핸들러 정상동작
+  		  				if(httpResult == 0){
+  		  					
+  						}else{
+  							//조회실패
+  						}
+  		  			}else if(msg.what == 1){
+  		  				//핸들러 비정상
+  		  			}
+  		  		}
+  		  	};
+  		}
+  	}
 	
 }
