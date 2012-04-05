@@ -23,10 +23,6 @@ public class PopView {
       window.setTouchInterceptor(new OnTouchListener() {
          @Override
          public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_OUTSIDE) { // popupview영역 외의 바깥부분을 터치할 시
-               PopView.this.window.dismiss();
-               return true;
-            }
             return false;
          }
    });  
@@ -45,13 +41,13 @@ public class PopView {
       } else {
          window.setBackgroundDrawable(background);
       }
-      //window.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-      //window.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+      window.setWidth(WindowManager.LayoutParams.FILL_PARENT);
+      window.setHeight(WindowManager.LayoutParams.FILL_PARENT);
       Display display = ((WindowManager)anchor.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-      int popWidth = (display.getWidth() / 4) * 3;
-  	  int popHeight = (display.getHeight() / 2);
-      window.setWidth(popWidth);
-      window.setHeight(popHeight);
+      //int popWidth = display.getWidth();
+      //int popHeight = display.getHeight();
+      //window.setWidth(popWidth);
+      //window.setHeight(popHeight);
       window.setTouchable(true);
       window.setFocusable(true);
       window.setOutsideTouchable(true);
@@ -74,5 +70,6 @@ public class PopView {
    public void dismiss() {
       window.dismiss();  // popupview를 닫는다.
    }
+ 
 }
  

@@ -107,7 +107,6 @@ public class ChildLocationViewActivity extends NMapActivity {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
-    	
     	//API 호출 쓰레드 시작
     	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
     	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
