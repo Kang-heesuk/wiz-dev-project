@@ -105,12 +105,68 @@ public class WizSafeUtil {
 		return returnVal;
 	}
 	
-	public static String timeConvertFromNumberToString(String num)
+	public static String timeConvertFromNumberToString0to23(String num)
 	{
 		String returnVal = "";
 		
 		if("00".equals(num)){
 			returnVal = "오전0시";
+		}else if("01".equals(num)){
+			returnVal = "오전1시";
+		}else if("02".equals(num)){
+			returnVal = "오전2시";
+		}else if("03".equals(num)){
+			returnVal = "오전3시";
+		}else if("04".equals(num)){
+			returnVal = "오전4시";
+		}else if("05".equals(num)){
+			returnVal = "오전5시";
+		}else if("06".equals(num)){
+			returnVal = "오전6시";
+		}else if("07".equals(num)){
+			returnVal = "오전7시";
+		}else if("08".equals(num)){
+			returnVal = "오전8시";
+		}else if("09".equals(num)){
+			returnVal = "오전9시";
+		}else if("10".equals(num)){
+			returnVal = "오전10시";
+		}else if("11".equals(num)){
+			returnVal = "오전11시";
+		}else if("12".equals(num)){
+			returnVal = "오후12시";
+		}else if("13".equals(num)){
+			returnVal = "오후1시";
+		}else if("14".equals(num)){
+			returnVal = "오후2시";
+		}else if("15".equals(num)){
+			returnVal = "오후3시";
+		}else if("16".equals(num)){
+			returnVal = "오후4시";
+		}else if("17".equals(num)){
+			returnVal = "오후5시";
+		}else if("18".equals(num)){
+			returnVal = "오후6시";
+		}else if("19".equals(num)){
+			returnVal = "오후7시";
+		}else if("20".equals(num)){
+			returnVal = "오후8시";
+		}else if("21".equals(num)){
+			returnVal = "오후9시";
+		}else if("22".equals(num)){
+			returnVal = "오후10시";
+		}else if("23".equals(num)){
+			returnVal = "오후11시";
+		}
+		return returnVal;
+	}
+	
+	public static String timeConvertFromNumberToString1to24(String num)
+	{
+		String returnVal = "";
+		
+		if("00".equals(num)){
+			returnVal = "오전12시";
 		}else if("01".equals(num)){
 			returnVal = "오전1시";
 		}else if("02".equals(num)){
