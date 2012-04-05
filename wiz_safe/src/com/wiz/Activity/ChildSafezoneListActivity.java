@@ -1,7 +1,7 @@
 package com.wiz.Activity;
 
 import java.util.ArrayList;
-import com.wiz.util.WizSafeUtil;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,15 +19,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.util.WizSafeUtil;
+
 public class ChildSafezoneListActivity extends Activity {
 	
 	String phonenum = "";
 	String childName = "";
 	
 	//등록된 안심존 리스트
-	ArrayList<safeList> safetyList = new ArrayList<safeList>();
+	ArrayList<ChildSafezoneDetail> childSafezoneListArr = new ArrayList<ChildSafezoneDetail>();
 	
-	ArrayAdapter<safeList> childAdapter;
+	ArrayAdapter<ChildSafezoneDetail> childSafezoneAdapter;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -42,7 +44,7 @@ public class ChildSafezoneListActivity extends Activity {
         getSafeZoneList();
         
         //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
-        if(safetyList.size() <= 0){
+        if(childSafezoneListArr.size() <= 0){
         	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
         	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
         	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
@@ -51,11 +53,11 @@ public class ChildSafezoneListActivity extends Activity {
         	visibleArea2.setVisibility(View.VISIBLE);
         }
         
-        childListAdapter listAdapter = new childListAdapter(this, R.layout.child_safezone_list_customlist, safetyList);
+        ChildSafezoneListAdapter childSafezoneListAdapter = new ChildSafezoneListAdapter(this, R.layout.child_safezone_list_customlist, childSafezoneListArr);
         ListView listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.child_safezone_list_footer, null, false);
         listView.addFooterView(footer);
-        listView.setAdapter(listAdapter);
+        listView.setAdapter(childSafezoneListAdapter);
         
         //안심존 등록 버튼액션(리스트 있는경우)
         findViewById(R.id.btn_addChild).setOnClickListener(
@@ -88,24 +90,24 @@ public class ChildSafezoneListActivity extends Activity {
     	
     	if(tempHardCoding != null){
 	    	for(int i = 0 ; i < tempHardCoding.length ; i++){
-	    		safeList addSafeList = new safeList(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2], tempHardCoding[i][3]);
-	    		safetyList.add(addSafeList);
+	    		ChildSafezoneDetail addSafeList = new ChildSafezoneDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2], tempHardCoding[i][3]);
+	    		childSafezoneListArr.add(addSafeList);
 	    	}
     	}
     }
 	
-    class childListAdapter extends BaseAdapter {
+    class ChildSafezoneListAdapter extends BaseAdapter {
 
     	//메뉴에서 삭제 버튼을 눌렀는지에 대한 여부
     	boolean menuClickDelete = false;
     	
     	Context maincon;
     	LayoutInflater Inflater;
-    	ArrayList<safeList> arSrc;
+    	ArrayList<ChildSafezoneDetail> arSrc;
     	int layout;
     	
     	//최초 커스텀리스트 뷰를 보여줄때
-    	public childListAdapter(Context context, int alayout, ArrayList<safeList> aarSrc){
+    	public ChildSafezoneListAdapter(Context context, int alayout, ArrayList<ChildSafezoneDetail> aarSrc){
     		maincon = context;
     		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		arSrc = aarSrc;
@@ -116,7 +118,7 @@ public class ChildSafezoneListActivity extends Activity {
 			return arSrc.size();
 		}
 
-		public safeList getItem(int position) {
+		public ChildSafezoneDetail getItem(int position) {
 			return arSrc.get(position);
 		}
 
@@ -234,13 +236,13 @@ public class ChildSafezoneListActivity extends Activity {
 		}
     }
     
-	class safeList {
+	class ChildSafezoneDetail {
 		private String safeZoneCode;
     	private String phonenum;
     	private String safeAddress;
     	private String safeAlarmDate;
     	
-    	public safeList (String safeZoneCode, String phonenum, String safeAddress, String safeAlarmDate){
+    	public ChildSafezoneDetail (String safeZoneCode, String phonenum, String safeAddress, String safeAlarmDate){
     		this.safeZoneCode = safeZoneCode;
     		this.phonenum = phonenum;
     		this.safeAddress = safeAddress;
