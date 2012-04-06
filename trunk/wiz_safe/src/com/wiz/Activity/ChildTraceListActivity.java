@@ -29,6 +29,7 @@ public class ChildTraceListActivity extends Activity {
 	
 	String phonenum = "";
 	String childName = "";
+	String myPoint = "";
 	String startDay = "";
 	String endDay = "";
 	String startTime = "";
@@ -45,6 +46,15 @@ public class ChildTraceListActivity extends Activity {
 	
 	//API 호출 후 RESULT_CD 부분을 받는 변수
 	int addApiResult = -1;
+	
+	//고객정보 API 호출 후의 결과값
+	int customerInfoApiResult = -1;
+	
+	//삭제 API 호출 후의 결과값
+	int deleteApiResult = -1;
+	
+	//삭제 API 호출 후의 결과값
+	int switchApiResult = -1;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -67,20 +77,44 @@ public class ChildTraceListActivity extends Activity {
   	class CallChildTraceListApiThread extends Thread{
   		public void run(){
   			try{
+  				HttpURLConnection urlConn;
+  				BufferedReader br;
+  				String temp;
+  				String url;
+  				
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceListActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
-  				String url = "https://www.heream.com/api/getChildTraceList.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn);
-  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
-  				String temp;
+
+  				//고객정보를 가져오는 통신
+  				url = "https://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
+  				urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
   					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
-  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
-  				addApiResult = Integer.parseInt(resultCode);
+  				String resultCode_getCustomerInfo = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
+  				customerInfoApiResult = Integer.parseInt(resultCode_getCustomerInfo);
+  				if(customerInfoApiResult == 0){
+  					myPoint = WizSafeParser.xmlParser_String(returnXML,"<MYPOINT>");
+  					if(myPoint == null) myPoint = WizSafeSeed.seedEnc("0");
+  					myPoint = WizSafeSeed.seedDec(myPoint);
+  				}
+  				
+  				//발자취 리스트 가져오는 통신
+  				url = "https://www.heream.com/api/getChildTraceList.jsp?ctn=" + URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn);
+  				urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					Log.i("childList",">>" + temp);
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode_getList = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
+  				addApiResult = Integer.parseInt(resultCode_getList);
   				
   				if(addApiResult == 0){
   					isRegisterTrace = true;
@@ -95,11 +129,76 @@ public class ChildTraceListActivity extends Activity {
 				nowOperationState = WizSafeParser.xmlParser_String(returnXML,"<TRACE_STATE>");
 				traceLogCode = WizSafeParser.xmlParser_String(returnXML,"<TRACELOG_CODE>");
 
-  				pHandler.sendEmptyMessage(0);
+				pHandler.sendEmptyMessage(0);
   				
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
+  			}
+  		}
+  	}
+  	
+  	//API 호출 쓰레드 삭제하기
+  	class CallDeleteChildTraceListApiThread extends Thread{
+  		public void run(){
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceListActivity.this));
+  				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
+  				String url = "https://www.heream.com/api/deleteChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&traceLogCode="+ URLEncoder.encode(traceLogCode);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					Log.i("childList",">>" + temp);
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
+  				deleteApiResult = Integer.parseInt(resultCode);
+  				
+  				pHandler.sendEmptyMessage(2);
+  				
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(3);
+  			}
+  		}
+  	}
+  	
+  	//API 호출 쓰레드 시작정지
+  	class CallSwitchChildTraceListApiThread extends Thread{
+  		public void run(){
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceListActivity.this));
+  				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
+  				String traceState = "";
+  				
+  				//변경할 상태값
+  				if("0".equals(nowOperationState)){
+  					traceState = "1";
+  				}else{
+  					traceState = "0";
+  				}
+  				
+  				String url = "https://www.heream.com/api/switchChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&traceState="+ URLEncoder.encode(traceState) + "&traceLogCode="+ URLEncoder.encode(traceLogCode);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					Log.i("childList",">>" + temp);
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
+  				switchApiResult = Integer.parseInt(resultCode);
+  				
+  				pHandler.sendEmptyMessage(4);
+  				
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(5);
   			}
   		}
   	}
@@ -122,6 +221,19 @@ public class ChildTraceListActivity extends Activity {
   			        }
   			        
   			        LinearLayout layout_1 = (LinearLayout)findViewById(R.id.layout_1);
+  			        Button nowStateBtn = (Button)findViewById(R.id.nowStateBtn);
+  			        
+  			        //현재 포인트에 따라서 100포인트도 없다면 포인트 부족을 보여주고, 동작상태를 비동작중으로 강제설정한다.
+  			        int myRemainPoint = 0;
+  			        if(myPoint == null || "".equals(myPoint)){
+  			        	myPoint = "0";
+  			        }
+  			        myRemainPoint = Integer.parseInt(myPoint);
+  			        TextView pointArea = (TextView)findViewById(R.id.pointArea) ;
+  			        if(myRemainPoint < 100){
+  			        	pointArea.setVisibility(View.VISIBLE);
+  			        	nowOperationState = "0";
+  			        }
   			        
   			        //현재 상태에 따라 동작중 또는 비동작중에대한 백그라운드 상태 및 클릭 가능 상태 변경
   			        if("1".equals(nowOperationState)){
@@ -142,6 +254,19 @@ public class ChildTraceListActivity extends Activity {
   			        	//1. 백그라운드 변환, 클릭시 반응 없음.
   			        	layout_1.setBackgroundResource(R.drawable.trace_stoplist_bg);
   			        }
+  			        
+  			        //자녀발자취 실행 중지 버튼 액션 설정
+  			        nowStateBtn.setOnClickListener(
+						new Button.OnClickListener(){
+							public void onClick(View v) {
+								//API 호출 쓰레드 시작
+						    	//현재 상태 on/off 변경 스레드 호출
+						    	WizSafeDialog.showLoading(ChildTraceListActivity.this);	//Dialog 보이기
+						    	CallSwitchChildTraceListApiThread thread = new CallSwitchChildTraceListApiThread(); 
+								thread.start();
+							}
+						}
+					);
   			        
   			        //자녀이름, 폰번호, 요일, 시간 , 간격을 화면에 노출
   					TextView childNameArea = (TextView)findViewById(R.id.childNameArea);
@@ -186,7 +311,11 @@ public class ChildTraceListActivity extends Activity {
   								submitAlert.setMessage("발자취 설정을 삭제 하시겠습니까?\n휴대폰 번호 : "+ WizSafeUtil.setPhoneNum(phonenum) + "\n설정 요일 : " + WizSafeUtil.dayConvertFromNumberToString(startDay) + "~" + WizSafeUtil.dayConvertFromNumberToString(endDay) + "요일\n설정 시간 : " + WizSafeUtil.timeConvertFromNumberToString0to23(startTime)+ "~" + WizSafeUtil.timeConvertFromNumberToString1to24(endTime) + "까지" + "\n설정 간격 : " + WizSafeUtil.intervalConvertMinToHour(interval) + "시간\n※ 삭제 시 금일 포인트는 환급 되지 않습니다.");
   								submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
   									public void onClick(DialogInterface dialog, int which) {
-  										Log.i("traceChild","==========통신시작!");
+  										//API 호출 쓰레드 시작
+  								    	//발자취 정보를 가져온다.
+  								    	WizSafeDialog.showLoading(ChildTraceListActivity.this);	//Dialog 보이기
+  								    	CallDeleteChildTraceListApiThread thread = new CallDeleteChildTraceListApiThread(); 
+  										thread.start();
   									}
   								});
   								submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
@@ -233,6 +362,75 @@ public class ChildTraceListActivity extends Activity {
 				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						finish();
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 2){
+  				
+  				if(deleteApiResult == 0){
+  					//액티비티 재시작
+  					Intent intent = getIntent();
+  					finish();
+  					startActivity(intent);
+  				}else{
+  					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceListActivity.this);
+  					String title = "통신 오류";	
+  					String message = "통신 중 오류가 발생하였습니다.";	
+  					String buttonName = "확인";
+  					ad.setTitle(title);
+  					ad.setMessage(message);
+  					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  						public void onClick(DialogInterface dialog, int which) {
+  						}
+  					});
+  					ad.show();
+  				}
+  			}else if(msg.what == 3){
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = getIntent();
+						finish();
+						startActivity(intent);
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 4){
+  				if(switchApiResult == 0){
+  					//액티비티 재시작
+  					Intent intent = getIntent();
+  					finish();
+  					startActivity(intent);
+  				}else{
+  					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceListActivity.this);
+  					String title = "통신 오류";	
+  					String message = "통신 중 오류가 발생하였습니다.";	
+  					String buttonName = "확인";
+  					ad.setTitle(title);
+  					ad.setMessage(message);
+  					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  						public void onClick(DialogInterface dialog, int which) {
+  						}
+  					});
+  					ad.show();
+  				}
+  			}else if(msg.what == 5){
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = getIntent();
+						finish();
+						startActivity(intent);
 					}
 				});
 				ad.show();
