@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -15,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +33,21 @@ import com.wiz.util.WizSafeUtil;
 
 public class ChildSafezoneListActivity extends Activity {
 	
-	String phonenum = "";
-	String childName = "";
-
+	String parentCtn = "";
+	String childCtn = "";
+	
 	//API 통신 성공유무 변수 
 	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
 	String[][] childSafezoneList;
+	
+	//선택된 ROW의 번호
+	int selectedRow = -1;
+	//삭제 API 호출 후의 결과값
+	int deleteApiResult = -1;	
+		
+	ChildSafezoneListAdapter childSafezoneListAdapter;
+	ListView listView;
+
 	
 	//등록된 안심존 리스트
 	ArrayList<ChildSafezoneDetail> childSafezoneListArr = new ArrayList<ChildSafezoneDetail>();
@@ -48,59 +57,32 @@ public class ChildSafezoneListActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.child_safezone_list);
-
+		
 		//앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
-        phonenum = intent.getStringExtra("phonenum");
-        childName = intent.getStringExtra("childName");
+        childCtn = intent.getStringExtra("phonenum");
+        parentCtn = WizSafeUtil.getCtn(getBaseContext());
         
-        //등록된 안심존 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
-        //getSafeZoneList();
         //API 호출 쓰레드 시작
     	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
     	WizSafeDialog.showLoading(ChildSafezoneListActivity.this);	//Dialog 보이기
         CallGetSafeZoneListApiThread thread = new CallGetSafeZoneListApiThread(); 
 		thread.start();
 		
-		
-        //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
-        if(childSafezoneListArr.size() <= 0){
-        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
-        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
-        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
-        	bgArea.setBackgroundResource(R.drawable.bg_safezone1);
-        	visibleArea1.setVisibility(View.GONE);
-        	visibleArea2.setVisibility(View.VISIBLE);
-        }
-        
-        ChildSafezoneListAdapter childSafezoneListAdapter = new ChildSafezoneListAdapter(this, R.layout.child_safezone_list_customlist, childSafezoneListArr);
-        ListView listView = (ListView)findViewById(R.id.list1);
+        childSafezoneListAdapter = new ChildSafezoneListAdapter(this, R.layout.child_safezone_list_customlist, childSafezoneListArr);
+        listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.child_safezone_list_footer, null, false);
         listView.addFooterView(footer);
         listView.setAdapter(childSafezoneListAdapter);
-        
-        //안심존 등록 버튼액션(리스트 있는경우)
-        findViewById(R.id.btn_addChild).setOnClickListener(
-			new Button.OnClickListener(){
-				public void onClick(View v) {
-					Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
-					startActivity(intent);
-				}
-			}
-		);
-        
-        //안심존 등록 버튼액션(리스트 없는경우)
-        findViewById(R.id.btn_noElements).setOnClickListener(
-			new Button.OnClickListener(){
-				public void onClick(View v) {
-					Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
-					startActivity(intent);
-				}
-			}
-		);
-        
 	}
 	
+	//리스트뷰를 리로드
+    public void upDateListView(){
+    	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
+    	childSafezoneListAdapter = new ChildSafezoneListAdapter(this, R.layout.child_safezone_list_customlist, childSafezoneListArr);
+  		listView = (ListView)findViewById(R.id.list1);
+    	listView.setAdapter(childSafezoneListAdapter);
+    }
 	
     class ChildSafezoneListAdapter extends BaseAdapter {
 
@@ -190,7 +172,7 @@ public class ChildSafezoneListActivity extends Activity {
 			
 			//문구 부분
 			textArea1.setText(arSrc.get(position).getSafeAddress());
-			String textView2 = arSrc.get(position).getsafeAlarmDate();
+			String textView2 = arSrc.get(position).getSafeAlarmDate();
 			if(textView2 != null && !"".equals(textView2) && textView2.length() >= 10){
 				String year = textView2.substring(0, 4);
 				String month = textView2.substring(4, 6);
@@ -210,9 +192,8 @@ public class ChildSafezoneListActivity extends Activity {
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 						Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
-						intent.putExtra("phonenum", phonenum);
-						intent.putExtra("childName", childName);
-						intent.putExtra("safeZoneCode", arSrc.get(pos).getSafeZoneCode());
+						intent.putExtra("phonenum", childCtn);
+						intent.putExtra("safeZoneCode", arSrc.get(pos).getSafezoneCode());
 						startActivity(intent);
 					}
 				}
@@ -226,7 +207,12 @@ public class ChildSafezoneListActivity extends Activity {
 						submitAlert.setMessage("안심존 설정을 삭제 하시겠습니까?\n설정내용 : "+ arSrc.get(pos).getSafeAddress());
 						submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
-								Log.i("traceChild","==========통신시작!");
+								//선택한 rownum
+								selectedRow = pos;
+								//삭제하기 API 호출 쓰레드 시작
+						    	WizSafeDialog.showLoading(ChildSafezoneListActivity.this);	//Dialog 보이기
+						        CallDeleteApiThread thread = new CallDeleteApiThread(); 
+								thread.start();
 							}
 						});
 						submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
@@ -243,27 +229,22 @@ public class ChildSafezoneListActivity extends Activity {
     }
     
 	class ChildSafezoneDetail {
-		private String safeZoneCode;
-    	private String phonenum;
+		private String safezoneCode;
     	private String safeAddress;
     	private String safeAlarmDate;
     	
-    	public ChildSafezoneDetail (String safeZoneCode, String phonenum, String safeAddress, String safeAlarmDate){
-    		this.safeZoneCode = safeZoneCode;
-    		this.phonenum = phonenum;
-    		this.safeAddress = safeAddress;
-    		this.safeAlarmDate = safeAlarmDate;
+    	public ChildSafezoneDetail (String _safezoneCode, String _safeAddress, String _safeAlarmDate){
+    		this.safezoneCode = _safezoneCode;
+    		this.safeAddress = _safeAddress;
+    		this.safeAlarmDate = _safeAlarmDate;
     	}
-    	private String getSafeZoneCode(){
-			return childName;
-    	}
-    	private String getPhonenum(){
-			return phonenum;
+    	private String getSafezoneCode(){
+			return safezoneCode;
     	}
     	private String getSafeAddress(){
 			return safeAddress;
     	}
-    	private String getsafeAlarmDate(){
+    	private String getSafeAlarmDate(){
 			return safeAlarmDate;
     	}
     }
@@ -273,7 +254,7 @@ public class ChildSafezoneListActivity extends Activity {
   		public void run(){
   			InputStream is = null;
   			try{
-  				String url = "https://www.heream.com/api/getNoticeInfo.jsp";
+  				String url = "https://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -284,42 +265,36 @@ public class ChildSafezoneListActivity extends Activity {
   				}
   				//결과를 XML 파싱하여 추출
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-  				ArrayList<String> encParentName = WizSafeParser.xmlParser_List(returnXML,"<PARENT_NAME>");
-  				ArrayList<String> encParentCtn = WizSafeParser.xmlParser_List(returnXML,"<PARENT_CTN>");
-  				ArrayList<String> state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
-  				ArrayList<String> acceptDate = WizSafeParser.xmlParser_List(returnXML,"<ACCEPT_DATE>");
+  				ArrayList<String> strSafezoneCode = WizSafeParser.xmlParser_List(returnXML,"<SAFEZONE_CODE>");
+  				ArrayList<String> encAddress = WizSafeParser.xmlParser_List(returnXML,"<ADDRESS>");
+  				ArrayList<String> strAlarmDate = WizSafeParser.xmlParser_List(returnXML,"<ALARM_DATE>");
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
-  				childSafezoneList = new String[encParentCtn.size()][4];
+  				childSafezoneList = new String[strSafezoneCode.size()][3];
   				
-  				if(encParentCtn.size() > 0){
-  					for(int i=0; i < encParentCtn.size(); i++){
-  						childSafezoneList[i][1] = WizSafeSeed.seedDec((String) encParentCtn.get(i));
+  				if(strSafezoneCode.size() > 0){
+  					for(int i=0; i < strSafezoneCode.size(); i++){
+  						childSafezoneList[i][0] = (String) strSafezoneCode.get(i);
   					}
   				}
-  				if(encParentName.size() > 0){
-  					for(int i=0; i < encParentName.size(); i++){
-  						childSafezoneList[i][0] = WizSafeSeed.seedDec((String) encParentName.get(i));
+  				if(encAddress.size() > 0){
+  					for(int i=0; i < encAddress.size(); i++){
+  						childSafezoneList[i][1] = WizSafeSeed.seedDec((String) encAddress.get(i));
   					}
   				}
-  				if(state.size() > 0){
-  					for(int i=0; i < state.size(); i++){
-  						childSafezoneList[i][2] = (String) state.get(i);
-  					}
-  				}
-  				if(acceptDate.size() > 0){
-  					for(int i=0; i < acceptDate.size(); i++){
-  						childSafezoneList[i][3] = (String) acceptDate.get(i);
+  				if(strAlarmDate.size() > 0){
+  					for(int i=0; i < strAlarmDate.size(); i++){
+  						childSafezoneList[i][2] = (String) strAlarmDate.get(i);
   					}
   				}
   				
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
   		    	if(childSafezoneList != null){
   			    	for(int i = 0 ; i < childSafezoneList.length ; i++){
-  			    		ChildSafezoneDetail addParentList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2], childSafezoneList[i][3]);
-  			    		childSafezoneListArr.add(addParentList);
+  			    		ChildSafezoneDetail addChildSafezoneList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2]);
+  			    		childSafezoneListArr.add(addChildSafezoneList);
   			    	}
   		    	}
   				
@@ -333,6 +308,36 @@ public class ChildSafezoneListActivity extends Activity {
   		}
   	}
 
+  	
+  //API 호출 쓰레드
+  	class CallDeleteApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String selectedSafezoneCode = childSafezoneListArr.get(selectedRow).getSafezoneCode();
+  				String url = "https://www.heream.com/api/deleteChildSafezoneData.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				
+  				deleteApiResult = Integer.parseInt(resultCode);
+  				
+  				pHandler.sendEmptyMessage(2);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(3);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
 	Handler pHandler = new Handler(){
   		public void handleMessage(Message msg){
 			WizSafeDialog.hideLoading();
@@ -340,11 +345,76 @@ public class ChildSafezoneListActivity extends Activity {
   				//핸들러 정상동작
   				if(httpResult == 0){
   					
+  					if(childSafezoneListArr.size() > 0){
+	  			        //안심존 등록 버튼액션(리스트 있는경우)
+	  			        findViewById(R.id.btn_addChild).setOnClickListener(
+	  						new Button.OnClickListener(){
+	  							public void onClick(View v) {
+	  								Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+	  								startActivity(intent);
+	  							}
+	  						}
+	  					);
+	  			        
+	  			        upDateListView();
+	  			      
+  					}else{
+  			            //리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
+  			        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
+  			        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+  			        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
+  			        	bgArea.setBackgroundResource(R.drawable.bg_safezone1);
+  			        	visibleArea1.setVisibility(View.GONE);
+  			        	visibleArea2.setVisibility(View.VISIBLE);
+  			        
+	  			        //안심존 등록 버튼액션(리스트 없는경우)
+	  			        findViewById(R.id.btn_noElements).setOnClickListener(
+	  			        	new Button.OnClickListener(){
+	  			  				public void onClick(View v) {
+	  			  					Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+	  			  					startActivity(intent);
+	  			  				}
+	  			  			}
+	  			  		);
+  					}
+  					
 				}else{
 					//조회실패
 				}
   			}else if(msg.what == 1){
   				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 2){
+  				//액티비티 재시작
+				Intent intent = getIntent();
+				finish();
+				startActivity(intent);
+  			}else if(msg.what == 3){
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = getIntent();
+						finish();
+						startActivity(intent);
+					}
+				});
+				ad.show();
   			}
   		}
   	};
