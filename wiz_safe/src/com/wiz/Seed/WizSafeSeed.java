@@ -39,7 +39,7 @@ public class WizSafeSeed {
 				e.printStackTrace();
 			}
 		}
-		return returnVal;
+		return returnVal.trim();
 	}
 
 }
