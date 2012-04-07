@@ -1,19 +1,24 @@
 package com.wiz.Activity;
 
-import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -22,73 +27,85 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ChildTraceDetailListActivity extends Activity {
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
 
+public class ChildTraceDetailListActivity extends Activity {
+	
+	String phonenum = "";
+	String childName = "";
+	String startDay = "";
+	String endDay = "";
+	String startTime = "";
+	String endTime = "";
+	String interval = "";
+	
 	//발자취 리스트
-	ArrayList<String> childLogList = new ArrayList<String>();
-	ArrayAdapter<String> childAdapter;
+	ArrayList<TraceDetail> childLogList = new ArrayList<TraceDetail>();
+	ArrayAdapter<TraceDetail> childAdapter;
+	
+	childListAdapter listAdapter;
+	ListView listView;
+	
+	//API 통신 성공유무 변수 
+	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	String[][] traceList;
+	
+	//통신으로 받아온 리스트의 사이즈 
+	int listSize = 0;
+	
+	//선택된 ROW의 번호
+	int selectedRow = -1;
 	
     public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState);  
         setContentView(R.layout.child_trace_detail_list);
        
-        //여기부터 body 구성
+        //앞 페이지에서 필요한 정보를 추출한다.
+        Intent intent = getIntent();
+        phonenum = intent.getStringExtra("phonenum");
+        childName = intent.getStringExtra("childName");
+        if(intent.getStringExtra("startDay") != null){
+        	startDay = intent.getStringExtra("startDay");
+        }
+        if(intent.getStringExtra("endDay") != null){
+        	endDay = intent.getStringExtra("endDay");
+        }
+        if(intent.getStringExtra("startTime") != null){
+        	startTime = intent.getStringExtra("startTime");
+        }
+        if(intent.getStringExtra("endTime") != null){
+        	endTime = intent.getStringExtra("endTime");
+        }
+        if(intent.getStringExtra("interval") != null){
+        	interval = intent.getStringExtra("interval");
+        }
         
-        //1주일간 발자취 리스트를 가져온다. 진행하면 arrayList에 담긴다.
-        getLogList();
-   
-        if(childLogList.size() > 0){
-			childListAdapter listAdapter = new childListAdapter(this, R.layout.child_trace_detail_list_customlist, childLogList);
-			ListView listView = (ListView)findViewById(R.id.list1);
-			listView.setAdapter(listAdapter);
-			listView.setOnItemClickListener(new infoListSelection());
-        }
+        //API 호출 쓰레드 시작
+    	//발자취 리스트를 가져온다.
+    	WizSafeDialog.showLoading(ChildTraceDetailListActivity.this);	//Dialog 보이기
+    	CallDetailListApiThread thread = new CallDetailListApiThread(); 
+		thread.start();
+
     }
     
-    
-    public void getLogList() {
-    			
-    	//발자취 등록일이 20120131 이라고 하드코딩하고 작업했음
-    	String regdate = String.valueOf(20110202);
-    	
-    	for(int i=0; i>=-6; i--){	//달력연산을 위해 -변수로 7회 반복하도록 작성
-    		//현재 시간으로 부터 발자취 기간까지 리스트로 구성한다.
-        	GregorianCalendar calendar = new GregorianCalendar();
-        	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        	
-    		//오늘날짜에서 i일전 값을 구해서 등록일 이후만 리스트에 포함시킨다.
-        	calendar.add(GregorianCalendar.DAY_OF_MONTH, i);
-        	String listdate = sdf.format(calendar.getTime());
-        	
-        	int i_regdate = Integer.parseInt(regdate);
-        	int i_listdate = Integer.parseInt(listdate);
-        	
-    		if(i_listdate > i_regdate){
-    			Date tmpDate = calendar.getTime();
-    			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy년 MM월 dd일");
-    			
-    			childLogList.add((-i), sdf2.format(tmpDate)+" 발자취");
-    		}
-    	}
-    }
-    
-    class infoListSelection implements OnItemClickListener{
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            
-        }
+    //리스트뷰를 리로드
+    public void upDateListView(){
+    	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
+    	listAdapter = new childListAdapter(this, R.layout.child_trace_detail_list_customlist, childLogList);
+		listView = (ListView)findViewById(R.id.list1);
+		listView.setAdapter(listAdapter);
     }
 
-
-    
-    
     class childListAdapter extends BaseAdapter {
 
     	Context maincon;
     	LayoutInflater Inflater;
-    	ArrayList<String> arSrc;
+    	ArrayList<TraceDetail> arSrc;
     	int layout;
     	
-    	public childListAdapter(Context context, int alayout, ArrayList<String> aarSrc){
+    	public childListAdapter(Context context, int alayout, ArrayList<TraceDetail> aarSrc){
     		maincon = context;
     		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		arSrc = aarSrc;
@@ -99,7 +116,7 @@ public class ChildTraceDetailListActivity extends Activity {
 			return arSrc.size();
 		}
 
-		public String getItem(int position) {
+		public TraceDetail getItem(int position) {
 			return arSrc.get(position);
 		}
 
@@ -161,23 +178,169 @@ public class ChildTraceDetailListActivity extends Activity {
 				imgNum.setBackgroundResource(R.drawable.img_num_20);
 			}
 			
-			textArea.setText(arSrc.get(position));
+			String yyyymmdd = arSrc.get(pos).getTraceDay().substring(0,4) + "년 " + arSrc.get(pos).getTraceDay().substring(4,6) + "월 " + arSrc.get(pos).getTraceDay().substring(6,8) + "일";
+			textArea.setText(yyyymmdd + " 발자취");
 			
 			//각 버튼 액션 정의
 			layout1.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						//삭제하기 버튼을 클릭하였을 경우
 						Toast.makeText(getApplicationContext(), "리스트뷰 "+Integer.toString(pos + 1)+"번째 눌렀다응", Toast.LENGTH_SHORT).show();
 			            Intent intent = new Intent(ChildTraceDetailListActivity.this, ChildTraceViewActivity.class);
+			            intent.putExtra("phonenum", phonenum);
+						intent.putExtra("childName", childName);
+						intent.putExtra("startDay", startDay);
+						intent.putExtra("endDay", endDay);
+						intent.putExtra("startTime", startTime);
+						intent.putExtra("endTime", endTime);
+						intent.putExtra("interval", interval);
 						startActivity(intent);
 					}
 				}
 			);
-			
 			return convertView;
 		}
-
     }
     
+    class TraceDetail {
+    	private String traceDay;
+    	private String traceDayOfWeek;
+    	private String traceLatestTime;
+    	
+    	public TraceDetail(String traceDay, String traceDayOfWeek, String traceLatestTime){
+    		this.traceDay = traceDay;
+    		this.traceDayOfWeek = traceDayOfWeek;
+    		this.traceLatestTime = traceLatestTime;
+    	}
+    	
+    	private String getTraceDay(){
+			return traceDay;
+    	}
+    	private String getTraceDayOfWeek(){
+			return traceDayOfWeek;
+    	}
+    	private String getTraceLatestTime(){
+			return traceLatestTime;
+    	}
+    }
+    
+    //API 호출 쓰레드
+  	class CallDetailListApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
+  				String url = "https://www.heream.com/api/getChildTraceDetailList.jsp?ctn="+ URLEncoder.encode(enc_childCtn) + "&startDay=" + URLEncoder.encode(startDay) + "&endDay=" + URLEncoder.encode(endDay) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) ;
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				String resultSize = WizSafeParser.xmlParser_String(returnXML,"<RESULT_COUNT>");
+  				ArrayList<String> elementDay = WizSafeParser.xmlParser_List(returnXML,"<ELEMENT_DAY>");
+  				ArrayList<String> elementDayOfWeek = WizSafeParser.xmlParser_List(returnXML,"<ELEMENT_DAY_OF_WEEK>");
+  				ArrayList<String> elementLatestTime = WizSafeParser.xmlParser_List(returnXML,"<ELEMENT_LATEST_TIME_OF_DAY>");
+  				
+  				//2차원배열에 담는다.
+  				httpResult = Integer.parseInt(resultCode);
+  				listSize = Integer.parseInt(resultSize);
+  				
+  				//조회해온 리스트 사이즈 만큼의 2차원 배열을 선언한다.
+  				traceList = new String[elementDay.size()][3]; 
+  				
+  				//조회해온 값을 2차원 배열에 넣는다.
+  				if(elementDay.size() > 0){
+  					for(int i=0; i < elementDay.size(); i++){
+  						traceList[i][0] = elementDay.get(i);
+  					}
+  				}
+  				if(elementDayOfWeek.size() > 0){
+  					for(int i=0; i < elementDayOfWeek.size(); i++){
+  						traceList[i][1] = elementDayOfWeek.get(i);
+  					}
+  				}
+  				if(elementLatestTime.size() > 0){
+  					for(int i=0; i < elementLatestTime.size(); i++){
+  						traceList[i][2] = elementLatestTime.get(i);
+  					}
+  				}
+  				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  		    	if(traceList != null){
+  			    	for(int i = 0 ; i < traceList.length ; i++){
+  			    		TraceDetail addChildLogList = new TraceDetail(traceList[i][0], traceList[i][1], traceList[i][2]);
+  			    		childLogList.add(addChildLogList);
+  			    	}
+  		    	}
+  		    	
+  		    	pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+  	
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+					//조회성공
+  					//리스트가 1개 이상 존재할경우
+  					if(listSize > 0){
+  						upDateListView();
+  					}else{
+  						AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceDetailListActivity.this);
+  						String title = "발자취 없음";	
+  						String message = "해당 설정으로 검색한 자녀 발자취가 존재하지 않습니다.";	
+  						String buttonName = "확인";
+  						ad.setTitle(title);
+  						ad.setMessage(message);
+  						ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  							public void onClick(DialogInterface dialog, int which) {
+  								finish();
+  							}
+  						});
+  						ad.show();
+  					}
+  					
+				}else{
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceDetailListActivity.this);
+					String title = "통신 오류";	
+					String message = "통신 중 오류가 발생하였습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceDetailListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();				
+  			}
+  		}
+  	};
+
 }

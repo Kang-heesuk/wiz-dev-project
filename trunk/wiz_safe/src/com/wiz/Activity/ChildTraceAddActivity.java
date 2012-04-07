@@ -153,6 +153,10 @@ public class ChildTraceAddActivity extends Activity {
         endTimeAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeEndSpinner.setAdapter(endTimeAdspin);
         if(intent.getStringExtra("endTime") != null){
+        	//종료시간이 00시 이면 셀렉트박스 리스트의 최하단의 오전 12시를 선택한다.
+        	if("00".equals(endTime)){
+        		endTime = "24";
+        	}
         	timeEndSpinner.setSelection(Integer.parseInt(endTime)-1);
         }else{
         	timeEndSpinner.setSelection(18);
