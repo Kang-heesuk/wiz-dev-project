@@ -70,12 +70,16 @@ public class MainActivity extends Activity {
   	class CallGetCustomerInformationApiThread extends Thread{
   		public void run(){
   			InputStream is = null;
+  			String url = "";
+  			HttpURLConnection urlConn;
+  			BufferedReader br;
+			String temp;
+			
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this));
-  				String url = "https://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
-  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
-  				String temp;
+  				url = "https://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
+  				urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
@@ -118,6 +122,28 @@ public class MainActivity extends Activity {
 						}
 					}
   				}
+  				
+  				url = "https://www.heream.com/api/getNoticeInfo.jsp";
+  				urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				
+  				returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				
+  				//결과를 XML 파싱하여 추출
+  				String resultCode_notice = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				String strSeq = WizSafeParser.xmlParser_String(returnXML,"<SEQ>");
+  				String strTitle = WizSafeParser.xmlParser_String(returnXML,"<TITLE>");
+  				String strContent = WizSafeParser.xmlParser_String(returnXML,"<CONTENT>");
+  				//필요한 데이터 타입으로 형변환
+  				httpResult = Integer.parseInt(resultCode_notice);	
+  				seq = strSeq;
+  				title = strTitle;
+  				content = strContent;
+  				
   				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
   				Log.i("childList","번호 : " + e.toString());
@@ -233,7 +259,23 @@ public class MainActivity extends Activity {
   						ad.show();
   			        }
 					
-				}else{
+  			        //공지사항 노출여부 결정
+  			        //로컬변수를 확인하여 공지사항 노출 여부를 확인, 로컬변수 공지사항 번호랑 같다면 띄우지않음
+  					SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+  					String noticePopVal = LocalSave.getString("noticePopVal","");
+  					if(!noticePopVal.equals(seq)){	
+  						if(httpResult == 0){
+	  						//공지사항 팝업 띄운다
+	  						ArrayList<String> noticeData = new ArrayList<String>();
+	  						noticeData.add(seq);
+	  						noticeData.add(title);
+	  						noticeData.add(content);
+	  						NoticePopView noticePopView = new NoticePopView((LinearLayout)findViewById(R.id.mainlayout), noticeData);
+	  						noticePopView.show();
+  						}
+  					}
+
+  				}else{
 					//조회실패
 					AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
 					String title = "통신 오류";	
@@ -247,30 +289,6 @@ public class MainActivity extends Activity {
 						}
 					});
 					ad.show();
-				}
-  			}else if(msg.what == 1){
-  				//핸들러 비정상
-  			}else if(msg.what == 2){
-  				//조회성공
-				//로컬변수를 확인하여 공지사항 노출 여부를 확인
-				SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
-				String noticePopVal = LocalSave.getString("noticePopVal","");
-				if(noticePopVal.equals(seq)){	
-					//seq 번호를 로컬변수에 가지고 있다면 공지사항 안띄운다
-					//로컬변수에 seq값 셋팅
-				SharedPreferences.Editor edit;
-			    edit = LocalSave.edit();
-				edit.putString("noticePopVal", "aaaaa");
-				edit.commit();
-				}else{
-				// 공지사항 팝업 띄운다
-				ArrayList<String> noticeData = new ArrayList<String>();
-				noticeData.add(seq);
-				noticeData.add(title);
-				noticeData.add(content);
-				NoticePopView noticePopView = new NoticePopView((LinearLayout)findViewById(R.id.mainlayout), noticeData);
-				noticePopView.show();
-				super.handleMessage(msg);
 				}
   			}
   		}
