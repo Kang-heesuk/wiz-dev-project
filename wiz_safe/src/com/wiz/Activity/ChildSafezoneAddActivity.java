@@ -7,9 +7,9 @@
 
 package com.wiz.Activity;
 
-import java.io.InputStream;
-import java.net.URL;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,6 +26,8 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.InputFilter;
@@ -82,6 +84,9 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	private NMapView mMapView; 
 	private NMapController mMapController;
  
+	//API 통신 성공유무 변수 
+	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	String searchAddress = "";
 	//반경을 그리기 위한 오버레이 선언
 	private RadiusOverlay radiusOverlay;
 	//반경 정보 값 200,500,1000 으로 변환
@@ -95,9 +100,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	//키보드 보이고 안보이고
 	InputMethodManager mImm;
 	
-	//화면 진입시 맵뷰 중앙 시작지점
-	private NGeoPoint startPosition;
-	
+	private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(126.978371, 37.5666091);
 	private static final int NMAP_ZOOMLEVEL_DEFAULT = 10; 
 	private static final int NMAP_VIEW_MODE_DEFAULT = NMapView.VIEW_MODE_VECTOR;
 	private static final boolean NMAP_TRAFFIC_MODE_DEFAULT = false;
@@ -150,37 +153,11 @@ public class ChildSafezoneAddActivity extends NMapActivity {
     			switch(v.getId()){
 	    			case R.id.btn_search: 
 	    				mImm.hideSoftInputFromWindow(searchArea.getWindowToken(),0);	//키보드를 숨기고
-	    				goSearch(searchArea.getText().toString());
-	    				break;
+	    				
+	    				//주소를 통해서 위도 경도를 구하고 해당 위치로 이동한다.
+	    		    	getLocaInfoAndMove(searchArea.getText().toString());
     			}
-    			Toast.makeText(ChildSafezoneAddActivity.this, "clicked search btn!!", Toast.LENGTH_SHORT).show();
     		}
-
-    	    public void goSearch(String searchStr){
-    	    	
-    	    	int read = 0;
-    	    	byte[] buf = new byte[1024];
-    	    	InputStream is = null;
-    	    	
-    	    	try{
-    	    		String result = "";
-    	    		String url = "http://210.109.111.212/tb/JYJ/appApi/smsAuthSend.jsp?ctn=" + searchStr;
-    	    		is = (new URL(url)).openStream();
-    	    		while((read=is.read(buf)) != -1){
-    	    			result = result + new String(buf,0,read,"utf-8");
-    	    		}
-    	    		Log.i("authTest","result==" + result);
-    	    		if(result.indexOf("0") > -1){
-    	    			//성공 처리
-    	    		}else{
-    	    			//실패 처리
-    	    		}
-    	    	}catch(Exception e){
-    	    		
-    	    	}finally{
-    	    		if(is != null){ try{is.close();}catch(Exception e){} }
-    	    	}
-    	    }
         });
         
         //반경 정보 변경 버튼
@@ -292,36 +269,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		mMapLocationManager = new NMapLocationManager(this);
 		mMapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
 	
-		//현재 위치탐색 시작
-		if (mMapLocationManager != null) {
-			if(mMapLocationManager.enableMyLocation(false)){
-				Log.i("banhong", "현재 위치를 탐색중입니까 === "+mMapLocationManager.isMyLocationEnabled());
-				boolean scanningNowLocationFinished = false;
-				while(true){
-					Log.i("banhong", "현재 위치를 탐색중");
-					if(mMapLocationManager.isMyLocationEnabled()){
-						scanningNowLocationFinished = true;
-						break;
-					}
-				}
-				Log.i("banhong", "현재 위치 탐색이 끝났습니까=== "+ scanningNowLocationFinished);
-				if(scanningNowLocationFinished) {
-					
-					Log.i("banhong", "현재 위치값을 구했습니까=== "+mMapLocationManager.isMyLocationFixed());
-					if(mMapLocationManager.isMyLocationFixed()){
-					
-						startPosition = mMapLocationManager.getMyLocation();
-
-						longitude = startPosition.getLongitudeE6();
-						latitude = startPosition.getLatitudeE6();
-					}else{
-						//현재 위치 탐색이 실패한 경우 지정한 위도,경도를 넣는다.
-						longitude = 126.978371;
-						latitude = 37.5666091;
-					}
-				}
-			}
-		}
 		// 맵뷰에 있는 오버레이를 모두 가져온다.
 		List<NMapOverlay> overlays = mMapView.getOverlays();
 
@@ -616,8 +563,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 			// use custom callout overlay
 			return new NMapCalloutCustomOverlay(itemOverlay, overlayItem, itemBounds, mMapViewerResourceProvider);
 
-			// set basic callout overlay
-			//return new NMapCalloutBasicOverlay(itemOverlay, overlayItem, itemBounds);			
 		}
 
 	};
@@ -627,6 +572,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	private void restoreInstanceState() {
 		mPreferences = getPreferences(MODE_PRIVATE);
 		
+		int longitude = mPreferences.getInt(KEY_CENTER_LONGITUDE, NMAP_LOCATION_DEFAULT.getLongitudeE6());
+		int latitude = mPreferences.getInt(KEY_CENTER_LATITUDE, NMAP_LOCATION_DEFAULT.getLatitudeE6());
 		int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
 		int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
 		boolean trafficMode = mPreferences.getBoolean(KEY_TRAFFIC_MODE, NMAP_TRAFFIC_MODE_DEFAULT);
@@ -641,7 +588,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		
 		//내위치로 이동
 		startMyLocation();
-		Log.i("banhong", "내위치로 이동해!!!'");
+		Log.i("banhong", "내위치로 이동ㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
 	}
  
 	private void saveInstanceState() {
@@ -835,11 +782,42 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	
 	}
 	
+	public void getLocaInfoAndMove(String searchAddress){
+			
+		Locale.setDefault(Locale.KOREA); // = ko_KO, 디폴트로 되어 있으면 말고
+		Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+		List<Address> addressInfoList = null;
+		try {
+			//주소로부터 위도 경도를 구한다.
+			addressInfoList = geocoder.getFromLocationName(searchAddress, 1);
+			Address addr = addressInfoList.get(0);
+			
+			longitude = addr.getLongitude();
+			latitude = addr.getLatitude();
+			
+			//구한 위도 경도로 다시 맵중심을 복구한다.
+			mPreferences = getPreferences(MODE_PRIVATE);
+			
+			int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
+			int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
+			boolean trafficMode = mPreferences.getBoolean(KEY_TRAFFIC_MODE, NMAP_TRAFFIC_MODE_DEFAULT);
+			boolean bicycleMode = mPreferences.getBoolean(KEY_BICYCLE_MODE, NMAP_BICYCLE_MODE_DEFAULT);
+			
+			mMapController.setMapViewMode(viewMode);
+			mMapController.setMapViewTrafficMode(trafficMode);
+			mMapController.setMapViewBicycleMode(bicycleMode);
+			//시작 축척 레벨을 10로 고정
+			level = 10;
+			mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
+			//구한 위도 경도로 다시 맵중심을 복구한다.
+			
+			
+			Log.i("banhong", "검색한 위치로 이동 ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	
-	
-	
-	
-	
-	
+		
+	}
 	
 }
