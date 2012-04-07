@@ -315,7 +315,7 @@ public class ChildSafezoneListActivity extends Activity {
   			InputStream is = null;
   			try{
   				String selectedSafezoneCode = childSafezoneListArr.get(selectedRow).getSafezoneCode();
-  				String url = "https://www.heream.com/api/deleteChildSafezoneData.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode);
+  				String url = "https://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
