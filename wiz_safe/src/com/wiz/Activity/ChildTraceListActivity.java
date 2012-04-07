@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -92,7 +91,6 @@ public class ChildTraceListActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				String resultCode_getCustomerInfo = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
@@ -110,7 +108,6 @@ public class ChildTraceListActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				String resultCode_getList = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
@@ -151,7 +148,6 @@ public class ChildTraceListActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
@@ -188,7 +184,6 @@ public class ChildTraceListActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
@@ -246,6 +241,12 @@ public class ChildTraceListActivity extends Activity {
   									Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceDetailListActivity.class);
   									intent.putExtra("phonenum", phonenum);
   									intent.putExtra("childName", childName);
+  									intent.putExtra("startDay", startDay);
+  									intent.putExtra("endDay", endDay);
+  									intent.putExtra("startTime", startTime);
+  									intent.putExtra("endTime", endTime);
+  									intent.putExtra("interval", interval);
+  									
   									startActivity(intent);
   								}
   							}
