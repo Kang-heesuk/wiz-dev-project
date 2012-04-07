@@ -14,6 +14,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -26,14 +27,13 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.Display;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -62,6 +62,7 @@ import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 
+
 /**
  * Sample class for map viewer library.
  * 
@@ -76,26 +77,28 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	// set your API key which is registered for NMapViewer library.
 	private static final String API_KEY = "12602e7037542bb1f774834ff437c15c";
 
+	private MapContainerView mMapContainerView;
+	
 	private NMapView mMapView; 
 	private NMapController mMapController;
  
-	double longitude01 = 127.12201246666667;
-	double latitude01 = 37.495217644444445;
-
 	//반경을 그리기 위한 오버레이 선언
 	private RadiusOverlay radiusOverlay;
 	//반경 정보 값 200,500,1000 으로 변환
 	private int radiusValue = 200;
+	//최초 시작지점 좌표
+	private double longitude;
+	private double latitude;
 
 	//검색창
 	EditText searchArea;
 	//키보드 보이고 안보이고
 	InputMethodManager mImm;
 	
-	//최초 맵 기준  지정 변수 -> 현재는 시청으로 나중에는 자신의 위치로 변경하자.
-	private NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude01, latitude01);
-	//private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(127.12201246666667, 37.495217644444445);
-	private static final int NMAP_ZOOMLEVEL_DEFAULT = 14; 
+	//화면 진입시 맵뷰 중앙 시작지점
+	private NGeoPoint startPosition;
+	
+	private static final int NMAP_ZOOMLEVEL_DEFAULT = 10; 
 	private static final int NMAP_VIEW_MODE_DEFAULT = NMapView.VIEW_MODE_VECTOR;
 	private static final boolean NMAP_TRAFFIC_MODE_DEFAULT = false;
 	private static final boolean NMAP_BICYCLE_MODE_DEFAULT = false;
@@ -288,14 +291,37 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		// location manager
 		mMapLocationManager = new NMapLocationManager(this);
 		mMapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
+	
+		//현재 위치탐색 시작
+		if (mMapLocationManager != null) {
+			if(mMapLocationManager.enableMyLocation(false)){
+				Log.i("banhong", "현재 위치를 탐색중입니까 === "+mMapLocationManager.isMyLocationEnabled());
+				boolean scanningNowLocationFinished = false;
+				while(true){
+					Log.i("banhong", "현재 위치를 탐색중");
+					if(mMapLocationManager.isMyLocationEnabled()){
+						scanningNowLocationFinished = true;
+						break;
+					}
+				}
+				Log.i("banhong", "현재 위치 탐색이 끝났습니까=== "+ scanningNowLocationFinished);
+				if(scanningNowLocationFinished) {
+					
+					Log.i("banhong", "현재 위치값을 구했습니까=== "+mMapLocationManager.isMyLocationFixed());
+					if(mMapLocationManager.isMyLocationFixed()){
+					
+						startPosition = mMapLocationManager.getMyLocation();
 
-		// compass manager
-		mMapCompassManager = new NMapCompassManager(this);
-
-		// create my location overlay
-		mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, mMapCompassManager);
-		
-		
+						longitude = startPosition.getLongitudeE6();
+						latitude = startPosition.getLatitudeE6();
+					}else{
+						//현재 위치 탐색이 실패한 경우 지정한 위도,경도를 넣는다.
+						longitude = 126.978371;
+						latitude = 37.5666091;
+					}
+				}
+			}
+		}
 		// 맵뷰에 있는 오버레이를 모두 가져온다.
 		List<NMapOverlay> overlays = mMapView.getOverlays();
 
@@ -337,6 +363,62 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	/* Test Functions */
 
+	
+	//액티비티가 활성화되면 mylocation 이 시작됨
+	private void startMyLocation() {
+
+		if (mMyLocationOverlay != null) {	//최초 내위치용 오버레이가 생성된 경우만 사용
+			if (!mOverlayManager.hasOverlay(mMyLocationOverlay)) {	//현재 오버레이 매니져가 my location 오버레이를 가지고 있지 않으면
+				mOverlayManager.addOverlay(mMyLocationOverlay);	//my location 오버레이를 추가
+			}
+
+			if (mMapLocationManager.isMyLocationEnabled()) {	//이미 내위치를 확인하는 오버레이가 있는 경우 나침반을 이용한 컴퍼스를 보여준다.
+
+				if (!mMapView.isAutoRotateEnabled()) {	//나침반 기능이 활성화 되어있지 않으면
+					mMyLocationOverlay.setCompassHeadingVisible(true);
+
+					mMapCompassManager.enableCompass();
+
+					mMapView.setAutoRotateEnabled(true, false);
+
+					mMapContainerView.requestLayout();
+				} else {	//나침반 컴퍼스가 활성화 되어 있으면 my location 정지!
+					stopMyLocation();
+				}
+
+				mMapView.postInvalidate();	//별도의 스레드에서 화면갱신을 할때 사용
+			} else {
+				boolean isMyLocationEnabled = mMapLocationManager.enableMyLocation(false);
+				if (!isMyLocationEnabled) {
+					Toast.makeText(ChildSafezoneAddActivity.this, "Please enable a My Location source in system settings",
+						Toast.LENGTH_LONG).show();
+
+					Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+					startActivity(goToSettings);
+
+					return;
+				}
+			}
+		}
+	}
+	
+	//액티비티가 활성화되면 mylocation 이 중지됨
+		private void stopMyLocation() {
+			if (mMyLocationOverlay != null) {	//최초  내위치용 오버레이가 생성된 경우만 사용
+				mMapLocationManager.disableMyLocation();
+
+				if (mMapView.isAutoRotateEnabled()) {
+					mMyLocationOverlay.setCompassHeadingVisible(false);
+
+					mMapCompassManager.disableCompass();
+
+					mMapView.setAutoRotateEnabled(false, false);
+
+					mMapContainerView.requestLayout();
+				}
+			}
+		}
+			
 	/* NMapDataProvider Listener */
 	private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
 
@@ -544,9 +626,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	private void restoreInstanceState() {
 		mPreferences = getPreferences(MODE_PRIVATE);
-
-		int longitudeE6 = mPreferences.getInt(KEY_CENTER_LONGITUDE, NMAP_LOCATION_DEFAULT.getLongitudeE6());
-		int latitudeE6 = mPreferences.getInt(KEY_CENTER_LATITUDE, NMAP_LOCATION_DEFAULT.getLatitudeE6());
+		
 		int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
 		int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
 		boolean trafficMode = mPreferences.getBoolean(KEY_TRAFFIC_MODE, NMAP_TRAFFIC_MODE_DEFAULT);
@@ -557,7 +637,11 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		mMapController.setMapViewBicycleMode(bicycleMode);
 		//시작 축척 레벨을 10로 고정
 		level = 10;
-		mMapController.setMapCenter(new NGeoPoint(longitudeE6, latitudeE6), level);
+		mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
+		
+		//내위치로 이동
+		startMyLocation();
+		Log.i("banhong", "내위치로 이동해!!!'");
 	}
  
 	private void saveInstanceState() {
@@ -584,126 +668,65 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	}
 
-	/* Menus */
-	private static final int MENU_ITEM_CLEAR_MAP = 10;
-	private static final int MENU_ITEM_MAP_MODE = 20;
-	private static final int MENU_ITEM_MAP_MODE_SUB_VECTOR = MENU_ITEM_MAP_MODE + 1;
-	private static final int MENU_ITEM_MAP_MODE_SUB_SATELLITE = MENU_ITEM_MAP_MODE + 2;
-	private static final int MENU_ITEM_MAP_MODE_SUB_HYBRID = MENU_ITEM_MAP_MODE + 3;
-	private static final int MENU_ITEM_MAP_MODE_SUB_TRAFFIC = MENU_ITEM_MAP_MODE + 4;
-	private static final int MENU_ITEM_MAP_MODE_SUB_BICYCLE = MENU_ITEM_MAP_MODE + 5;
-	private static final int MENU_ITEM_ZOOM_CONTROLS = 30;
-	private static final int MENU_ITEM_MY_LOCATION = 40;
+	
+	 /** 
+		 * Container view class to rotate map view.
+		 */
+		private class MapContainerView extends ViewGroup {
 
-	private static final int MENU_ITEM_TEST_MODE = 50;
-	private static final int MENU_ITEM_TEST_POI_DATA = MENU_ITEM_TEST_MODE + 1;
-	private static final int MENU_ITEM_TEST_PATH_DATA = MENU_ITEM_TEST_MODE + 2;
-	private static final int MENU_ITEM_TEST_FLOATING_DATA = MENU_ITEM_TEST_MODE + 3;
-	private static final int MENU_ITEM_TEST_AUTO_ROTATE = MENU_ITEM_TEST_MODE + 4;
-	//추가한 메뉴 버튼에 사용되는 상수
-	private static final int MENU_ITEM_HONG_TEST = 60;
+			public MapContainerView(Context context) {
+				super(context);
+			}
 
-	/**
-	 * Invoked during init to give the Activity a chance to set up its Menu.
-	 * 
-	 * @param menu the Menu to which entries may be added
-	 * @return true
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
+			@Override
+			//view 가 자식들에게 크기와 위치를 할당할때 호출된다.
+			protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+				final int width = getWidth();
+				final int height = getHeight();
+				final int count = getChildCount();
+				for (int i = 0; i < count; i++) {
+					final View view = getChildAt(i);
+					final int childWidth = view.getMeasuredWidth();
+					final int childHeight = view.getMeasuredHeight();
+					final int childLeft = (width - childWidth) / 2;
+					final int childTop = (height - childHeight) / 2;
+					view.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
+				}
+				
+				if (changed) {
+					
+					//뷰의 크기가 바뀔대마다 호출됩니다.
+					//mOverlayManager.onSizeChanged(width, height);
+					//에러를 발생해서 기존의 안드로이드의 메소드를 실행
+					onSizeChanged(width, height, width, height);
+				}
+			}
 
-		MenuItem menuItem = null;
-		SubMenu subMenu = null;
+			@Override
+			protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+				int w = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+				int h = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+				int sizeSpecWidth = widthMeasureSpec;
+				int sizeSpecHeight = heightMeasureSpec;
 
-		menuItem = menu.add(Menu.NONE, MENU_ITEM_CLEAR_MAP, Menu.CATEGORY_SECONDARY, "Clear Map");
-		menuItem.setAlphabeticShortcut('c');
-		menuItem.setIcon(android.R.drawable.ic_menu_revert);
+				final int count = getChildCount();
+				for (int i = 0; i < count; i++) {
+					final View view = getChildAt(i);
 
-		subMenu = menu.addSubMenu(Menu.NONE, MENU_ITEM_MAP_MODE, Menu.CATEGORY_SECONDARY, "Map mode");
-		subMenu.setIcon(android.R.drawable.ic_menu_mapmode);
+					if (view instanceof NMapView) {
+						if (mMapView.isAutoRotateEnabled()) {
+							int diag = (((int)(Math.sqrt(w * w + h * h)) + 1) / 2 * 2);
+							sizeSpecWidth = MeasureSpec.makeMeasureSpec(diag, MeasureSpec.EXACTLY);
+							sizeSpecHeight = sizeSpecWidth;
+						}
+					}
 
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_VECTOR, Menu.NONE, "Standard");
-		menuItem.setAlphabeticShortcut('m');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_SATELLITE, Menu.NONE, "Satellite");
-		menuItem.setAlphabeticShortcut('s');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_HYBRID, Menu.NONE, "Hybrid");
-		menuItem.setAlphabeticShortcut('h');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_TRAFFIC, Menu.NONE, "Traffic");
-		menuItem.setAlphabeticShortcut('t');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_BICYCLE, Menu.NONE, "Bicycle");
-		menuItem.setAlphabeticShortcut('b');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = menu.add(0, MENU_ITEM_ZOOM_CONTROLS, Menu.CATEGORY_SECONDARY, "Zoom Controls");
-		menuItem.setAlphabeticShortcut('z');
-		menuItem.setIcon(android.R.drawable.ic_menu_zoom);
-
-		menuItem = menu.add(0, MENU_ITEM_MY_LOCATION, Menu.CATEGORY_SECONDARY, "My Location");
-		menuItem.setAlphabeticShortcut('l');
-		menuItem.setIcon(android.R.drawable.ic_menu_mylocation);
-
-		subMenu = menu.addSubMenu(Menu.NONE, MENU_ITEM_TEST_MODE, Menu.CATEGORY_SECONDARY, "Test mode");
-		subMenu.setIcon(android.R.drawable.ic_menu_more);
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_POI_DATA, Menu.NONE, "Test POI data");
-		menuItem.setAlphabeticShortcut('p');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_PATH_DATA, Menu.NONE, "Test Path data");
-		menuItem.setAlphabeticShortcut('t');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_FLOATING_DATA, Menu.NONE, "Test Floating data");
-		menuItem.setAlphabeticShortcut('f');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_AUTO_ROTATE, Menu.NONE, "Test Auto Rotate");
-		menuItem.setAlphabeticShortcut('a');
-
-		//여섯번째 테스트 버튼 추가
-		menuItem = menu.add(0, MENU_ITEM_HONG_TEST, Menu.CATEGORY_SECONDARY, "Hong TEST");
-		menuItem.setAlphabeticShortcut('h');	//단축키 설정
-		menuItem.setIcon(android.R.drawable.ic_menu_mylocation); //아이콘 이미지 설정
-
-		
-		return true;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu pMenu) {
-		super.onPrepareOptionsMenu(pMenu);
-
-		int viewMode = mMapController.getMapViewMode();
-		boolean isTraffic = mMapController.getMapViewTrafficMode();
-		boolean isBicycle = mMapController.getMapViewBicycleMode();
-
-		pMenu.findItem(MENU_ITEM_CLEAR_MAP).setEnabled(
-			(viewMode != NMapView.VIEW_MODE_VECTOR) || isTraffic || mOverlayManager.sizeofOverlays() > 0);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_VECTOR).setChecked(viewMode == NMapView.VIEW_MODE_VECTOR);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_SATELLITE).setChecked(viewMode == NMapView.VIEW_MODE_SATELLITE);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_HYBRID).setChecked(viewMode == NMapView.VIEW_MODE_HYBRID);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_TRAFFIC).setChecked(isTraffic);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_BICYCLE).setChecked(isBicycle);
-
-		if (mMyLocationOverlay == null) {
-			pMenu.findItem(MENU_ITEM_MY_LOCATION).setEnabled(false);
+					view.measure(sizeSpecWidth, sizeSpecHeight);
+				}
+				super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+			}
 		}
 
-		return true;
-	}
-
-	
 	
 	class RadiusOverlay extends NMapOverlay{
 
@@ -811,6 +834,12 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		}
 	
 	}
+	
+	
+	
+	
+	
+	
 	
 	
 }
