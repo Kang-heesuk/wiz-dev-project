@@ -96,9 +96,9 @@
                     android:id="@+id/textView1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" 
-                    android:text="내번호 (010-1234-1234)"
+                    android:text=""
                     android:textColor="#ff000000"
-                    android:textSize="15dp" />
+                    android:textSize="14dp" />
 
             </LinearLayout>
 
@@ -121,9 +121,9 @@
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" 
-                    android:text="1000 Point"
+                    android:text=""
                     android:textColor="#ff000000"
-                    android:textSize="15dp" />
+                    android:textSize="14dp" />
                 
             </LinearLayout>
 
