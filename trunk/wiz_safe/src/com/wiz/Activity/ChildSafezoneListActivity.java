@@ -1,6 +1,5 @@
 package com.wiz.Activity;
 
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +36,8 @@ public class ChildSafezoneListActivity extends Activity {
 	
 	String parentCtn = "";
 	String childCtn = "";
-	
+	//현재 안심존에 등록된 리스트 사이즈
+	int listSize = 0;
 	//API 통신 성공유무 변수 
 	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
 	String[][] childSafezoneList;
@@ -65,7 +66,7 @@ public class ChildSafezoneListActivity extends Activity {
         parentCtn = WizSafeUtil.getCtn(getBaseContext());
         
         //API 호출 쓰레드 시작
-    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+    	//안심존 리스트를 가져온다.
     	WizSafeDialog.showLoading(ChildSafezoneListActivity.this);	//Dialog 보이기
         CallGetSafeZoneListApiThread thread = new CallGetSafeZoneListApiThread(); 
 		thread.start();
@@ -193,8 +194,10 @@ public class ChildSafezoneListActivity extends Activity {
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 						Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
-						intent.putExtra("phonenum", childCtn);
-						intent.putExtra("safeZoneCode", arSrc.get(pos).getSafezoneCode());
+						intent.putExtra("childCtn", childCtn);
+						intent.putExtra("safezoneCode", arSrc.get(pos).getSafezoneCode());
+						intent.putExtra("flag", "UPDATE");
+						intent.putExtra("listSize", listSize);
 						startActivity(intent);
 					}
 				}
@@ -256,6 +259,7 @@ public class ChildSafezoneListActivity extends Activity {
   			InputStream is = null;
   			try{
   				String url = "https://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));
+  				Log.i("banhong", "=== "+url);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -263,17 +267,19 @@ public class ChildSafezoneListActivity extends Activity {
   				while((temp = br.readLine()) != null)
   				{
   					returnXML.add(new String(temp));
+  					Log.i("banhong", "::: "+new String(temp));
   				}
-  				//결과를 XML 파싱하여 추출
+  				//결과를 XML 파싱하여 추출 
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
   				ArrayList<String> strSafezoneCode = WizSafeParser.xmlParser_List(returnXML,"<SAFEZONE_CODE>");
   				ArrayList<String> encAddress = WizSafeParser.xmlParser_List(returnXML,"<ADDRESS>");
   				ArrayList<String> strAlarmDate = WizSafeParser.xmlParser_List(returnXML,"<ALARM_DATE>");
-  				
+  				Log.i("banhong", "1111 ");
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
-  				childSafezoneList = new String[strSafezoneCode.size()][3];
+  				listSize = strSafezoneCode.size();
+  				childSafezoneList = new String[listSize][3];
   				
   				if(strSafezoneCode.size() > 0){
   					for(int i=0; i < strSafezoneCode.size(); i++){
@@ -282,7 +288,12 @@ public class ChildSafezoneListActivity extends Activity {
   				}
   				if(encAddress.size() > 0){
   					for(int i=0; i < encAddress.size(); i++){
-  						childSafezoneList[i][1] = WizSafeSeed.seedDec((String) encAddress.get(i));
+  						String tempAddress = (String)encAddress.get(i);
+  						tempAddress = WizSafeUtil.replaceStr((String)encAddress.get(i),"☆","\r\n");
+  						tempAddress = WizSafeUtil.replaceStr((String)encAddress.get(i),"★","\r");
+  						tempAddress = WizSafeUtil.replaceStr((String)encAddress.get(i),"■","\n");
+  						Log.i("banhong", "===>"+tempAddress);
+  						childSafezoneList[i][1] = WizSafeSeed.seedDec(tempAddress);
   					}
   				}
   				if(strAlarmDate.size() > 0){
@@ -303,6 +314,7 @@ public class ChildSafezoneListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
+  				Log.i("banhong", "스레드 익셉션이다!! "+e.toString());
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
@@ -310,7 +322,7 @@ public class ChildSafezoneListActivity extends Activity {
   	}
 
   	
-  //API 호출 쓰레드
+  	//API 호출 쓰레드
   	class CallDeleteApiThread extends Thread{
   		public void run(){
   			InputStream is = null;
@@ -339,6 +351,7 @@ public class ChildSafezoneListActivity extends Activity {
   			}
   		}
   	}
+  	
 	Handler pHandler = new Handler(){
   		public void handleMessage(Message msg){
 			WizSafeDialog.hideLoading();
@@ -352,6 +365,9 @@ public class ChildSafezoneListActivity extends Activity {
 	  						new Button.OnClickListener(){
 	  							public void onClick(View v) {
 	  								Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+	  								intent.putExtra("flag", "INSERT");
+	  								intent.putExtra("childCtn", childCtn);
+	  								intent.putExtra("listSize", listSize);
 	  								startActivity(intent);
 	  							}
 	  						}
@@ -373,6 +389,9 @@ public class ChildSafezoneListActivity extends Activity {
 	  			        	new Button.OnClickListener(){
 	  			  				public void onClick(View v) {
 	  			  					Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+	  			  					intent.putExtra("flag", "INSERT");
+	  			  					intent.putExtra("childCtn", childCtn);
+	  			  					intent.putExtra("listSize", listSize);
 	  			  					startActivity(intent);
 	  			  				}
 	  			  			}
@@ -385,7 +404,7 @@ public class ChildSafezoneListActivity extends Activity {
   			}else if(msg.what == 1){
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneListActivity.this);
-				String title = "통신 오류";	
+				String title = "통신 오류1";	
 				String message = "통신 중 오류가 발생하였습니다.";	
 				String buttonName = "확인";
 				ad.setTitle(title);

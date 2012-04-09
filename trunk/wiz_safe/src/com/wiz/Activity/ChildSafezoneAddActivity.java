@@ -5,10 +5,16 @@
  * NHN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms. 
  */
 
-
 package com.wiz.Activity;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +36,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.text.InputFilter;
 import android.util.Log;
@@ -64,6 +72,10 @@ import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeUtil;
 
 
 /**
@@ -72,6 +84,12 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
  * @author kyjkim
  */
 public class ChildSafezoneAddActivity extends NMapActivity {	
+	
+	//신규 등록인지 수정인지를 구분하는 값
+	private String flag = "";
+	private int listSize = 0;
+	private String childCtn = "";
+	private String safezoneCode = "";
 	
 	//여기부터 네이버 맵을 사용하는 변수 선언
 	private static final String LOG_TAG = "NMapViewer";
@@ -95,6 +113,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	//최초 시작지점 좌표
 	private double longitude;
 	private double latitude;
+	private String address;
 
 	//검색창
 	EditText searchArea;
@@ -138,6 +157,13 @@ public class ChildSafezoneAddActivity extends NMapActivity {
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
+		//신규등록인지 수정인지 확인을 위해서 이전 intent에서 값을 가져온다.
+		Intent intent = getIntent();
+        flag = intent.getStringExtra("flag");
+        listSize = intent.getIntExtra("listSize", 0);
+        safezoneCode = intent.getStringExtra("safezoneCode");
+        if(safezoneCode == null ){safezoneCode = "";}
+        childCtn = intent.getStringExtra("childCtn");
         //body
         
         //검색창 영역 
@@ -191,23 +217,47 @@ public class ChildSafezoneAddActivity extends NMapActivity {
         
         //설정 버튼
         Button btn_setup = (Button)findViewById(R.id.btn_setup);
+        //수정flag로 들어오면 버튼을 수정으로 보여준다.
+        if("UPDATE".equals(flag)){
+        	btn_setup.setBackgroundResource(R.drawable.btn_modify_selector);
+        }
         btn_setup.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
 				String title = "안심존 등록";	
 				String message = "";
-				//if("안심존 등록 건수가 1개 이상일 경우는"){
+				if(listSize > 1){
 					message = "현재 시간부터 24시간 이내에 해당 위치에 진입 시 문자로 1회만 알려 드립니다. \n ※ 안심존 추가 등록 시 100 포인트가 소진됩니다.";
-				//}else{
+				}else{
 					message = "현재 시간부터 24시간 이내에 해당 위치에 진입 시 문자로 1회만 알려 드립니다.";
-				//}
+				}
 				ad.setTitle(title);
 				ad.setMessage(message);
 				ad.setPositiveButton(R.string.btn_regist, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						Toast.makeText(ChildSafezoneAddActivity.this, "등록눌렀다.api 통신 궈궈싱 ", Toast.LENGTH_SHORT).show();
+						//현재 맵 중심의 위도/경도/주소를 구한다.
+						NGeoPoint centerValue = mMapController.getMapCenter();
+						latitude = centerValue.getLatitude();
+						longitude = centerValue.getLongitude();
+						Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+						List<Address> addressInfoList = null;
+						try {
+							addressInfoList = geocoder.getFromLocation(latitude, longitude, 1);
+							Address addr = addressInfoList.get(0);
+							address = addr.getAddressLine(0);
+							Log.i("banhong", "===>"+address);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						//API 호출 쓰레드 시작
+				    	//안심존을 등록/수정한다.
+				    	WizSafeDialog.showLoading(ChildSafezoneAddActivity.this);	//Dialog 보이기
+				        CallInsertSafeZoneApiThread thread = new CallInsertSafeZoneApiThread(); 
+						thread.start();
 					}
 				});
 				ad.setNegativeButton(R.string.btn_cancel, null);
@@ -269,12 +319,20 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		// location manager
 		mMapLocationManager = new NMapLocationManager(this);
 		mMapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
-	
+		
+		// compass manager - 전방으로 각도를 보여주는 컴퍼스
+		//mMapCompassManager = new NMapCompassManager(this);
+		
+		// create my location overlay
+		//mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, mMapCompassManager);
+		//컴퍼스 기능 제거
+		//mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, null);
+		
 		// 맵뷰에 있는 오버레이를 모두 가져온다.
 		List<NMapOverlay> overlays = mMapView.getOverlays();
 
 		//NMapMyLocationOverlay 객체를 제외한 나머지 오버레이를 모두 제거한다.
-		//mOverlayManager.clearOverlays();
+		mOverlayManager.clearOverlays();
 		
 		// 신규 레이더 오버레이를 만든다. - 기본 200m 반경
 		radiusOverlay = new RadiusOverlay(200);
@@ -309,64 +367,125 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		super.onDestroy();
 	}
 
-	/* Test Functions */
+  	//API 호출 쓰레드
+  	class CallInsertSafeZoneApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String encCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildSafezoneAddActivity.this));
+  				String encChildCtn = WizSafeSeed.seedEnc(childCtn);
+  				String encRadius = WizSafeSeed.seedEnc(Integer.toString(radiusValue));
+  				String encLatitude = WizSafeSeed.seedEnc(Double.toString(latitude));
+  				String encLongitude = WizSafeSeed.seedEnc(Double.toString(longitude));
+  				String encAddress = WizSafeSeed.seedEnc(address);
+  				StringBuffer url = new StringBuffer();
+  				url.append("https://www.heream.com/api/addChildSafezone.jsp");
+  				url.append("?safezoneCode=" + URLEncoder.encode(safezoneCode));
+  				url.append("&ctn=" + URLEncoder.encode(encCtn));
+  				url.append("&child_ctn=" + URLEncoder.encode(encChildCtn));
+  				url.append("&radius=" + URLEncoder.encode(encRadius));
+  				url.append("&lat=" + URLEncoder.encode(encLatitude));
+  				url.append("&lon=" + URLEncoder.encode(encLongitude));
+  				url.append("&addr=" + URLEncoder.encode(encAddress));
+  				
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url.toString()).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				httpResult = Integer.parseInt(resultCode);
+  				
+  				pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  				Log.i("banhong", "스레드 익셉션 : "+e.toString());
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
 
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+  					AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
+  					String title = "안심존 등록";	
+  					String message = "안심존이 등록되었습니다.";	
+  					String buttonName = "확인";
+  					ad.setTitle(title);
+  					ad.setMessage(message);
+  					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  						public void onClick(DialogInterface dialog, int which) {
+  							finish();
+  						}
+  					});
+  					ad.show();
+				}else{
+					//조회실패
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
+					String title = "등록 오류";
+					if("UPDATE".equals(flag)){title = "수정 오류";}
+					String message = "안심존 등록 중 오류가 발생하였습니다.";	
+					if("UPDATE".equals(flag)){message = "안심존 수정 중 오류가 발생하였습니다.";}
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	};
+  	
 	
-	//액티비티가 활성화되면 mylocation 이 시작됨
-	private void startMyLocation() {
+  //액티비티가 활성화되면 mylocation 이 시작됨
+  	private void moveStartLocation() {
+  		
+		if (!mOverlayManager.hasOverlay(mMyLocationOverlay)) {	//현재 오버레이 매니져가 my location 오버레이를 가지고 있지 않으면
+			mOverlayManager.addOverlay(mMyLocationOverlay);	//my location 오버레이를 추가
+  			}
+  
+			boolean isMyLocationEnabled = mMapLocationManager.enableMyLocation(false);
+			if (!isMyLocationEnabled) {
+				Toast.makeText(ChildSafezoneAddActivity.this, "Please enable a My Location source in system settings",
+				Toast.LENGTH_LONG).show();
 
-		if (mMyLocationOverlay != null) {	//최초 내위치용 오버레이가 생성된 경우만 사용
-			if (!mOverlayManager.hasOverlay(mMyLocationOverlay)) {	//현재 오버레이 매니져가 my location 오버레이를 가지고 있지 않으면
-				mOverlayManager.addOverlay(mMyLocationOverlay);	//my location 오버레이를 추가
-			}
+			Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			startActivity(goToSettings);
 
-			if (mMapLocationManager.isMyLocationEnabled()) {	//이미 내위치를 확인하는 오버레이가 있는 경우 나침반을 이용한 컴퍼스를 보여준다.
-
-				if (!mMapView.isAutoRotateEnabled()) {	//나침반 기능이 활성화 되어있지 않으면
-					mMyLocationOverlay.setCompassHeadingVisible(true);
-
-					mMapCompassManager.enableCompass();
-
-					mMapView.setAutoRotateEnabled(true, false);
-
-					mMapContainerView.requestLayout();
-				} else {	//나침반 컴퍼스가 활성화 되어 있으면 my location 정지!
-					stopMyLocation();
-				}
-
-				mMapView.postInvalidate();	//별도의 스레드에서 화면갱신을 할때 사용
-			} else {
-				boolean isMyLocationEnabled = mMapLocationManager.enableMyLocation(false);
-				if (!isMyLocationEnabled) {
-					Toast.makeText(ChildSafezoneAddActivity.this, "Please enable a My Location source in system settings",
-						Toast.LENGTH_LONG).show();
-
-					Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-					startActivity(goToSettings);
-
-					return;
-				}
-			}
+			return;
 		}
-	}
+  		
+  	}
 	
-	//액티비티가 활성화되면 mylocation 이 중지됨
-		private void stopMyLocation() {
-			if (mMyLocationOverlay != null) {	//최초  내위치용 오버레이가 생성된 경우만 사용
-				mMapLocationManager.disableMyLocation();
 
-				if (mMapView.isAutoRotateEnabled()) {
-					mMyLocationOverlay.setCompassHeadingVisible(false);
-
-					mMapCompassManager.disableCompass();
-
-					mMapView.setAutoRotateEnabled(false, false);
-
-					mMapContainerView.requestLayout();
-				}
-			}
-		}
-			
 	/* NMapDataProvider Listener */
 	private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
 
@@ -588,8 +707,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
 		
 		//내위치로 이동
-		startMyLocation();
-		Log.i("banhong", "내위치로 이동ㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
+		moveStartLocation();
+		Toast.makeText(ChildSafezoneAddActivity.this, "잠시만 기다려 주세요...", Toast.LENGTH_LONG).show();
 	}
  
 	private void saveInstanceState() {
@@ -727,8 +846,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				point = projection.toPixels(geop,point);
 
 				float radiusPixel = projection.metersToPixels(radius);
-				canvas.drawCircle(current_x, current_y-110, radiusPixel, p1);
-				canvas.drawCircle(current_x, current_y-110, radiusPixel, p2);
+				canvas.drawCircle(current_x, current_y-60, radiusPixel, p1);
+				canvas.drawCircle(current_x, current_y-60, radiusPixel, p2);
 				
 				
 				//범위 중앙에 +표시를 위한 paint 정보 선언
@@ -737,7 +856,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				p3.setTextAlign(Align.CENTER);
 				p3.setTypeface(Typeface.create((String)null, Typeface.BOLD));
 				p3.setTextSize(50);
-				canvas.drawText("+", current_x, current_y - 100, p3);
+				canvas.drawText("+", current_x, current_y - 50, p3);
 				//중앙에 +표시를 이미지로 하려면 아래 코드를 사용
 				//Drawable centerMark = getResources().getDrawable(R.drawable.notice_popup_ck);
 				//Bitmap bitmap = ((BitmapDrawable)centerMark).getBitmap();
@@ -756,9 +875,10 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 					default : dis_info = getResources().getDrawable(R.drawable.d_200m);
 						break;
 				}
-				
+				 
 				Bitmap bitmap2 = ((BitmapDrawable)dis_info).getBitmap();
-				canvas.drawBitmap(bitmap2, current_x - ((windowWidth*6)/58), current_y - radiusPixel - (windowHeight*12)/99, null);
+				//canvas.drawBitmap(bitmap2, current_x - ((windowWidth*6)/58), current_y - radiusPixel - (windowHeight*12)/99, null);
+				canvas.drawBitmap(bitmap2, (windowWidth/2 - (bitmap2.getWidth()/2)), windowHeight/2-60, null);
 				
 			}
 			super.draw(canvas,mapView,shadow);
@@ -812,8 +932,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 			mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
 			//구한 위도 경도로 다시 맵중심을 복구한다.
 			
-			
-			Log.i("banhong", "검색한 위치로 이동 ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
