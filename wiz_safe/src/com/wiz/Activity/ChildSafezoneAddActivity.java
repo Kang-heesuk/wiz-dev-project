@@ -936,11 +936,23 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		try {
 			//주소로부터 위도 경도를 구한다.
 			addressInfoList = geocoder.getFromLocationName(searchAddress, 1);
-			Address addr = addressInfoList.get(0);
-			
-			longitude = addr.getLongitude();
-			latitude = addr.getLatitude();
-			
+			if(addressInfoList.size() == 0){
+				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
+				String title = "검색 오류 안내";	
+				String message = "검색어가 올바르지 않습니다. \n정확한 지역명을 입력해 주세요.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
+				ad.show();
+			}else{
+				Address addr = addressInfoList.get(0);
+				longitude = addr.getLongitude();
+				latitude = addr.getLatitude();
+			}
 			//구한 위도 경도로 다시 맵중심을 복구한다.
 			mPreferences = getPreferences(MODE_PRIVATE);
 			
