@@ -16,7 +16,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -146,7 +145,6 @@ public class MainActivity extends Activity {
   				
   				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
-  				Log.i("childList","번호 : " + e.toString());
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
   			}finally{
@@ -168,8 +166,6 @@ public class MainActivity extends Activity {
   					String myPointStr = myPoint + "P";
   					textView1.setText("내번호(" + myPhoneNumber + ")");
   					textView2.setText(myPointStr);
-  					
-  					
   					
   					Button btn01 = (Button)findViewById(R.id.btn1);
   			        btn01.setOnClickListener(new Button.OnClickListener() {
