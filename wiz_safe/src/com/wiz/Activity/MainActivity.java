@@ -113,10 +113,10 @@ public class MainActivity extends Activity {
 							}
 						}
 						//등록 대기중인 부모리스트 판별
-						//부모리스트는 나를 자녀등록하기로 한 부모 + 부모리스트에서 STATE가 02가 아닌것을 본다.
+						//부모리스트는 나를 자녀등록하기로 한 부모 + 부모리스트에서 STATE가 01인것을  본다.
 						//즉, 나를 자녀로 등록한 모든 ROW를 본다.
 						for(int i = 0 ; i < relationType.size() ; i++){
-							if(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this)).equals(childCtn.get(i)) && !"02".equals(relationState.get(i))){
+							if(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this)).equals(childCtn.get(i)) && "01".equals(relationState.get(i))){
 								waitParentPhone.add(WizSafeSeed.seedDec(parentCtn.get(i)));
 							}
 						}
@@ -149,41 +149,6 @@ public class MainActivity extends Activity {
   				Log.i("childList","번호 : " + e.toString());
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
-  			}
-  		}
-  	}
-    
-    //API 호출 쓰레드 - 공지사항
-  	class CallGetNoticeInfoApiThread extends Thread{
-  		public void run(){
-  			InputStream is = null;
-  			try{
-  				String url = "https://www.heream.com/api/getNoticeInfo.jsp";
-  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
-  				String temp;
-  				returnXML = new ArrayList<String>();
-  				while((temp = br.readLine()) != null)
-  				{
-  					returnXML.add(new String(temp));
-  				}
-  				//결과를 XML 파싱하여 추출
-  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-  				String strSeq = WizSafeParser.xmlParser_String(returnXML,"<SEQ>");
-  				String strTitle = WizSafeParser.xmlParser_String(returnXML,"<TITLE>");
-  				String strContent = WizSafeParser.xmlParser_String(returnXML,"<CONTENT>");
-  				//필요한 데이터 타입으로 형변환
-  				httpResult = Integer.parseInt(resultCode);	
-  				seq = strSeq;
-  				title = strTitle;
-  				content = strContent;
-  				
-  				pHandler.sendEmptyMessage(2);
-  			}catch(Exception e){
-  				//통신중 에러발생
-  				pHandler.sendEmptyMessage(3);
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
@@ -250,6 +215,9 @@ public class MainActivity extends Activity {
   						ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
   							public void onClick(DialogInterface dialog, int which) {
   								Intent intent = new Intent(MainActivity.this, AllowLocation.class);
+  								if(waitParentPhone.size() > 0){  								
+  									intent.putExtra("allowPhoneNumber", waitParentPhone.get(0));
+  								}
   	  							startActivity(intent);
   							}
   						});
@@ -291,6 +259,21 @@ public class MainActivity extends Activity {
 					});
 					ad.show();
 				}
+  				
+  			}else if(msg.what == 1){
+  			//조회실패
+				AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다. ";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
   			}
   		}
   	};
