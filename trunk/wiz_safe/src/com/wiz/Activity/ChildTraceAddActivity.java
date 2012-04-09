@@ -90,10 +90,15 @@ public class ChildTraceAddActivity extends Activity {
         weekAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_weekSetup, android.R.layout.simple_spinner_item);
         weekAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         weekSpiner.setAdapter(weekAdspin);
-        if("1".equals(startDay) && "5".equals(endDay)){
-        	weekSpiner.setSelection(0);
+        
+        if(intent.getStringExtra("startDay") != null && intent.getStringExtra("endDay") != null){
+	        if("1".equals(startDay) && "5".equals(endDay)){
+	        	weekSpiner.setSelection(0);
+	        }else{
+	        	weekSpiner.setSelection(1);
+	        }
         }else{
-        	weekSpiner.setSelection(1);
+        	weekSpiner.setSelection(0);
         }
         
         //셀렉트 박스 액션(요일설정)
