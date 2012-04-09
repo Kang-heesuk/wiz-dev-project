@@ -193,7 +193,7 @@
                         android:id="@+id/btn_setup"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/btn_set" />
+                        android:background="@drawable/btn_set_selector" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -213,7 +213,7 @@
                         android:id="@+id/btn_cancel"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/btn_cancel" />
+                        android:background="@drawable/btn_cancel_selector" />
                 </LinearLayout>
 
                 <LinearLayout
