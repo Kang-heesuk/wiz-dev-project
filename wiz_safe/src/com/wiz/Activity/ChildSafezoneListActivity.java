@@ -194,8 +194,11 @@ public class ChildSafezoneListActivity extends Activity {
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 						Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
-						intent.putExtra("childCtn", childCtn);
 						intent.putExtra("safezoneCode", arSrc.get(pos).getSafezoneCode());
+						intent.putExtra("latitude", arSrc.get(pos).getSafeLatitude());
+						intent.putExtra("longitude", arSrc.get(pos).getSafeLongitude());
+						intent.putExtra("radius", arSrc.get(pos).getSafeRadius());
+						intent.putExtra("childCtn", childCtn);
 						intent.putExtra("flag", "UPDATE");
 						intent.putExtra("listSize", listSize);
 						startActivity(intent);
@@ -236,11 +239,17 @@ public class ChildSafezoneListActivity extends Activity {
 		private String safezoneCode;
     	private String safeAddress;
     	private String safeAlarmDate;
+    	private String safeLatitude;
+		private String safeLongitude;
+		private String safeRadius;
     	
-    	public ChildSafezoneDetail (String _safezoneCode, String _safeAddress, String _safeAlarmDate){
+    	public ChildSafezoneDetail (String _safezoneCode, String _safeAddress, String _safeAlarmDate, String _safeLatitude, String _safeLongitude, String _safeRadius){
     		this.safezoneCode = _safezoneCode;
     		this.safeAddress = _safeAddress;
     		this.safeAlarmDate = _safeAlarmDate;
+    		this.safeLatitude = _safeLatitude;
+    		this.safeLongitude = _safeLongitude;
+    		this.safeRadius = _safeRadius;
     	}
     	private String getSafezoneCode(){
 			return safezoneCode;
@@ -251,6 +260,15 @@ public class ChildSafezoneListActivity extends Activity {
     	private String getSafeAlarmDate(){
 			return safeAlarmDate;
     	}
+    	private String getSafeLatitude(){
+			return safeLatitude;
+    	}
+    	private String getSafeLongitude(){
+			return safeLongitude;
+    	}
+    	private String getSafeRadius(){
+			return safeRadius;
+    	}
     }
 	
 	//API 호출 쓰레드
@@ -259,7 +277,7 @@ public class ChildSafezoneListActivity extends Activity {
   			InputStream is = null;
   			try{
   				String url = "https://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));
-  				Log.i("banhong", "=== "+url);
+  				Log.i("banhong", "url = : "+url);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -267,19 +285,21 @@ public class ChildSafezoneListActivity extends Activity {
   				while((temp = br.readLine()) != null)
   				{
   					returnXML.add(new String(temp));
-  					Log.i("banhong", "::: "+new String(temp));
   				}
   				//결과를 XML 파싱하여 추출 
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
   				ArrayList<String> strSafezoneCode = WizSafeParser.xmlParser_List(returnXML,"<SAFEZONE_CODE>");
   				ArrayList<String> encAddress = WizSafeParser.xmlParser_List(returnXML,"<ADDRESS>");
   				ArrayList<String> strAlarmDate = WizSafeParser.xmlParser_List(returnXML,"<ALARM_DATE>");
+  				ArrayList<String> encLatitude = WizSafeParser.xmlParser_List(returnXML,"<LATITUDE>");
+  				ArrayList<String> encLongitude = WizSafeParser.xmlParser_List(returnXML,"<LONGITUDE>");
+  				ArrayList<String> encRadius = WizSafeParser.xmlParser_List(returnXML,"<RADIUS>");
   				Log.i("banhong", "1111 ");
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
   				listSize = strSafezoneCode.size();
-  				childSafezoneList = new String[listSize][3];
+  				childSafezoneList = new String[listSize][6];
   				
   				if(strSafezoneCode.size() > 0){
   					for(int i=0; i < strSafezoneCode.size(); i++){
@@ -289,11 +309,14 @@ public class ChildSafezoneListActivity extends Activity {
   				if(encAddress.size() > 0){
   					for(int i=0; i < encAddress.size(); i++){
   						String tempAddress = (String)encAddress.get(i);
-  						tempAddress = WizSafeUtil.replaceStr((String)encAddress.get(i),"☆","\r\n");
-  						tempAddress = WizSafeUtil.replaceStr((String)encAddress.get(i),"★","\r");
-  						tempAddress = WizSafeUtil.replaceStr((String)encAddress.get(i),"■","\n");
-  						Log.i("banhong", "===>"+tempAddress);
-  						childSafezoneList[i][1] = WizSafeSeed.seedDec(tempAddress);
+  						tempAddress = WizSafeUtil.replaceStr(tempAddress,"☆","\r\n");
+  						tempAddress = WizSafeUtil.replaceStr(tempAddress,"★","\r");
+  						tempAddress = WizSafeUtil.replaceStr(tempAddress,"■","\n");
+  						//복호화
+  						tempAddress = WizSafeSeed.seedDec(tempAddress);
+  						//대한민국 제거
+  						tempAddress = WizSafeUtil.replaceStr(tempAddress,"대한민국 ","");
+  						childSafezoneList[i][1] = tempAddress;
   					}
   				}
   				if(strAlarmDate.size() > 0){
@@ -301,11 +324,26 @@ public class ChildSafezoneListActivity extends Activity {
   						childSafezoneList[i][2] = (String) strAlarmDate.get(i);
   					}
   				}
+  				if(encLatitude.size() > 0){
+  					for(int i=0; i < encLatitude.size(); i++){
+  						childSafezoneList[i][3] = WizSafeSeed.seedDec(encLatitude.get(i));
+  					}
+  				}
+  				if(encLongitude.size() > 0){
+  					for(int i=0; i < encLongitude.size(); i++){
+  						childSafezoneList[i][4] = WizSafeSeed.seedDec(encLongitude.get(i));
+  					}
+  				}
+  				if(encRadius.size() > 0){
+  					for(int i=0; i < encRadius.size(); i++){
+  						childSafezoneList[i][5] = WizSafeSeed.seedDec(encRadius.get(i));
+  					}
+  				}
   				
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
   		    	if(childSafezoneList != null){
   			    	for(int i = 0 ; i < childSafezoneList.length ; i++){
-  			    		ChildSafezoneDetail addChildSafezoneList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2]);
+  			    		ChildSafezoneDetail addChildSafezoneList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2], childSafezoneList[i][3], childSafezoneList[i][4], childSafezoneList[i][5]);
   			    		childSafezoneListArr.add(addChildSafezoneList);
   			    	}
   		    	}

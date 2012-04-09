@@ -161,9 +161,32 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		Intent intent = getIntent();
         flag = intent.getStringExtra("flag");
         listSize = intent.getIntExtra("listSize", 0);
-        safezoneCode = intent.getStringExtra("safezoneCode");
-        if(safezoneCode == null ){safezoneCode = "";}
         childCtn = intent.getStringExtra("childCtn");
+        if("UPDATE".equals(flag)){
+	        safezoneCode = intent.getStringExtra("safezoneCode");
+	        if(safezoneCode == null ){safezoneCode = "";}
+	        latitude = Double.parseDouble(intent.getStringExtra("latitude"));
+	        longitude = Double.parseDouble(intent.getStringExtra("longitude"));
+	        String strRadiusValue = intent.getStringExtra("radius");
+	        if(strRadiusValue != null ){
+	        	radiusValue = Integer.parseInt(strRadiusValue);
+	        }else{
+	        	radiusValue = 200;
+	        }
+	        final Button btn_radius = (Button)findViewById(R.id.btn_radius);
+	        if(radiusValue == 200){
+				radiusValue = 500;
+				btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector); 
+			}else if(radiusValue == 500){
+				radiusValue = 1000;
+				btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector);
+			}else{
+				radiusValue = 200;
+				btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
+			}
+	        radiusOverlay = new RadiusOverlay(radiusValue);
+        }
+        
         //body
         
         //검색창 영역 
@@ -225,6 +248,9 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 			public void onClick(View v) {
 				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
 				String title = "안심존 등록";	
+				if("UPDATE".equals(flag)){
+					title = "안심존 수정";	
+				}
 				String message = "";
 				if(listSize > 1){
 					message = "현재 시간부터 24시간 이내에 해당 위치에 진입 시 문자로 1회만 알려 드립니다. \n ※ 안심존 추가 등록 시 100 포인트가 소진됩니다.";
@@ -247,7 +273,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 							addressInfoList = geocoder.getFromLocation(latitude, longitude, 1);
 							Address addr = addressInfoList.get(0);
 							address = addr.getAddressLine(0);
-							Log.i("banhong", "===>"+address);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -387,7 +412,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
   				url.append("&lat=" + URLEncoder.encode(encLatitude));
   				url.append("&lon=" + URLEncoder.encode(encLongitude));
   				url.append("&addr=" + URLEncoder.encode(encAddress));
-  				
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url.toString()).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -404,7 +428,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  				Log.i("banhong", "스레드 익셉션 : "+e.toString());
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
@@ -691,9 +714,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 
 	private void restoreInstanceState() {
 		mPreferences = getPreferences(MODE_PRIVATE);
-		
-		int longitude = mPreferences.getInt(KEY_CENTER_LONGITUDE, NMAP_LOCATION_DEFAULT.getLongitudeE6());
-		int latitude = mPreferences.getInt(KEY_CENTER_LATITUDE, NMAP_LOCATION_DEFAULT.getLatitudeE6());
+		int restoreLongitude = mPreferences.getInt(KEY_CENTER_LONGITUDE, NMAP_LOCATION_DEFAULT.getLongitudeE6());
+		int restoreLatitude = mPreferences.getInt(KEY_CENTER_LATITUDE, NMAP_LOCATION_DEFAULT.getLatitudeE6());
 		int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
 		int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
 		boolean trafficMode = mPreferences.getBoolean(KEY_TRAFFIC_MODE, NMAP_TRAFFIC_MODE_DEFAULT);
@@ -704,10 +726,15 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		mMapController.setMapViewBicycleMode(bicycleMode);
 		//시작 축척 레벨을 10로 고정
 		level = 10;
-		mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
-		
+		if("INSERT".equals(flag)){
+			mMapController.setMapCenter(new NGeoPoint(restoreLongitude, restoreLatitude), level);
+		}else{
+			mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
+		}
 		//내위치로 이동
-		moveStartLocation();
+		if("INSERT".equals(flag)){
+			moveStartLocation();
+		}
 		Toast.makeText(ChildSafezoneAddActivity.this, "잠시만 기다려 주세요...", Toast.LENGTH_LONG).show();
 	}
  
@@ -802,14 +829,14 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int windowWidth = display.getWidth();
 		int windowHeight = display.getHeight();
-		int radius = 200;
+		int radius = radiusValue;
 			
 		public RadiusOverlay(int raidusValue){
 			current_x = windowWidth / 2;
 			current_y = windowHeight / 2;
 			
-			if(raidusValue != 200){
-				radius = raidusValue;
+			if(raidusValue != 200 && raidusValue != 500 && raidusValue != 1000){
+				radius = 200;
 			}
 		}
 		
@@ -862,7 +889,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				//Bitmap bitmap = ((BitmapDrawable)centerMark).getBitmap();
 				//canvas.drawBitmap(bitmap, current_x, current_y - 100, null);
 				
-				
 				//반경 원 위쪽에 미터 정보를 표시
 				Drawable dis_info = getResources().getDrawable(R.drawable.d_200m);
 				switch (radius) {
@@ -877,8 +903,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				}
 				 
 				Bitmap bitmap2 = ((BitmapDrawable)dis_info).getBitmap();
-				//canvas.drawBitmap(bitmap2, current_x - ((windowWidth*6)/58), current_y - radiusPixel - (windowHeight*12)/99, null);
-				Log.i("banhong", "radiusPixel : "+radiusPixel);
 				canvas.drawBitmap(bitmap2, (windowWidth/2 - (bitmap2.getWidth()/2)), windowHeight/2-60-radiusPixel, null);
 				
 			}
