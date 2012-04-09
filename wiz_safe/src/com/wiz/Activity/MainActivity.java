@@ -249,7 +249,8 @@ public class MainActivity extends Activity {
   						ad.setMessage(waitParentPhone.size() + "건의 부모등록 요청이 있습니다.\n확인 하시겠습니까?");
   						ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
   							public void onClick(DialogInterface dialog, int which) {
-  								Toast.makeText(MainActivity.this, "위치허용동의액티비티로 이동", Toast.LENGTH_SHORT).show();
+  								Intent intent = new Intent(MainActivity.this, AllowLocation.class);
+  	  							startActivity(intent);
   							}
   						});
   						ad.setNegativeButton("취소", new DialogInterface.OnClickListener(){
