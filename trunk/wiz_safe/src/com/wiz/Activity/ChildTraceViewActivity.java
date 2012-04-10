@@ -7,15 +7,30 @@
                     
 package com.wiz.Activity;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.StringTokenizer;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +54,12 @@ import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
+import com.wiz.Activity.ChildListActivity.ChildDetail;
+import com.wiz.Activity.ChildLocationViewActivity.CallGetNowLocationApiThread;
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeUtil;
 
 /**
  * Sample class for map viewer library.
@@ -51,11 +72,18 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private static final String LOG_TAG = "NMapViewer";
 	private static final boolean DEBUG = false;
 
-	// set your API key which is registered for NMapViewer library.
-	private static final String API_KEY = "12602e7037542bb1f774834ff437c15c";
-
 	private NMapView mMapView; 
 	private NMapController mMapController;
+	
+	//API 통신에 사용할 변수
+	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	private String childCtn;
+	private String selectedDay;
+	private String startTime;
+	private String endTime;
+	private String interval;
+	//맵위에 위치를 표시할 값을 가진 arraylist
+	ArrayList<ChildTraceViewDetail> childTraceViewListArr = new ArrayList<ChildTraceViewDetail>();
 
 	//최초 맵 기준  지정 변수 -> 현재는 시청으로 나중에는 자신의 위치로 변경하자.
 	private static final NGeoPoint NMAP_LOCATION_DEFAULT = new NGeoPoint(126.978371, 37.5666091);
@@ -63,6 +91,9 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private static final int NMAP_VIEW_MODE_DEFAULT = NMapView.VIEW_MODE_VECTOR;
 	private static final boolean NMAP_TRAFFIC_MODE_DEFAULT = false;
 	private static final boolean NMAP_BICYCLE_MODE_DEFAULT = false;
+
+	// set your API key which is registered for NMapViewer library.
+	private static final String API_KEY = "12602e7037542bb1f774834ff437c15c";
 
 	private static final String KEY_ZOOM_LEVEL = "NMapViewer.zoomLevel";
 	private static final String KEY_CENTER_LONGITUDE = "NMapViewer.centerLongitudeE6";
@@ -93,22 +124,25 @@ public class ChildTraceViewActivity extends NMapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.child_trace_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
 	
+		//이전액티비티에서 넘겨준 값을 받아온다.
+		Intent intent = getIntent();
+		childCtn = intent.getStringExtra("phonenum");
+		selectedDay = intent.getStringExtra("selectedDay");
+        startTime = intent.getStringExtra("startTime");
+        endTime = intent.getStringExtra("endTime");
+        interval = intent.getStringExtra("interval");
+		
+    	//API 호출 쓰레드 시작
+    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+    	WizSafeDialog.showLoading(ChildTraceViewActivity.this);	//Dialog 보이기
+    	CallGetChildTraceViewApiThread thread = new CallGetChildTraceViewApiThread(); 
+		thread.start();
+		
 		//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
         //body
-		TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
-        if(tv_checkTime != null){
-        	GregorianCalendar calendar = new GregorianCalendar();
-        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
-        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
-        	String gap = "오차범위 : 50m ~2km";
-        	
-        	tv_checkTime.setText("일자 : "+sdf.format(calendar.getTime()) +"\n"+ gap);
-        }
-
-	         
 	        
 		//=====================================================//
 		// 여기부터 맵 생성 및 보여주기
@@ -164,12 +198,6 @@ public class ChildTraceViewActivity extends NMapActivity {
 		//show map path data
 		mOverlayManager.clearOverlays();
 
-		// add path data overlay
-		testPathDataOverlay();
-
-		// add path POI data overlay
-		testPathPOIdataOverlay();
-		
 	}
 
 	@Override
@@ -196,49 +224,145 @@ public class ChildTraceViewActivity extends NMapActivity {
 		super.onDestroy();
 	}
 
-	/* Test Functions */
+    
+    //API 호출 쓰레드
+  	class CallGetChildTraceViewApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(childCtn);
+  				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?ctn="+ URLEncoder.encode(enc_ctn)+"&selectedDay="+selectedDay+"&startTime="+startTime+"&endTime="+endTime+"&interval="+interval;
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  					Log.i("banhong", " :: "+new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				String strDate1 = WizSafeParser.xmlParser_String(returnXML,"<DATE>");
+  				ArrayList<String> strDate2 = WizSafeParser.xmlParser_List(returnXML,"<DATE>");
+  				ArrayList<String> strHour = WizSafeParser.xmlParser_List(returnXML,"<HOUR>");
+  				ArrayList<String> encLongitude = WizSafeParser.xmlParser_List(returnXML,"<LONGITUDE>");
+  				ArrayList<String> encLatitude = WizSafeParser.xmlParser_List(returnXML,"<LATITUDE>");
+  				ArrayList<String> encAddress = WizSafeParser.xmlParser_List(returnXML,"<ADDRESS>");
+  				ArrayList<String> strType = WizSafeParser.xmlParser_List(returnXML,"<TYPE>");
+  				ArrayList<String> strHiddenState = WizSafeParser.xmlParser_List(returnXML,"<HIDDEN_STATE>");
 
-	//이동 경로를 표현하는 오버레이
-	private void testPathDataOverlay() {
-		/*
-		// set path data points
-		NMapPathData pathData = new NMapPathData(8);
-		 
-		pathData.initPathData();	//경로리스트 초기화
-		//경로위치점을 x좌표,y좌표 양식으로 입력:마지막 파라메터는 표현방식 solid는 선, dash는 점선, 앞에서 선언한 양식으로 0까지 선을 연결한다. 
-		pathData.addPathPoint(127.132112, 37.495117, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.132212, 37.495227, 0);
-		pathData.addPathPoint(127.132312, 37.495337, 0);
-		pathData.addPathPoint(127.132412, 37.495447, NMapPathLineStyle.TYPE_DASH);
-		pathData.addPathPoint(127.132512, 37.495557, 0);
-		pathData.addPathPoint(127.132612, 37.495667, 0);
-		pathData.addPathPoint(127.132712, 37.495777, NMapPathLineStyle.TYPE_SOLID);
-		pathData.addPathPoint(127.132812, 37.495887, 0);
-		pathData.endPathData();
+  				//필요한 데이터 타입으로 형변환
+  				httpResult = Integer.parseInt(resultCode);	
+  				selectedDay = strDate1;
+  				//복호화 하여 2차원배열에 담는다.
+  				httpResult = Integer.parseInt(resultCode);
+  				for(int i=0; i < strHour.size(); i++){
+  					ChildTraceViewDetail tempBean = new ChildTraceViewDetail();
+  					tempBean.setDay(strDate2.get(i));
+  					tempBean.setHour(strHour.get(i));
+  					tempBean.setLatitude(Double.parseDouble(WizSafeSeed.seedDec(encLatitude.get(i))));
+  					tempBean.setLongitude(Double.parseDouble(WizSafeSeed.seedDec(encLongitude.get(i))));
+  					tempBean.setAddress(WizSafeSeed.seedDec(encAddress.get(i)));
+  					tempBean.setType(strType.get(i));
+  					tempBean.setHiddenState(strHiddenState.get(i));
+  					
+  					childTraceViewListArr.add(tempBean);
+  				}
+  				
+  				pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
 
-		//위에서 입력한 경로데이터를 가진 오버레이를 생성
-		NMapPathDataOverlay pathDataOverlay = mOverlayManager.createPathDataOverlay(pathData);
-		*/
-
-	}
-
+  	
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+					//조회성공
+  					
+  					// add path POI data overlay
+  					testPathPOIdataOverlay();
+  					
+  					
+  					TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
+  			        if(tv_checkTime != null){
+  			        	GregorianCalendar calendar = new GregorianCalendar();
+  			        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
+  			        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
+  			        	String gap = "오차범위 : 50m ~2km";
+  			        	
+  			        	tv_checkTime.setText("일자 : "+sdf.format(calendar.getTime()) +"\n"+ gap);
+  			        }
+			    	
+				}else{
+					//조회실패
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
+					String title = "자녀현위치찾기실패";	
+					String message = "자녀 현위치 정보를 조회할 수 없습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	};
+  	
 	//이동경로 중에 중요 지점을 오버레이로 표시하기 위한 메소드 
 	private void testPathPOIdataOverlay() {
 
 		// set POI data
 		NMapPOIdata poiData = new NMapPOIdata(4, mMapViewerResourceProvider, true);
-		poiData.beginPOIdata(8);
-		//poiData.addPOIitem(127.132012, 37.495217, "시작 주소는 IT벤처", NMapPOIflagType.FROM, null);
-		//poiData.addPOIitem(127.132012, 37.495217, "끝나는 구나~", NMapPOIflagType.TO, null);
-		poiData.addPOIitem(127.132112, 37.495117, "1월 29일 오후12시", NMapPOIflagType.CUSTOM_BASE + 2, 0);
-		poiData.addPOIitem(127.132212, 37.495227, "1/29 오후6시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
-		poiData.addPOIitem(127.132312, 37.495337, "1/29 오후7시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
-		poiData.addPOIitem(127.132412, 37.495447, "1/29 오후8시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
-		poiData.addPOIitem(127.132512, 37.495557, "1/29 오후10시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
-		poiData.addPOIitem(127.132612, 37.495667, "1/29 오후11시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
-		poiData.addPOIitem(127.132712, 37.495777, "1/29 오후12시", NMapPOIflagType.CUSTOM_BASE + 3, 0);
-		poiData.addPOIitem(127.132812, 37.495887, "1월 29일 오후12시", NMapPOIflagType.CUSTOM_BASE + 4, 0);
-		//poiData.addPOIitem(127.132812, 37.495887, "test place", NMapPOIflagType.PIN, 0);
+		
+		//api통신하여 받아온 결과 크기만큼 poi아이템을 추가한다.
+		poiData.beginPOIdata(childTraceViewListArr.size());
+		for(int i=0; i < childTraceViewListArr.size(); i++){
+			ChildTraceViewDetail tempBean = new ChildTraceViewDetail();
+			tempBean = childTraceViewListArr.get(i);
+			double tmpLongitude = tempBean.getLongitude();
+			double tmpLatitude = tempBean.getLatitude();
+			String dateInfo = WizSafeUtil.getDateFormat(((String)tempBean.getDay()+(String)tempBean.getHour()));
+			
+			if(i == 0){
+				//첫번째 데이터는 시작PIN을 사용한다.
+				poiData.addPOIitem(tmpLongitude, tmpLatitude, dateInfo, NMapPOIflagType.CUSTOM_BASE + 2, 0);
+			}else if(i == childTraceViewListArr.size()){
+				//마지막 데이터는 종료PIN을 사용한다.
+				poiData.addPOIitem(tmpLongitude, tmpLatitude, dateInfo, NMapPOIflagType.CUSTOM_BASE + 4, 0);
+			}else{
+				//처음과 마지막을 제외한 나머지는 일반PIN을 사용한다.
+				poiData.addPOIitem(tmpLongitude, tmpLatitude, dateInfo, NMapPOIflagType.CUSTOM_BASE + 3, 0);
+			}
+			
+		}
+		//poi 데이터 추가를 종료한다.
 		poiData.endPOIdata();
 
 		// create POI data overlay
@@ -249,7 +373,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 		
 		if (poiDataOverlay != null) {		//오버레이가 정상 생성되어 존재한다면
 			
-			poiDataOverlay.showAllPOIdata(100);
+			poiDataOverlay.showAllPOIdata(0);
 		}
 		
 	}
@@ -525,4 +649,60 @@ public class ChildTraceViewActivity extends NMapActivity {
 	}
 
 	
+	   
+    class ChildTraceViewDetail {
+    	private String day;
+    	private String hour;
+    	private double latitude;
+		private double longitude;
+    	private String address;
+    	private String type;
+    	private String hiddenState;
+    	
+    	public String getDay() {
+			return day;
+		}
+		public void setDay(String day) {
+			this.day = day;
+		}
+    	private String getHour() {
+			return hour;
+		}
+		private void setHour(String hour) {
+			this.hour = hour;
+		}
+		private double getLatitude() {
+			return latitude;
+		}
+		private void setLatitude(double latitude) {
+			this.latitude = latitude;
+		}
+		private double getLongitude() {
+			return longitude;
+		}
+		private void setLongitude(double longitude) {
+			this.longitude = longitude;
+		}
+		private String getAddress() {
+			return address;
+		}
+		private void setAddress(String address) {
+			this.address = address;
+		}
+		private String getType() {
+			return type;
+		}
+		private void setType(String type) {
+			this.type = type;
+		}
+		private String getHiddenState() {
+			return hiddenState;
+		}
+		private void setHiddenState(String hiddenState) {
+			this.hiddenState = hiddenState;
+		}
+    	
+    	
+    }
+    	
 }
