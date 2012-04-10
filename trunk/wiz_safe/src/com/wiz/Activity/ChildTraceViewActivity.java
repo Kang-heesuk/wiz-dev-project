@@ -292,15 +292,12 @@ public class ChildTraceViewActivity extends NMapActivity {
   					// add path POI data overlay
   					testPathPOIdataOverlay();
   					
-  					
   					TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
   			        if(tv_checkTime != null){
-  			        	GregorianCalendar calendar = new GregorianCalendar();
-  			        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
   			        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
   			        	String gap = "오차범위 : 50m ~2km";
   			        	
-  			        	tv_checkTime.setText("일자 : "+sdf.format(calendar.getTime()) +"\n"+ gap);
+  			        	tv_checkTime.setText("일자 : "+WizSafeUtil.dayConvertFromNumberToString(selectedDay) +"\n"+ gap);
   			        }
 			    	
 				}else{

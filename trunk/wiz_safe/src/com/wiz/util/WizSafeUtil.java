@@ -426,6 +426,14 @@ public class WizSafeUtil {
 	    		
 				//필요한 결과를 조합
 				returnVal = mm + dd + AMPM_hour;
+			}else if(orgDate.length() == 8){
+				
+				String yyyy = Integer.parseInt(orgDate.substring(0, 4)) + "년 ";
+	    		String mm = Integer.parseInt(orgDate.substring(4, 6)) + "월 ";
+	    		String dd = Integer.parseInt(orgDate.substring(6, 8)) + "일 ";
+	    		
+				//필요한 결과를 조합
+				returnVal = yyyy + mm + dd;
 			}
 		}catch(Exception e){
 			returnVal = "확인불가";
