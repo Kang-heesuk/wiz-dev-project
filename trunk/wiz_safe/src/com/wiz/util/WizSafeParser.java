@@ -25,7 +25,7 @@ public class WizSafeParser {
 			parseXML = parseXML + xml.get(i);
 		}
 		
-		InputStream istream = null;;
+		InputStream istream = null;
 		try{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -58,7 +58,7 @@ public class WizSafeParser {
 			parseXML = parseXML + xml.get(i);
 		}
 		
-		InputStream istream = null;;
+		InputStream istream = null;
 		try{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
