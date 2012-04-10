@@ -163,7 +163,7 @@ public class WizSafeService extends Service implements LocationListener {
 				}finally{
 				}
 				
-				try{Thread.sleep(1000 * 5 * 5);}catch(Exception e){}
+				try{Thread.sleep(1000 * 60 * 5);}catch(Exception e){}
 			}
 		}
 	}
