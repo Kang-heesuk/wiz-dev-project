@@ -410,6 +410,22 @@ public class WizSafeUtil {
 				
 				//필요한 결과를 조합
 				returnVal = mm + dd + AMPM_hour + min;
+			}else if(orgDate.length() == 10){
+				
+				String yyyy = Integer.parseInt(orgDate.substring(0, 4)) + "년 ";
+	    		String mm = Integer.parseInt(orgDate.substring(4, 6)) + "월 ";
+	    		String dd = Integer.parseInt(orgDate.substring(6, 8)) + "일 ";
+	    		String hour24 = orgDate.substring(8, 10);
+	    		String AMPM_hour = "";
+	    		if(Integer.parseInt(hour24) > 12){
+	    			AMPM_hour = "오후" + (Integer.parseInt(hour24) - 12) + "시 ";
+	    		}else{
+	    			AMPM_hour = "오전" + Integer.parseInt(hour24) + "시 ";
+	    		}
+	    		hour24 += "시 ";
+	    		
+				//필요한 결과를 조합
+				returnVal = mm + dd + AMPM_hour;
 			}
 		}catch(Exception e){
 			returnVal = "확인불가";

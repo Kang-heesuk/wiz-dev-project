@@ -834,7 +834,8 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		public RadiusOverlay(int raidusValue){
 			current_x = windowWidth / 2;
 			current_y = windowHeight / 2;
-			
+			Log.i("banhong", "æ»Ω…¡∏ ∏ ∫‰ø°º≠ ∞°∑Œ : "+windowWidth);
+		    Log.i("banhong", "æ»Ω…¡∏ ∏ ∫‰ø°º≠ ºº∑Œ : "+windowHeight);
 			if(raidusValue != 200 && raidusValue != 500 && raidusValue != 1000){
 				radius = 200;
 			}
