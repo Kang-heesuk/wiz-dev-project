@@ -297,7 +297,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
   			        	String gap = "오차범위 : 50m ~2km";
   			        	
-  			        	tv_checkTime.setText("일자 : "+WizSafeUtil.dayConvertFromNumberToString(selectedDay) +"\n"+ gap);
+  			        	tv_checkTime.setText("일자 : "+WizSafeUtil.getDateFormat(selectedDay) +"\n"+ gap);
   			        }
 			    	
 				}else{
