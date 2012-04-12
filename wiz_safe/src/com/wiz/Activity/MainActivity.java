@@ -167,7 +167,7 @@ public class MainActivity extends Activity {
   					textView1.setText("내번호(" + myPhoneNumber + ")");
   					textView2.setText(myPointStr);
   					
-  					Button btn01 = (Button)findViewById(R.id.btn1);
+  					LinearLayout btn01 = (LinearLayout)findViewById(R.id.btn1);
   			        btn01.setOnClickListener(new Button.OnClickListener() {
   						public void onClick(View v) {
   							Intent intent = new Intent(MainActivity.this, ChildListActivity.class);
@@ -175,7 +175,7 @@ public class MainActivity extends Activity {
   						} 
   					}); 
   			   
-  			        Button btn02 = (Button)findViewById(R.id.btn2);
+  			 	    LinearLayout btn02 = (LinearLayout)findViewById(R.id.btn2);
   			        btn02.setOnClickListener(new Button.OnClickListener() {
   						public void onClick(View v) {
   							Intent intent = new Intent(MainActivity.this, ParentListActivity.class);
@@ -183,7 +183,7 @@ public class MainActivity extends Activity {
   						}
   					});
   			         
-  			        Button btn03 = (Button)findViewById(R.id.btn3);
+  			        LinearLayout btn03 = (LinearLayout)findViewById(R.id.btn3);
   			        btn03.setOnClickListener(new Button.OnClickListener() {
   						public void onClick(View v) {
   							Intent intent = new Intent(MainActivity.this, SetupActivity.class);
@@ -202,9 +202,100 @@ public class MainActivity extends Activity {
   			        
   			        
   			        //대기중인 자녀가 있을경우 자녀리스트 옆에 숫자로 표시
+  			        if(waitChildPhone.size() > 0){
+  			        	LinearLayout wait_child = (LinearLayout)findViewById(R.id.wait_child);
+  			        	//대기수 숫자이미지 표시
+  						if(waitChildPhone.size() == 1){
+  							wait_child.setBackgroundResource(R.drawable.img_num_1);
+  						}else if(waitChildPhone.size() == 2){
+  							wait_child.setBackgroundResource(R.drawable.img_num_2);
+  						}else if(waitChildPhone.size() == 3){
+  							wait_child.setBackgroundResource(R.drawable.img_num_3);
+  						}else if(waitChildPhone.size() == 4){
+  							wait_child.setBackgroundResource(R.drawable.img_num_4);
+  						}else if(waitChildPhone.size() == 5){
+  							wait_child.setBackgroundResource(R.drawable.img_num_5);
+  						}else if(waitChildPhone.size() == 6){
+  							wait_child.setBackgroundResource(R.drawable.img_num_6);
+  						}else if(waitChildPhone.size() == 7){
+  							wait_child.setBackgroundResource(R.drawable.img_num_7);
+  						}else if(waitChildPhone.size() == 8){
+  							wait_child.setBackgroundResource(R.drawable.img_num_8);
+  						}else if(waitChildPhone.size() == 9){
+  							wait_child.setBackgroundResource(R.drawable.img_num_9);
+  						}else if(waitChildPhone.size() == 10){
+  							wait_child.setBackgroundResource(R.drawable.img_num_10);
+  						}else if(waitChildPhone.size() == 11){
+  							wait_child.setBackgroundResource(R.drawable.img_num_11);
+  						}else if(waitChildPhone.size() == 12){
+  							wait_child.setBackgroundResource(R.drawable.img_num_12);
+  						}else if(waitChildPhone.size() == 13){
+  							wait_child.setBackgroundResource(R.drawable.img_num_13);
+  						}else if(waitChildPhone.size() == 14){
+  							wait_child.setBackgroundResource(R.drawable.img_num_14);
+  						}else if(waitChildPhone.size() == 15){
+  							wait_child.setBackgroundResource(R.drawable.img_num_15);
+  						}else if(waitChildPhone.size() == 16){
+  							wait_child.setBackgroundResource(R.drawable.img_num_16);
+  						}else if(waitChildPhone.size() == 17){
+  							wait_child.setBackgroundResource(R.drawable.img_num_17);
+  						}else if(waitChildPhone.size() == 18){
+  							wait_child.setBackgroundResource(R.drawable.img_num_18);
+  						}else if(waitChildPhone.size() == 19){
+  							wait_child.setBackgroundResource(R.drawable.img_num_19);
+  						}else if(waitChildPhone.size() == 20){
+  							wait_child.setBackgroundResource(R.drawable.img_num_20);
+  						}
+  			        }
+  			        
   			        
   			        //대기중인 부모가 있을경우 부모리스트 옆에 숫자로 표시 한 후 경고창 띄움
   			        if(waitParentPhone.size() > 0){
+  			        	
+  			        	LinearLayout wait_parent = (LinearLayout)findViewById(R.id.wait_parent);
+  			        	//대기수 숫자이미지 표시
+	  			        if(waitParentPhone.size() == 1){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_1);
+	  			        }else if(waitParentPhone.size() == 2){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_2);
+	  			        }else if(waitParentPhone.size() == 3){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_3);
+	  			        }else if(waitParentPhone.size() == 4){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_4);
+	  			        }else if(waitParentPhone.size() == 5){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_5);
+	  			        }else if(waitParentPhone.size() == 6){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_6);
+	  			        }else if(waitParentPhone.size() == 7){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_7);
+	  			        }else if(waitParentPhone.size() == 8){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_8);
+	  			        }else if(waitParentPhone.size() == 9){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_9);
+	  			        }else if(waitParentPhone.size() == 10){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_10);
+	  			        }else if(waitParentPhone.size() == 11){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_11);
+	  			        }else if(waitParentPhone.size() == 12){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_12);
+	  			        }else if(waitParentPhone.size() == 13){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_13);
+	  			        }else if(waitParentPhone.size() == 14){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_14);
+	  			        }else if(waitParentPhone.size() == 15){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_15);
+	  			        }else if(waitParentPhone.size() == 16){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_16);
+	  			        }else if(waitParentPhone.size() == 17){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_17);
+	  			        }else if(waitParentPhone.size() == 18){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_18);
+	  			        }else if(waitParentPhone.size() == 19){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_19);
+	  			        }else if(waitParentPhone.size() == 20){
+	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_20);
+	  			        }
+  			        	
   			        	AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
   						ad.setTitle("부모등록요청");
   						ad.setMessage(waitParentPhone.size() + "건의 부모등록 요청이 있습니다.\n확인 하시겠습니까?");
