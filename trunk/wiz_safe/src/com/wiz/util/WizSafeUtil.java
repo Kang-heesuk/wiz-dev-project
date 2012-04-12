@@ -522,4 +522,23 @@ public class WizSafeUtil {
 		buf = bout.toByteArray();
 		return buf;
 	}
+	
+	
+	//폰에서 가져온 값을 DB에 들어갈때 개행문자 처리 => \n 을 | 으로 변경하여 넣는다.
+	public static String dbReplaceReturnStr(String str){
+		try{
+			return WizSafeUtil.replaceStr(str, "\n", "|");
+		}catch(Exception e){
+			return str;
+		}
+	}
+
+	//DB의 값을 폰에서 보일때 개행문자 처리 => | 을 \n 으로 변경하여 넣는다.
+	public static String phoneReplaceReturnStr(String str){
+		try{
+			return WizSafeUtil.replaceStr(str, "|", "\n");
+		}catch(Exception e){
+			return str;
+		}
+	}
 }
