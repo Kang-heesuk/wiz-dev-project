@@ -34,9 +34,14 @@ public class JoinAuthActivity extends Activity {
 	//API 호출 후 리턴XML을 받는 벡터
 	ArrayList<String> returnXML;
 	
+	long tempTime;
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.join_auth);
+        
+        //2분뒤에 활성화 되도록 하는버튼에 필요한 변수
+        tempTime = System.currentTimeMillis();
         
         editText1 = (EditText)findViewById(R.id.editText1);
         
@@ -58,10 +63,13 @@ public class JoinAuthActivity extends Activity {
         Button btn_renum = (Button)findViewById(R.id.btn_renum);
         btn_renum.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				//API 호출 쓰레드 시작
-		        WizSafeDialog.showLoading(JoinAuthActivity.this);	//Dialog 보이기
-		        callAuthSMSApiThread thread = new callAuthSMSApiThread(); 
-				thread.start();
+				//비활성화 된지 2분이 지났다면 활성화 시킴
+				if(System.currentTimeMillis() - tempTime >= (1000 * 60 * 2)){
+					//API 호출 쓰레드 시작
+			        WizSafeDialog.showLoading(JoinAuthActivity.this);	//Dialog 보이기
+			        callAuthSMSApiThread thread = new callAuthSMSApiThread(); 
+					thread.start();
+				}
 			} 
 		}); 
     }
@@ -158,7 +166,8 @@ public class JoinAuthActivity extends Activity {
 				});
 				ad.show();
   			}else if(msg.what == 2){
-  				
+  				//현재시간을 다시 셋팅
+  				tempTime = System.currentTimeMillis();
   			}else if(msg.what == 3){
   				AlertDialog.Builder ad = new AlertDialog.Builder(JoinAuthActivity.this);
 				String title = "통신 오류";	
