@@ -140,6 +140,7 @@
                     android:id="@+id/editText2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:gravity="top"
                     android:background="@null"
                     android:hint="문의 내용을 입력해 주세요."
                     android:textSize="18dp" >
