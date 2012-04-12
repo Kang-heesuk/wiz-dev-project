@@ -253,17 +253,17 @@ public class AnswerListActivity extends Activity {
     				}
     				if(title.size() > 0){
     					for(int i=0; i <title.size(); i++){
-    						manToManList[i][2] = WizSafeUtil.phoneReplaceReturnStr(WizSafeSeed.seedDec((String) title.get(i)));
+    						manToManList[i][2] = WizSafeSeed.seedDec((String) title.get(i));
     					}
     				}
     				if(question.size() > 0){
     					for(int i=0; i <question.size(); i++){
-    						manToManList[i][3] = WizSafeUtil.phoneReplaceReturnStr(WizSafeSeed.seedDec((String) question.get(i)));
+    						manToManList[i][3] = WizSafeSeed.seedDec((String) question.get(i));
     					}
     				}
     				if(answer.size() > 0){
     					for(int i=0; i <answer.size(); i++){
-    						manToManList[i][4] = WizSafeUtil.phoneReplaceReturnStr(WizSafeSeed.seedDec((String) answer.get(i)));
+    						manToManList[i][4] = WizSafeSeed.seedDec((String) answer.get(i));
     					}
     				}
     				//2차원 배열을 커스텀 어레이리스트에 담는다.
