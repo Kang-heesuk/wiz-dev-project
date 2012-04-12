@@ -13,12 +13,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.StringTokenizer;
 
+import android.R.array;
 import android.app.AlertDialog;
+import android.app.LauncherActivity.ListItem;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,8 +29,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +57,6 @@ import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
-import com.wiz.Activity.ChildListActivity.ChildDetail;
-import com.wiz.Activity.ChildLocationViewActivity.CallGetNowLocationApiThread;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -75,6 +76,8 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private NMapView mMapView; 
 	private NMapController mMapController;
 	
+	ArrayAdapter<String> traceAdspin;
+			
 	//API 통신에 사용할 변수
 	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
 	private String childCtn;
@@ -115,7 +118,8 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private NMapPOIdataOverlay mFloatingPOIdataOverlay;
 	private NMapPOIitem mFloatingPOIitem;
 
-
+	// create POI data overlay
+	private NMapPOIdataOverlay poiDataOverlay;
 	
 	
 	/** Called when the activity is first created. */ 
@@ -132,16 +136,19 @@ public class ChildTraceViewActivity extends NMapActivity {
         endTime = intent.getStringExtra("endTime");
         interval = intent.getStringExtra("interval");
 		
+
+		//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
+    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
+		parentView.removeView(mMapView);
+		
+		
     	//API 호출 쓰레드 시작
     	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
     	WizSafeDialog.showLoading(ChildTraceViewActivity.this);	//Dialog 보이기
     	CallGetChildTraceViewApiThread thread = new CallGetChildTraceViewApiThread(); 
 		thread.start();
 		
-		//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
-    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
-		parentView.removeView(mMapView);
-		
+        
         //body
 	        
 		//=====================================================//
@@ -296,9 +303,40 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        if(tv_checkTime != null){
   			        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
   			        	String gap = "오차범위 : 50m ~2km";
-  			        	
   			        	tv_checkTime.setText("일자 : "+WizSafeUtil.getDateFormat(selectedDay) +"\n"+ gap);
   			        }
+  			        
+  					//발자취 리스트를 보여준다.
+  					Spinner traceSpiner = (Spinner)findViewById(R.id.traceSpinner); 
+  					traceSpiner.setPrompt("발자취 리스트 보기");
+  					if(childTraceViewListArr.size() > 0){
+  						String[] adapterItemList = new String[childTraceViewListArr.size()];
+  						for(int i=0; i < childTraceViewListArr.size(); i++){
+  							ChildTraceViewDetail tempBean = childTraceViewListArr.get(i);
+  							adapterItemList[i] = WizSafeUtil.getDateFormat(tempBean.getDay()) + " " + WizSafeUtil.timeConvertFromNumberToString1to24(tempBean.getHour());
+  						}
+  						
+  						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
+  					}
+  			        
+  			        traceAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+  			        traceSpiner.setAdapter(traceAdspin);
+  			        //셀렉트 박스 액션(요일설정)
+  			        traceSpiner.setOnItemSelectedListener(new OnItemSelectedListener() {
+  			        	//셀렉트 될때마다 탄다.
+  						public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+  	  						ChildTraceViewDetail tempBean = childTraceViewListArr.get(position);
+  							moveSelectedPosition(tempBean.getLongitude(), tempBean.getLatitude());
+  							//오버레이가 정상 생성되어 존재한다면
+  							if (poiDataOverlay != null) {		
+  								poiDataOverlay.selectPOIitem(position, true);
+  							}
+  						}
+
+  						public void onNothingSelected(AdapterView<?> parent) {
+  						}
+  			        	
+  					});
   			        
   			        ////화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
 					Toast.makeText(ChildTraceViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
@@ -366,18 +404,30 @@ public class ChildTraceViewActivity extends NMapActivity {
 		poiData.endPOIdata();
 
 		// create POI data overlay
-		NMapPOIdataOverlay poiDataOverlay = mOverlayManager.createPOIdataOverlay(poiData, null);
+		poiDataOverlay = mOverlayManager.createPOIdataOverlay(poiData, null);
 
 		// set event listener to the overlay
 		poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
 		
 		if (poiDataOverlay != null) {		//오버레이가 정상 생성되어 존재한다면
 			
-			poiDataOverlay.showAllPOIdata(0);
+			poiDataOverlay.showAllPOIdata(100);
 		}
 		
 	}
 
+	public void moveSelectedPosition(double longitude, double latitude){
+		//구한 위도 경도로 다시 맵중심을 복구한다.
+		mPreferences = getPreferences(MODE_PRIVATE);
+		int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
+		mMapController.setMapViewMode(viewMode);
+		//시작 축척 레벨을 10로 고정
+		int level = 10;
+		mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
+		//구한 위도 경도로 다시 맵중심을 복구한다.
+	}
+	
+	
 	/* NMapDataProvider Listener */
 	private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
 

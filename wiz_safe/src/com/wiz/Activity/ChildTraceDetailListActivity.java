@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
@@ -186,9 +184,7 @@ public class ChildTraceDetailListActivity extends Activity {
 			layout1.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						Toast.makeText(getApplicationContext(), "¸®½ºÆ®ºä "+Integer.toString(pos + 1)+"¹øÂ° ´­·¶´ÙÀÀ", Toast.LENGTH_SHORT).show();
 			            Intent intent = new Intent(ChildTraceDetailListActivity.this, ChildTraceViewActivity.class);
-
 			            intent.putExtra("phonenum", phonenum);
 						intent.putExtra("selectedDay", arSrc.get(pos).getTraceDay());
 						intent.putExtra("startTime", startTime);
