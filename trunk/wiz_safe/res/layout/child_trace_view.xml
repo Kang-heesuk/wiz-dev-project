@@ -31,7 +31,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="45"
                 android:orientation="horizontal" >
 
                 <LinearLayout
@@ -51,8 +52,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="33"
-                        android:orientation="vertical" >
-                    </LinearLayout>
+                        android:orientation="vertical" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -94,6 +94,45 @@
                         android:layout_weight="20"
                         android:orientation="vertical" >
                     </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical" />
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:orientation="vertical" />
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="45"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="75"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_weight="23"
+                    android:orientation="vertical" >
+
+                    <Spinner
+	                    android:id="@+id/traceSpinner"
+	                    android:layout_width="match_parent"
+	                    android:layout_height="match_parent"
+	                    android:background="@drawable/retry_selector" />
                 </LinearLayout>
 
                 <LinearLayout
