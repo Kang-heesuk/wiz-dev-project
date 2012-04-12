@@ -222,6 +222,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
+  				Log.i("banhong", "==>"+e.toString());
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}

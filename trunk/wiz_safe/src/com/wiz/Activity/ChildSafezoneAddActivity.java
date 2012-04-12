@@ -8,6 +8,7 @@
 package com.wiz.Activity;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +18,15 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -113,8 +123,11 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	//최초 시작지점 좌표
 	private double longitude;
 	private double latitude;
-	private String address;
 
+	//검색어
+	private String searchText;
+	//검색 후 나오는 위도 경도를 담는 변수
+	ArrayList<String> locationInfo;
 	//검색창
 	EditText searchArea;
 	//키보드 보이고 안보이고
@@ -168,20 +181,19 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	        latitude = Double.parseDouble(intent.getStringExtra("latitude"));
 	        longitude = Double.parseDouble(intent.getStringExtra("longitude"));
 	        String strRadiusValue = intent.getStringExtra("radius");
+	        
 	        if(strRadiusValue != null ){
 	        	radiusValue = Integer.parseInt(strRadiusValue);
 	        }else{
 	        	radiusValue = 200;
 	        }
+	        
 	        final Button btn_radius = (Button)findViewById(R.id.btn_radius);
 	        if(radiusValue == 200){
-				radiusValue = 500;
 				btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector); 
 			}else if(radiusValue == 500){
-				radiusValue = 1000;
 				btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector);
 			}else{
-				radiusValue = 200;
 				btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
 			}
 	        radiusOverlay = new RadiusOverlay(radiusValue);
@@ -204,8 +216,13 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	    			case R.id.btn_search: 
 	    				mImm.hideSoftInputFromWindow(searchArea.getWindowToken(),0);	//키보드를 숨기고
 	    				
+	    				searchText = searchArea.getText().toString();
+	    				//API 호출 쓰레드 시작
 	    				//주소를 통해서 위도 경도를 구하고 해당 위치로 이동한다.
-	    		    	getLocaInfoAndMove(searchArea.getText().toString());
+	    		    	WizSafeDialog.showLoading(ChildSafezoneAddActivity.this);	//Dialog 보이기
+	    		        CallGetLocaInfoAndMoveApiThread thread = new CallGetLocaInfoAndMoveApiThread(); 
+	    				thread.start();
+	    		    	//getLocaInfoAndMove(searchArea.getText().toString());
     			}
     		}
         });
@@ -217,13 +234,13 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				
 				if(radiusValue == 200){
 					radiusValue = 500;
-					btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector); 
+					btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector); 
 				}else if(radiusValue == 500){
 					radiusValue = 1000;
-					btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector);
+					btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
 				}else{
 					radiusValue = 200;
-					btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
+					btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector);
 				}
 				
 				//radius overlay 를 다시 그린다.
@@ -263,20 +280,10 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						//현재 맵 중심의 위도/경도/주소를 구한다.
+						//맵의 중앙의 위도 경도를 구한다.
 						NGeoPoint centerValue = mMapController.getMapCenter();
 						latitude = centerValue.getLatitude();
 						longitude = centerValue.getLongitude();
-						Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-						List<Address> addressInfoList = null;
-						try {
-							addressInfoList = geocoder.getFromLocation(latitude, longitude, 1);
-							Address addr = addressInfoList.get(0);
-							address = addr.getAddressLine(0);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						
 						//API 호출 쓰레드 시작
 				    	//안심존을 등록/수정한다.
@@ -402,7 +409,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
   				String encRadius = WizSafeSeed.seedEnc(Integer.toString(radiusValue));
   				String encLatitude = WizSafeSeed.seedEnc(Double.toString(latitude));
   				String encLongitude = WizSafeSeed.seedEnc(Double.toString(longitude));
-  				String encAddress = WizSafeSeed.seedEnc(address);
+  				
   				StringBuffer url = new StringBuffer();
   				url.append("https://www.heream.com/api/addChildSafezone.jsp");
   				url.append("?safezoneCode=" + URLEncoder.encode(safezoneCode));
@@ -411,7 +418,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
   				url.append("&radius=" + URLEncoder.encode(encRadius));
   				url.append("&lat=" + URLEncoder.encode(encLatitude));
   				url.append("&lon=" + URLEncoder.encode(encLongitude));
-  				url.append("&addr=" + URLEncoder.encode(encAddress));
+
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url.toString()).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -433,7 +440,69 @@ public class ChildSafezoneAddActivity extends NMapActivity {
   			}
   		}
   	}
+  	
 
+  	//API 호출 쓰레드
+  	class CallGetLocaInfoAndMoveApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			locationInfo = new ArrayList<String>();
+  			try{
+  				String strSql = "http://maps.google.co.kr/maps/geo?q="+URLEncoder.encode(searchText)+"&gl=KR&output=xml&key=";
+  				
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(strSql).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				
+  				String parseXML = "";
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  					parseXML = parseXML + temp;
+  				}
+  				
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<code>");
+  				ArrayList<String> coordinates = WizSafeParser.xmlParser_List(returnXML,"<coordinates>");
+  				if("200".equals(resultCode)){	//정상 결과
+  					httpResult = 0;
+  				}
+  				
+  				try{
+  					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+  					DocumentBuilder builder = factory.newDocumentBuilder();
+  					is = new ByteArrayInputStream(parseXML.getBytes("utf-8"));
+  					Document doc = builder.parse(is);
+  					Element order = doc.getDocumentElement();
+  					NodeList items = order.getElementsByTagName("Point");	//1depth엘레멘트명
+  					
+  					for(int i = 0 ; i < items.getLength() ; i++){
+  						Node item = items.item(i);
+  						NodeList itemChildNodeList = item.getChildNodes();
+  						for(int j = 0 ; j < itemChildNodeList.getLength() ; j++){
+  							Node childItem = itemChildNodeList.item(j);
+  							if("coordinates".equals(childItem.getNodeName())){
+  	  							locationInfo.add(WizSafeUtil.replaceStr(childItem.getTextContent(), ",0", ""));
+  	  						}
+  						}
+  					}
+  				}catch(Exception e){
+  					
+  				}finally{
+  					if(is != null){ try{is.close();}catch(Exception e){} }
+  				}
+  				
+  				pHandler.sendEmptyMessage(2);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(3);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}  	
+  	
   	Handler pHandler = new Handler(){
   		public void handleMessage(Message msg){
 			WizSafeDialog.hideLoading();
@@ -483,6 +552,52 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 					}
 				});
 				ad.show();
+  			}else if(msg.what == 2){	
+  				
+  				if(locationInfo.size() > 0){
+  					double firstLon = Double.parseDouble(locationInfo.get(0).substring(0, locationInfo.get(0).indexOf(","))); 
+  					double firstLat = Double.parseDouble(locationInfo.get(0).substring(locationInfo.get(0).indexOf(",")+1));
+  					//구한 위도 경도로 다시 맵중심을 복구한다.
+					mPreferences = getPreferences(MODE_PRIVATE);
+					
+					int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
+					int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
+					boolean trafficMode = mPreferences.getBoolean(KEY_TRAFFIC_MODE, NMAP_TRAFFIC_MODE_DEFAULT);
+					boolean bicycleMode = mPreferences.getBoolean(KEY_BICYCLE_MODE, NMAP_BICYCLE_MODE_DEFAULT);
+					
+					mMapController.setMapViewMode(viewMode);
+					mMapController.setMapViewTrafficMode(trafficMode);
+					mMapController.setMapViewBicycleMode(bicycleMode);
+					//시작 축척 레벨을 10로 고정
+					level = 10;
+					mMapController.setMapCenter(new NGeoPoint(firstLon, firstLat), level);
+					//구한 위도 경도로 다시 맵중심을 복구한다.
+  				}else{
+  					//조회 결과 없음
+  	  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
+  					String title = "위치 검색";	
+  					String message = "검색된 지역이 없습니다.";	
+  					String buttonName = "확인";
+  					ad.setTitle(title);
+  					ad.setMessage(message);
+  					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  						public void onClick(DialogInterface dialog, int which) {
+  						}
+  					});
+  				}
+				
+  			}else if(msg.what == 3){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
   			}
   		}
   	};
@@ -834,8 +949,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		public RadiusOverlay(int raidusValue){
 			current_x = windowWidth / 2;
 			current_y = windowHeight / 2;
-			Log.i("banhong", "안심존 맵뷰에서 가로 : "+windowWidth);
-		    Log.i("banhong", "안심존 맵뷰에서 세로 : "+windowHeight);
 			if(raidusValue != 200 && raidusValue != 500 && raidusValue != 1000){
 				radius = 200;
 			}
@@ -929,15 +1042,19 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	
 	}
 	
-	public void getLocaInfoAndMove(String searchAddress){
+	//API 호출 쓰레드
+  	public void getLocaInfoAndMove (String searchAddress){
 			
 		Locale.setDefault(Locale.KOREA); // = ko_KO, 디폴트로 되어 있으면 말고
 		Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 		List<Address> addressInfoList = null;
+		Log.i("banhong", searchAddress+"정상이니???11111 : "+longitude+","+latitude);
 		try {
 			//주소로부터 위도 경도를 구한다.
 			addressInfoList = geocoder.getFromLocationName(searchAddress, 1);
+			Log.i("banhong", searchAddress+"정상이니???222222 : "+longitude+","+latitude);
 			if(addressInfoList.size() == 0){
+				Log.i("banhong", searchAddress+"정상이니???33333 : "+longitude+","+latitude);
 				AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneAddActivity.this);
 				String title = "검색 오류 안내";	
 				String message = "검색어가 올바르지 않습니다. \n정확한 지역명을 입력해 주세요.";	
@@ -950,10 +1067,12 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				});
 				ad.show();
 			}else{
+				Log.i("banhong", searchAddress+"정상이니???44444 : "+longitude+","+latitude);
 				Address addr = addressInfoList.get(0);
 				longitude = addr.getLongitude();
 				latitude = addr.getLatitude();
 			}
+			Log.i("banhong", searchAddress+"정상으로 되긴 하는거니5555??? : "+longitude+","+latitude);
 			//구한 위도 경도로 다시 맵중심을 복구한다.
 			mPreferences = getPreferences(MODE_PRIVATE);
 			
@@ -972,6 +1091,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+			Log.i("banhong", "익셈숀!!!!   : "+e.toString());
 		}
 	
 		

@@ -277,7 +277,7 @@ public class ChildSafezoneListActivity extends Activity {
   			InputStream is = null;
   			try{
   				String url = "https://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));
-  				Log.i("banhong", "url = : "+url);
+  				
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -294,7 +294,7 @@ public class ChildSafezoneListActivity extends Activity {
   				ArrayList<String> encLatitude = WizSafeParser.xmlParser_List(returnXML,"<LATITUDE>");
   				ArrayList<String> encLongitude = WizSafeParser.xmlParser_List(returnXML,"<LONGITUDE>");
   				ArrayList<String> encRadius = WizSafeParser.xmlParser_List(returnXML,"<RADIUS>");
-  				Log.i("banhong", "1111 ");
+  				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
@@ -352,7 +352,6 @@ public class ChildSafezoneListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  				Log.i("banhong", "스레드 익셉션이다!! "+e.toString());
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
