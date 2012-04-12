@@ -1,11 +1,20 @@
 package com.wiz.Activity;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +25,22 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeUtil;
+
 public class NoticeListActivity extends Activity {
 
 	//등록된 자녀의 이름
-	ArrayList<noticeDetail> noticeList = new ArrayList<noticeDetail>();
+	ArrayList<NoticeDetail> noticeListArr = new ArrayList<NoticeDetail>();
+	ArrayAdapter<NoticeDetail> noticeAdapter;
 	
-	ArrayAdapter<noticeDetail> noticeAdapter;
+	//API 통신 성공유무 변수 
+	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	String[][] noticeList;
+
+	NoticeListAdapter listAdapter;
+	ListView listView;
 	
     /** Called when the activity is first created. */ 
     public void onCreate(Bundle savedInstanceState) {
@@ -29,36 +48,149 @@ public class NoticeListActivity extends Activity {
         setContentView(R.layout.notice_list);
         
         
-        //등록된 자녀 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
-        getNoticeList();
+        //API 호출 쓰레드 시작
+    	//자녀 리스트를 가져온다.
+    	WizSafeDialog.showLoading(NoticeListActivity.this);	//Dialog 보이기
+        CallGetNoticeListApiThread thread = new CallGetNoticeListApiThread(); 
+		thread.start();
 
-        noticeListAdapter listAdapter = new noticeListAdapter(this, R.layout.notice_list_customlist, noticeList);
+        listAdapter = new NoticeListAdapter(this, R.layout.notice_list_customlist, noticeListArr);
         ListView listView = (ListView)findViewById(R.id.list1);
         listView.setAdapter(listAdapter);
         
     }
     
-    
-    //cms와 연동된 공지사항을 불러온다.
-    public void getNoticeList() {
-    	
-    	String[][] tempHardCoding = {{"공지사항1","01/26","줄바꾸어~~~\n줄바꾸어~~~\n줄바꾸어~~~\n줄바꾸어~~~\n줄바꾸어~~~\n줄바꾸어~~~\n1231111111111111111010123111111111111111101012311111111111111110101231111\n111111111111010123111111111111111101012311111111111111110101231111111111111111010123111\n111111111111101012311111111\n1111111101012311111111\n111111101012345678"},{"공지사항2","03/26","22222222222222222105484565"},{"긴 공지사항도 문제없삼 후아아3","04/26","3333333333333333333333333333331024882698"},{"공지사항4","03/11","44444444444444444441084464664"},{"공지사항5","01/26","5555555555555441084464664"},{"공지사항6","01/26","66666666666666666684464664"},{"공지사항7","01/26","777777777777777777777084464664"}};
-    	
-    	for(int i = 0 ; i < tempHardCoding.length ; i++){
-    		
-    		noticeDetail addNoticeList = new noticeDetail(tempHardCoding[i][0], tempHardCoding[i][1], tempHardCoding[i][2]);
-    		noticeList.add(addNoticeList);
-    	}
-
+    //리스트뷰를 리로드
+    public void upDateListView(){
+    	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
+  		listAdapter = new NoticeListAdapter(this, R.layout.notice_list_customlist, noticeListArr);
+  		listView = (ListView)findViewById(R.id.list1);
+    	listView.setAdapter(listAdapter);
     }
     
+    //API 호출 쓰레드
+  	class CallGetNoticeListApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String url = "https://www.heream.com/api/getNoticeList.jsp";
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				ArrayList<String> title = WizSafeParser.xmlParser_List(returnXML,"<TITLE>");
+  				ArrayList<String> regdate = WizSafeParser.xmlParser_List(returnXML,"<REGDATE>");
+  				ArrayList<String> content = WizSafeParser.xmlParser_List(returnXML,"<CONTENT>");
+  				
+  				//복호화 하여 2차원배열에 담는다.
+  				httpResult = Integer.parseInt(resultCode);
+  				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
+  				noticeList = new String[title.size()][3];
+  				if(title.size() > 0){
+  					for(int i=0; i < title.size(); i++){
+  						noticeList[i][0] = title.get(i);
+  					}
+  				}
+  				if(regdate.size() > 0){
+  					for(int i=0; i < regdate.size(); i++){
+  						noticeList[i][1] = WizSafeUtil.getDateFormat(regdate.get(i));
+  					}
+  				}
+  				if(content.size() > 0){
+  					for(int i=0; i < content.size(); i++){
+  						noticeList[i][2] = content.get(i);
+  					}
+  				}
+
+  				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  		    	if(noticeList != null){
+  			    	for(int i = 0 ; i < noticeList.length ; i++){
+  			    		NoticeDetail addChildList = new NoticeDetail(noticeList[i][0], noticeList[i][1], noticeList[i][2]);
+  			    		noticeListArr.add(addChildList);
+  			    	}
+  		    	}
+
+  		    	pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+ 	
+
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+					//조회성공
+  			        if(noticeListArr.size() > 0){
+  			        	upDateListView();
+  			        	
+  			        }else{
+  			        //조회실패
+  						AlertDialog.Builder ad = new AlertDialog.Builder(NoticeListActivity.this);
+  						String title = "공지사항";	
+  						String message = "등록된 공지사항이 없습니다.";	
+  						String buttonName = "확인";
+  						ad.setTitle(title);
+  						ad.setMessage(message);
+  						ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  							public void onClick(DialogInterface dialog, int which) {
+  								finish();
+  							}
+  						});
+  						ad.show();
+  			        }
+				}else{
+					//조회실패
+					AlertDialog.Builder ad = new AlertDialog.Builder(NoticeListActivity.this);
+					String title = "통신 오류";	
+					String message = "부모 리스트 정보를 조회할 수 없습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(NoticeListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	}; 	    
     
-    class noticeDetail {
+    class NoticeDetail {
     	private String noticeTitle;
     	private String noticeRegdate;
     	private String noticeContent;
     	
-    	public noticeDetail (String noticeTitle, String noticeRegdate, String noticeContent){
+    	public NoticeDetail (String noticeTitle, String noticeRegdate, String noticeContent){
     		this.noticeTitle = noticeTitle;
     		this.noticeRegdate = noticeRegdate;
     		this.noticeContent = noticeContent;
@@ -75,15 +207,15 @@ public class NoticeListActivity extends Activity {
     }
     
     
-    class noticeListAdapter extends BaseAdapter {
+    class NoticeListAdapter extends BaseAdapter {
 
     	Context maincon;
     	LayoutInflater Inflater;
-    	ArrayList<noticeDetail> arSrc;
+    	ArrayList<NoticeDetail> arSrc;
     	int layout;
     	
     	//최초 커스텀리스트 뷰를 보여줄때
-    	public noticeListAdapter(Context context, int alayout, ArrayList<noticeDetail> aarSrc){
+    	public NoticeListAdapter(Context context, int alayout, ArrayList<NoticeDetail> aarSrc){
     		maincon = context;
     		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		arSrc = aarSrc;
@@ -94,7 +226,7 @@ public class NoticeListActivity extends Activity {
 			return arSrc.size();
 		}
 
-		public noticeDetail getItem(int position) {
+		public NoticeDetail getItem(int position) {
 			return arSrc.get(position);
 		}
 
