@@ -299,6 +299,9 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        	
   			        	tv_checkTime.setText("일자 : "+WizSafeUtil.getDateFormat(selectedDay) +"\n"+ gap);
   			        }
+  			        
+  			        ////화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
+					Toast.makeText(ChildTraceViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
 			    	
 				}else{
 					//조회실패

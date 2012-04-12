@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -60,6 +61,8 @@ public class ChildLocationViewActivity extends NMapActivity {
 	private NMapView mMapView; 
 	private NMapController mMapController;
 
+	//이전액티비티에서 받아올 값
+	private String childCtn;
 	//맵뷰위에 사용될 정보 선언 
 	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
 	private String regdate;
@@ -107,23 +110,26 @@ public class ChildLocationViewActivity extends NMapActivity {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
+    	//NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude, latitude);
+    	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
+    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
+		parentView.removeView(mMapView);
+		
+    	Intent intent = getIntent();
+        childCtn = intent.getStringExtra("phonenum");
+    	if(childCtn == null){childCtn = "";}
     	//API 호출 쓰레드 시작
     	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
     	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
         CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
 		thread.start();
-		 
-    	NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude, latitude);
-    	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
-    	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
-		parentView.removeView(mMapView);
-		
-		
+	
         //body 
         
     	// create map view
     	mMapView = (NMapView)findViewById(R.id.mapview); //앞으로의 작업을 위해 mapview의 객체를 하나 생성한다.
-
+    	//네이버 로고를 이동시킨다.
+    	//mMapView.setLogoImageOffset(100, 100);
     	// set a registered API key for Open MapViewer Library
     	mMapView.setApiKey(API_KEY); //지도 키 값을 셋팅한다.
 
@@ -174,15 +180,13 @@ public class ChildLocationViewActivity extends NMapActivity {
     	mMapLocationManager = new NMapLocationManager(this);
     	mMapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
 
-
     	// compass manager
     	mMapCompassManager = new NMapCompassManager(this);
 
-
     	// create my location overlay
     	mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, mMapCompassManager);
-
-    	mMapController.setMapViewMode(NMapView.VIEW_MODE_SATELLITE);
+    	//일반 지도 형식으로 보인다.
+    	mMapController.setMapViewMode(NMapView.VIEW_MODE_VECTOR);
 
     }
 
@@ -192,37 +196,43 @@ public class ChildLocationViewActivity extends NMapActivity {
   		public void run(){
   			InputStream is = null;
   			try{
-  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
-  				String url = "https://www.heream.com/api/getNowLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn);
-  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
-  				String temp;
-  				ArrayList<String> returnXML = new ArrayList<String>();
-  				while((temp = br.readLine()) != null)
-  				{
-  					returnXML.add(new String(temp));
+  				String enc_ctn = "";
+  				if(childCtn != null && !"".equals(childCtn)){
+  					enc_ctn = WizSafeSeed.seedEnc(childCtn);
+  					
+  					String url = "https://www.heream.com/api/getNowLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  	  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  	  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  	  				String temp;
+  	  				ArrayList<String> returnXML = new ArrayList<String>();
+  	  				while((temp = br.readLine()) != null)
+  	  				{
+  	  					returnXML.add(new String(temp));
+  	  				}
+  	  				//결과를 XML 파싱하여 추출
+  	  				
+  	  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  	  				String strRegdate = WizSafeParser.xmlParser_String(returnXML,"<REGDATE>");
+  	  				String encLongitude = WizSafeParser.xmlParser_String(returnXML,"<LONGITUDE>");
+  	  				String encLatitude = WizSafeParser.xmlParser_String(returnXML,"<LATITUDE>");
+  	  				String encAddress = WizSafeParser.xmlParser_String(returnXML,"<ADDRESS>");
+  	  				String strType = WizSafeParser.xmlParser_String(returnXML,"<TYPE>");
+  	  				//필요한 데이터 타입으로 형변환
+  	  				httpResult = Integer.parseInt(resultCode);
+  	  				if(httpResult == 0){
+	  	  				regdate = strRegdate;
+	  	  				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
+	  	  				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
+	  	  				address = WizSafeSeed.seedDec(encAddress);
+	  	  				type = strType;
+  	  				}
+  	  				pHandler.sendEmptyMessage(0);
+  				}else{
+  					pHandler.sendEmptyMessage(1);
   				}
-  				//결과를 XML 파싱하여 추출
-  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-  				String strRegdate = WizSafeParser.xmlParser_String(returnXML,"<REGDATE>");
-  				String encLongitude = WizSafeParser.xmlParser_String(returnXML,"<LONGITUDE>");
-  				String encLatitude = WizSafeParser.xmlParser_String(returnXML,"<LATITUDE>");
-  				String encAddress = WizSafeParser.xmlParser_String(returnXML,"<ADDRESS>");
-  				String strType = WizSafeParser.xmlParser_String(returnXML,"<TYPE>");
-
-  				//필요한 데이터 타입으로 형변환
-  				httpResult = Integer.parseInt(resultCode);	
-  				regdate = strRegdate;
-  				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
-  				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
-  				address = WizSafeSeed.seedDec(encAddress);
-  				type = strType;
-  				
-  				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
   				//통신중 에러발생
-  				pHandler.sendEmptyMessage(1);
-  				Log.i("banhong", "==>"+e.toString());
+  				pHandler.sendEmptyMessage(2);
   			}finally{
   				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
@@ -236,6 +246,8 @@ public class ChildLocationViewActivity extends NMapActivity {
   				//핸들러 정상동작
   				if(httpResult == 0){
 					//조회성공
+  					//nmap 그리기에 필요한 값 선언
+  					NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude, latitude);
   					
   					TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
   			        if(tv_checkTime != null){
@@ -295,6 +307,9 @@ public class ChildLocationViewActivity extends NMapActivity {
 						edit.putString("getNowChildLocCnt", sdf.format(calendar.getTime())+"_"+tryCount);
 						edit.commit();
 						
+						//화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
+						Toast.makeText(ChildLocationViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
+						
   			        }catch(Exception e){}
 			    	
 				}else{
@@ -307,11 +322,26 @@ public class ChildLocationViewActivity extends NMapActivity {
 					ad.setMessage(message);
 					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
+							finish();
 						}
 					});
 					ad.show();
 				}
   			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+				String title = "통신 오류";	
+				String message = "자녀 정보를 조회할 수 없습니다. 다시 시도해주세요.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 2){
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
 				String title = "통신 오류";	
@@ -330,7 +360,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   	};
 
 
-	//좌표에 해당하는 주소를 지도에 표현하는 오버레이
+	//받아온 위도경도에 대해서 핀+주소말풍선을 지도에 표현하는 오버레이
 	private void getCurrentLocationInfoPOIdataOverlay() {
  
 		// Markers for POI item
@@ -350,10 +380,10 @@ public class ChildLocationViewActivity extends NMapActivity {
 		poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
 
 		// select an item
-		poiDataOverlay.selectPOIitem(0, true);
+		//poiDataOverlay.selectPOIitem(0, true);
 
 		// show all POI data
-		//poiDataOverlay.showAllPOIdata(0);
+		poiDataOverlay.showAllPOIdata(0);
 	}
 
 	
@@ -431,7 +461,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 	/* Local Functions */
 	private void restoreInstanceState() {
 		mPreferences = getPreferences(MODE_PRIVATE);
-
+		Log.i("banhong", "여기는 restoreInstanceState 실행됐다");
 		int longitudeE6 = mPreferences.getInt(KEY_CENTER_LONGITUDE, NMAP_LOCATION_DEFAULT.getLongitudeE6());
 		int latitudeE6 = mPreferences.getInt(KEY_CENTER_LATITUDE, NMAP_LOCATION_DEFAULT.getLatitudeE6());
 		int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
@@ -481,7 +511,8 @@ public class ChildLocationViewActivity extends NMapActivity {
 
 			if (errorInfo == null) { // success
 				// restore map view state such as map center position and zoom level.
-				restoreInstanceState();
+				Log.i("banhong", "onMapInitHandler여기는 언제타니??"+latitude+" :: "+longitude);
+				//restoreInstanceState();
 
 			} else { // fail
 				Log.e(LOG_TAG, "onFailedToInitializeWithError: " + errorInfo.toString());

@@ -197,6 +197,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
 			}
 	        radiusOverlay = new RadiusOverlay(radiusValue);
+	        
         }
         
         //body
