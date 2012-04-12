@@ -77,7 +77,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:textColor="#ff000000"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -166,11 +166,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="96"
                     android:orientation="vertical" >
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/locate_trace_guide" />
                 </LinearLayout>
 
                 <LinearLayout

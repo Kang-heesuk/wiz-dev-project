@@ -317,6 +317,7 @@ public class ChildListActivity extends Activity {
 					public void onClick(View v) {
 						if("02".equals(arSrc.get(pos).getChildRelation())){
 							Intent intent = new Intent(ChildListActivity.this, ChildLocationViewActivity.class);
+							intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
 							startActivity(intent);
 						}
 					}
