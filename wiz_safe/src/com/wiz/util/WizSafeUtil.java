@@ -434,6 +434,13 @@ public class WizSafeUtil {
 	    		
 				//필요한 결과를 조합
 				returnVal = yyyy + mm + dd;
+			}else if(orgDate.length() == 4){
+				
+	    		String mm = orgDate.substring(0, 2);
+	    		String dd = orgDate.substring(2, 4);
+	    		
+				//필요한 결과를 조합
+				returnVal = mm +"/"+ dd;
 			}
 		}catch(Exception e){
 			returnVal = "확인불가";
