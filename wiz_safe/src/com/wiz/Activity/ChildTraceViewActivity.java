@@ -237,16 +237,16 @@ public class ChildTraceViewActivity extends NMapActivity {
   		public void run(){
   			InputStream is = null;
   			try{
-  				String enc_ctn = WizSafeSeed.seedEnc(childCtn);
-  				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?ctn="+ URLEncoder.encode(enc_ctn)+"&selectedDay="+selectedDay+"&startTime="+startTime+"&endTime="+endTime+"&interval="+interval;
+  				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
+  				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
+  				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+selectedDay+"&startTime="+startTime+"&endTime="+endTime+"&interval="+interval;
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
   				ArrayList<String> returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					returnXML.add(new String(temp));
-  					Log.i("banhong", " :: "+new String(temp));
+  					returnXML.add(new String(temp));  					
   				}
   				//결과를 XML 파싱하여 추출
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
