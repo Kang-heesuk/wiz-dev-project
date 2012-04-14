@@ -188,6 +188,11 @@
 				<action android:name="com.wiz.Demon.WizSafeService"></action>		        
 		    </intent-filter>
 	    </service>
+	    <service android:name="com.wiz.Demon.WizSafeGetLocation" android:enabled="true">
+		    <intent-filter >
+				<action android:name="com.wiz.Demon.WizSafeGetLocation"></action>		        
+		    </intent-filter>
+	    </service>
 	    <receiver android:name="com.wiz.Demon.BroadcastDemon" android:enabled="true">       
 		    <intent-filter >
 	        	<action android:name="android.intent.action.BOOT_COMPLETED" />
