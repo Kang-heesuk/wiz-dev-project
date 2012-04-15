@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
+import android.util.Log;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeUtil;
@@ -209,11 +210,20 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 					cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 					if(cm.getActiveNetworkInfo() != null){
 						//API ≈ÎΩ≈
-						enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(WizSafeGetLocation.this));
-						dbInsertDate = WizSafeUtil.getInsertDbDate();
-						url = "https://www.heream.com/api/insertLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&dbInsertDate=" + URLEncoder.encode(dbInsertDate) + "&lat=" + URLEncoder.encode(enc_lat) + "&lon=" + URLEncoder.encode(enc_lon) + "&type=" + URLEncoder.encode(provider) + "&hiddenUser=" + URLEncoder.encode(hiddenUser);
-						urlConn = (HttpURLConnection) new URL(url).openConnection();
-						br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
+						try{
+							enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(WizSafeGetLocation.this));
+							dbInsertDate = WizSafeUtil.getInsertDbDate();
+							url = "https://www.heream.com/api/insertLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&dbInsertDate=" + URLEncoder.encode(dbInsertDate) + "&lat=" + URLEncoder.encode(enc_lat) + "&lon=" + URLEncoder.encode(enc_lon) + "&type=" + URLEncoder.encode(provider) + "&hiddenUser=" + URLEncoder.encode(hiddenUser);
+							urlConn = (HttpURLConnection) new URL(url).openConnection();
+							urlConn.setConnectTimeout(2000);
+							urlConn.setReadTimeout(2000);
+							br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
+						}catch(Exception e){
+							Log.i("childList","¿Õº¡º« : " + e.toString());
+						}finally{
+							if(br != null){ br.close(); }
+							if(urlConn != null) {urlConn.disconnect(); urlConn = null;}
+						}
 					}
 				}
 				pHandler.sendEmptyMessage(0);
