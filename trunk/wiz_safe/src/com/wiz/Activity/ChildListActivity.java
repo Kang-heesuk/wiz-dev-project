@@ -63,17 +63,17 @@ public class ChildListActivity extends Activity {
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
-        setContentView(R.layout.child_list);
-        
-        listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
-        listView = (ListView)findViewById(R.id.list1);
-        View footer = getLayoutInflater().inflate(R.layout.child_list_footer, null, false);
-        listView.addFooterView(footer);
     }
     
     public void onResume(){
     	super.onResume();
-
+    	setContentView(R.layout.child_list);
+    	
+    	listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
+        listView = (ListView)findViewById(R.id.list1);
+        View footer = getLayoutInflater().inflate(R.layout.child_list_footer, null, false);
+        listView.addFooterView(footer);
+    	
     	 //API 호출 쓰레드 시작
     	//자녀 리스트를 가져온다.
     	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
