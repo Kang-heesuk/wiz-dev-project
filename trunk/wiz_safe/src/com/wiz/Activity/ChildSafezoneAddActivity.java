@@ -189,11 +189,11 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	        
 	        final Button btn_radius = (Button)findViewById(R.id.btn_radius);
 	        if(radiusValue == 200){
-				btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector); 
+				btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector); 
 			}else if(radiusValue == 500){
-				btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector);
+				btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector);
 			}else{
-				btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
+				btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector);
 			}
 	        radiusOverlay = new RadiusOverlay(radiusValue);
 	        
@@ -234,13 +234,13 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 				
 				if(radiusValue == 200){
 					radiusValue = 500;
-					btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector); 
+					btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector); 
 				}else if(radiusValue == 500){
 					radiusValue = 1000;
-					btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
+					btn_radius.setBackgroundResource(R.drawable.btn_m_1k_selector);
 				}else{
 					radiusValue = 200;
-					btn_radius.setBackgroundResource(R.drawable.btn_m_500_selector);
+					btn_radius.setBackgroundResource(R.drawable.btn_m_200_selector);
 				}
 				
 				//radius overlay 를 다시 그린다.
