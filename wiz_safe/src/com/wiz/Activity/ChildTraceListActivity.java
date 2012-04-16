@@ -281,7 +281,7 @@ public class ChildTraceListActivity extends Activity {
   			        
   			        childNameArea.setText(childName);
   			        phonenumArea.setText("(" + WizSafeUtil.setPhoneNum(phonenum) + ")");
-  			        weekendArea.setText("요일 : " + WizSafeUtil.dayConvertFromNumberToString(startDay) +" ~ "+ WizSafeUtil.dayConvertFromNumberToString(endDay));
+  			        weekendArea.setText("요일 : " + WizSafeUtil.dayConvertFromNumberToString(startDay) +"요일 ~ "+ WizSafeUtil.dayConvertFromNumberToString(endDay) + "요일");
   			        timeArea.setText("시간 : " + WizSafeUtil.timeConvertFromNumberToString0to23(startTime) +" ~ "+ WizSafeUtil.timeConvertFromNumberToString1to24(endTime));
   			        intervalArea.setText("간격 : " + WizSafeUtil.intervalConvertMinToHour(interval) + "시간");
   			        
