@@ -91,7 +91,7 @@ public class WizSafeService extends Service {
 				}catch(Exception e){
 				}finally{
 				}
-				try{Thread.sleep(1000 * 60 * 2);}catch(Exception e){}
+				try{Thread.sleep(1000 * 60 * 5);}catch(Exception e){}
 			}
 		}
 	}
