@@ -82,8 +82,8 @@ public class WizSafeService extends Service {
 					stopService(new Intent().setComponent(cn));
 					WizSafeService.this.startService(new Intent().setComponent(cn));
 					
-					//최대 15초 유지
-					try{Thread.sleep(1000 * 15);}catch(Exception e){}
+					//최대 17초 유지
+					try{Thread.sleep(1000 * 18);}catch(Exception e){}
 					
 					//위치찾기 백그라운드 데몬을 죽인다.(위치를 못가져오면서 가만히 동작안할경우를 대비하여 죽인다. = 확인사살)
 					cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
@@ -91,7 +91,7 @@ public class WizSafeService extends Service {
 				}catch(Exception e){
 				}finally{
 				}
-				try{Thread.sleep(1000 * 60 * 5);}catch(Exception e){}
+				try{Thread.sleep(1000 * 60 * 2);}catch(Exception e){}
 			}
 		}
 	}
