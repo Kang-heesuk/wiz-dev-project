@@ -71,6 +71,17 @@ public class JoinAcceptActivity extends Activity {
 			public void onClick(View v) {
 				//체크항목을 모두 채우지 않았을경우에 버튼을 비활성화
 		        if(checkImg1.getVisibility() != View.VISIBLE || checkImg2.getVisibility() != View.VISIBLE){
+		        	AlertDialog.Builder ad = new AlertDialog.Builder(JoinAcceptActivity.this);
+					String title = "이용 동의";	
+					String message = "이용약관 및 개인정보 수집 동의 후 가능 합니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					ad.show();
 		        	return;
 		        }
 		        //API 호출 쓰레드 시작
