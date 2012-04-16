@@ -57,9 +57,13 @@ public class ChildTraceListActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
-		setContentView(R.layout.child_trace_list);
-        
-        //앞 페이지에서 필요한 정보를 추출한다.
+	}
+	
+	public void onResume(){
+    	super.onResume();
+    	setContentView(R.layout.child_trace_list);
+    	
+    	//앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
         phonenum = intent.getStringExtra("phonenum");
         childName = intent.getStringExtra("childName");
@@ -69,8 +73,7 @@ public class ChildTraceListActivity extends Activity {
     	WizSafeDialog.showLoading(ChildTraceListActivity.this);	//Dialog 보이기
     	CallChildTraceListApiThread thread = new CallChildTraceListApiThread(); 
 		thread.start();
-
-	}
+    }
 	
 	//API 호출 쓰레드
   	class CallChildTraceListApiThread extends Thread{
@@ -118,6 +121,7 @@ public class ChildTraceListActivity extends Activity {
   				}else{
   					isRegisterTrace = false;
   				}
+  				
 				startDay = WizSafeParser.xmlParser_String(returnXML,"<START_DAY>");
 				endDay = WizSafeParser.xmlParser_String(returnXML,"<END_DAY>");
 				startTime = WizSafeParser.xmlParser_String(returnXML,"<START_TIME>");
@@ -204,7 +208,6 @@ public class ChildTraceListActivity extends Activity {
 			WizSafeDialog.hideLoading();
   			if(msg.what == 0){
   				if(addApiResult == 0 || addApiResult == 1){
-  					
   					//리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
   			        if(!isRegisterTrace){
   			        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
