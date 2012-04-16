@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.Activity.MainActivity.CallGetCustomerInformationApiThread;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -63,17 +64,21 @@ public class ChildListActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
         setContentView(R.layout.child_list);
-               
-        //API 호출 쓰레드 시작
-    	//자녀 리스트를 가져온다.
-    	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
-        CallGetChildListApiThread thread = new CallGetChildListApiThread(); 
-		thread.start();
         
         listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
         listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.child_list_footer, null, false);
         listView.addFooterView(footer);
+    }
+    
+    public void onResume(){
+    	super.onResume();
+
+    	 //API 호출 쓰레드 시작
+    	//자녀 리스트를 가져온다.
+    	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
+        CallGetChildListApiThread thread = new CallGetChildListApiThread(); 
+		thread.start();
     }
     
     //리스트뷰를 리로드
@@ -370,10 +375,13 @@ public class ChildListActivity extends Activity {
   					returnXML.add(new String(temp));
   				}
   				//결과를 XML 파싱하여 추출
+  				ArrayList<String> encChildName = new ArrayList();
+  				ArrayList<String> encChildCtn = new ArrayList();
+  				ArrayList<String> state = new ArrayList();
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-  				ArrayList<String> encChildName = WizSafeParser.xmlParser_List(returnXML,"<CHILD_NAME>");
-  				ArrayList<String> encChildCtn = WizSafeParser.xmlParser_List(returnXML,"<CHILD_CTN>");
-  				ArrayList<String> state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
+  				encChildName = WizSafeParser.xmlParser_List(returnXML,"<CHILD_NAME>");
+  				encChildCtn = WizSafeParser.xmlParser_List(returnXML,"<CHILD_CTN>");
+  				state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
@@ -396,6 +404,7 @@ public class ChildListActivity extends Activity {
   				}
 
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  				childListArr = new ArrayList<ChildDetail>();
   		    	if(childList != null){
   			    	for(int i = 0 ; i < childList.length ; i++){
   			    		ChildDetail addChildList = new ChildDetail(childList[i][0], childList[i][1], childList[i][2]);
