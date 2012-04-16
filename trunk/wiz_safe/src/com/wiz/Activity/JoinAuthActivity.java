@@ -135,8 +135,8 @@ public class JoinAuthActivity extends Activity {
 					edit.putString("isAuthOkUser", "01");
 					edit.commit();
 			    	
-			    	//스플레시 액티비티로 이동
-					Intent intent = new Intent(JoinAuthActivity.this, SplashActivity.class);
+			    	//메인 액티비티로 이동
+					Intent intent = new Intent(JoinAuthActivity.this, MainActivity.class);
 					startActivity(intent);
 					finish();
 				}else{	

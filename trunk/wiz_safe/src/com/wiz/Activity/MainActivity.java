@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -57,9 +58,22 @@ public class MainActivity extends Activity {
 	//대기중인 부모리스트에 관하여 설정창이 나오는지 안나오는지 컨트롤하는 변수
 	boolean isParentAddAlert = true;
 	
+	//뒤로가기 두번 눌러야 종료되도록 설정하기 위한 변수
+	private Handler mHandler;
+	private boolean mFlag = false;
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        //뒤로가기 두번 눌러야 종료되도록 설정
+        mHandler = new Handler() {
+            public void handleMessage(Message msg) {
+                if(msg.what == 0) {
+                    mFlag = false;
+                 }
+            }
+        };
     }
     
     public void onResume(){
@@ -69,6 +83,21 @@ public class MainActivity extends Activity {
     	WizSafeDialog.showLoading(MainActivity.this);	//Dialog 보이기
     	CallGetCustomerInformationApiThread thread = new CallGetCustomerInformationApiThread(); 
 		thread.start();
+    }
+    
+    //뒤로가기 2번 눌러야 어플 꺼지도록 onKeyDown설정
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(!mFlag) {
+                Toast.makeText(MainActivity.this, "'뒤로'버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+                mFlag = true;
+                mHandler.sendEmptyMessageDelayed(0, 2000);
+                return false;
+            } else {
+                finish();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
     
     //API 호출 쓰레드 - 고객정보

@@ -59,8 +59,8 @@ public class SplashActivity extends Activity {
        			}
        		};
        		
-       		//1檬 第 角青
-       		timer.schedule(myTask, 1000);
+       		//3檬 第 角青
+       		timer.schedule(myTask, 3000);
         	
         }else{
         	
@@ -74,8 +74,8 @@ public class SplashActivity extends Activity {
        			}
        		};
        		
-       		//1檬 第 角青
-       		timer.schedule(myTask, 1000);
+       		//3檬 第 角青
+       		timer.schedule(myTask, 3000);
         }
     }
 }
