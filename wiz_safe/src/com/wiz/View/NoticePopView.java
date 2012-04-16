@@ -24,7 +24,7 @@ import com.wiz.util.WizSafeUtil;
 public class NoticePopView extends PopView{
 
 	String seq = "";
-	boolean chkImgChecked = true;
+	boolean chkImgChecked = false;
 	
 	public NoticePopView(View anchor, ArrayList<String> noticeData) {
 		super(anchor);
