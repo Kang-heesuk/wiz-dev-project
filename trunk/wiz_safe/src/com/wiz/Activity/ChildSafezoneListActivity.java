@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,9 +57,13 @@ public class ChildSafezoneListActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
-		setContentView(R.layout.child_safezone_list);
-		
-		//앞 페이지에서 필요한 정보를 추출한다.
+	}
+	
+	public void onResume(){
+    	super.onResume();
+    	setContentView(R.layout.child_safezone_list);
+    	
+    	//앞 페이지에서 필요한 정보를 추출한다.
         Intent intent = getIntent();
         childCtn = intent.getStringExtra("phonenum");
         parentCtn = WizSafeUtil.getCtn(getBaseContext());
@@ -76,7 +79,7 @@ public class ChildSafezoneListActivity extends Activity {
         View footer = getLayoutInflater().inflate(R.layout.child_safezone_list_footer, null, false);
         listView.addFooterView(footer);
         listView.setAdapter(childSafezoneListAdapter);
-	}
+    }
 	
 	//리스트뷰를 리로드
     public void upDateListView(){
@@ -288,12 +291,18 @@ public class ChildSafezoneListActivity extends Activity {
   				}
   				//결과를 XML 파싱하여 추출 
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-  				ArrayList<String> strSafezoneCode = WizSafeParser.xmlParser_List(returnXML,"<SAFEZONE_CODE>");
-  				ArrayList<String> encAddress = WizSafeParser.xmlParser_List(returnXML,"<ADDRESS>");
-  				ArrayList<String> strAlarmDate = WizSafeParser.xmlParser_List(returnXML,"<ALARM_DATE>");
-  				ArrayList<String> encLatitude = WizSafeParser.xmlParser_List(returnXML,"<LATITUDE>");
-  				ArrayList<String> encLongitude = WizSafeParser.xmlParser_List(returnXML,"<LONGITUDE>");
-  				ArrayList<String> encRadius = WizSafeParser.xmlParser_List(returnXML,"<RADIUS>");
+  				ArrayList<String> strSafezoneCode = new ArrayList<String>(); 
+  				ArrayList<String> encAddress = new ArrayList<String>(); 
+  				ArrayList<String> strAlarmDate = new ArrayList<String>(); 
+  				ArrayList<String> encLatitude = new ArrayList<String>(); 
+  				ArrayList<String> encLongitude = new ArrayList<String>(); 
+  				ArrayList<String> encRadius = new ArrayList<String>(); 
+  				strSafezoneCode = WizSafeParser.xmlParser_List(returnXML,"<SAFEZONE_CODE>");
+  				encAddress = WizSafeParser.xmlParser_List(returnXML,"<ADDRESS>");
+  				strAlarmDate = WizSafeParser.xmlParser_List(returnXML,"<ALARM_DATE>");
+  				encLatitude = WizSafeParser.xmlParser_List(returnXML,"<LATITUDE>");
+  				encLongitude = WizSafeParser.xmlParser_List(returnXML,"<LONGITUDE>");
+  				encRadius = WizSafeParser.xmlParser_List(returnXML,"<RADIUS>");
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
@@ -341,6 +350,7 @@ public class ChildSafezoneListActivity extends Activity {
   				}
   				
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  				childSafezoneListArr = new ArrayList<ChildSafezoneDetail>();
   		    	if(childSafezoneList != null){
   			    	for(int i = 0 ; i < childSafezoneList.length ; i++){
   			    		ChildSafezoneDetail addChildSafezoneList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2], childSafezoneList[i][3], childSafezoneList[i][4], childSafezoneList[i][5]);
