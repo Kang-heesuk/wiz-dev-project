@@ -10,6 +10,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,6 +22,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeUtil;
@@ -64,7 +66,10 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	
 	//현재 백그라운드 서비스를 종료또는 시작 시키기 위한 변수
 	ComponentName cn;
-
+	
+	//위성의 갯수에 필요한변수
+	String str_temp[];
+	
 	public void onCreate(){ 
 		super.onCreate(); 
 		
@@ -75,6 +80,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		
 		//네트워크 신호와 GPS신호 모두를 선언한다.
 		mLocationManager_GPS = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		mLocationManager_GPS.addNmeaListener(gpsQuentityLoad);
 		mLocationManager_GPS.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 		mLocationManager_NETWORK = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mLocationManager_NETWORK.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
@@ -94,6 +100,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	public void onDestroy(){  
 		super.onDestroy();
 		//해당 단말의 위도 경도를 가져오는 로직을 없애준다.
+		mLocationManager_GPS.removeNmeaListener(gpsQuentityLoad);
 		mLocationManager_GPS.removeUpdates(this);
 		mLocationManager_NETWORK.removeUpdates(this);
 
@@ -184,11 +191,11 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		}
 	}
   	
-	//시작하고 6초동안 위치정보를 가져오도록 기다리고, 6초동안 쌓인 정보중 최근값을 API 통신한다.
+	//시작하고 10초동안 위치정보를 가져오도록 기다리고, 10초동안 쌓인 정보중 최근값을 API 통신한다.
 	class CallInsertLocationThread extends Thread{ 
 		public void run(){
 			try{
-				try{Thread.sleep(1000 * 6);}catch(Exception e){}
+				try{Thread.sleep(1000 * 5);}catch(Exception e){}
 				if(selectedLocation != null){
 					//위치 정보 전역변수에 저장
 					lat = selectedLocation.getLatitude();
@@ -215,16 +222,18 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 							dbInsertDate = WizSafeUtil.getInsertDbDate();
 							url = "https://www.heream.com/api/insertLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&dbInsertDate=" + URLEncoder.encode(dbInsertDate) + "&lat=" + URLEncoder.encode(enc_lat) + "&lon=" + URLEncoder.encode(enc_lon) + "&type=" + URLEncoder.encode(provider) + "&hiddenUser=" + URLEncoder.encode(hiddenUser);
 							urlConn = (HttpURLConnection) new URL(url).openConnection();
-							urlConn.setConnectTimeout(2000);
-							urlConn.setReadTimeout(2000);
+							urlConn.setConnectTimeout(3000);
+							urlConn.setReadTimeout(3000);
 							br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
 						}catch(Exception e){
-							Log.i("childList","익셉션 : " + e.toString());
+							Log.i("apiException","통신 익셉션 : " + e.toString());
 						}finally{
 							if(br != null){ br.close(); }
 							if(urlConn != null) {urlConn.disconnect(); urlConn = null;}
 						}
 					}
+				}else{
+					Log.i("noLocation","로케이션 정보 null");
 				}
 				pHandler.sendEmptyMessage(0);
 			}catch(Exception e){
@@ -241,5 +250,21 @@ public class WizSafeGetLocation extends Service implements LocationListener {
   				stopService(new Intent().setComponent(cn));
   			}
   		}
+  	};
+  	
+  	//현재 포착된 위성의 갯수를 판별(이유는 왠지 GPS를 잘찾는거같아서)
+  	GpsStatus.NmeaListener gpsQuentityLoad = new GpsStatus.NmeaListener(){
+		public void onNmeaReceived(long timestamp, String nmea) {
+			str_temp = nmea.split(",");
+			if(str_temp[0].equals("$GPGGA")) { //  NMEA 값중 "$GPGGA"에 gps 위성수 들어옴.     
+				Log.d("childList", "받은위성갯수 : " + str_temp[7]); // 수신된 위성수 확인.
+				if(str_temp[7] == null || "".equals(str_temp[7])){
+					str_temp[7] = "0";
+				}
+				if(Integer.parseInt(str_temp[7]) > 0){
+					Toast.makeText(WizSafeGetLocation.this, "위성갯수?" + str_temp[7], Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
   	};
 }
