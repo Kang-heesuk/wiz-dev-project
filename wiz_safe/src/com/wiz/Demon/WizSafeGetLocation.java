@@ -116,7 +116,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		//위치가 어떤것으로 변하던 두가지 방식 모두를 가지고 둘 중 조건에 맞는 값을 가져온다.
 		mLocation_GPS = mLocationManager_GPS.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		mLocation_NETWORK = mLocationManager_NETWORK.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
+		
 		//최적의 조건으로 위치를 가져온 후 전역변수에 저장
 		selectLocation(mLocation_GPS, mLocation_NETWORK);
 	}
@@ -158,7 +158,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 				selectedLocation = GPS;
 				provider = "GPS";
 			}else{
-				selectedLocation = null;
+				selectedLocation = null; 
 				provider = "";
 			}
 		//GPS가 NULL이고, NETWORK가 NULL이 아닌경우
@@ -189,13 +189,13 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 				}
 			}
 		}
-	}
+	} 
   	
 	//시작하고 10초동안 위치정보를 가져오도록 기다리고, 10초동안 쌓인 정보중 최근값을 API 통신한다.
 	class CallInsertLocationThread extends Thread{ 
 		public void run(){
 			try{
-				try{Thread.sleep(1000 * 5);}catch(Exception e){}
+				try{Thread.sleep(1000 * 10);}catch(Exception e){}
 				if(selectedLocation != null){
 					//위치 정보 전역변수에 저장
 					lat = selectedLocation.getLatitude();
@@ -226,14 +226,11 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 							urlConn.setReadTimeout(3000);
 							br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
 						}catch(Exception e){
-							Log.i("apiException","통신 익셉션 : " + e.toString());
 						}finally{
 							if(br != null){ br.close(); }
 							if(urlConn != null) {urlConn.disconnect(); urlConn = null;}
 						}
 					}
-				}else{
-					Log.i("noLocation","로케이션 정보 null");
 				}
 				pHandler.sendEmptyMessage(0);
 			}catch(Exception e){
