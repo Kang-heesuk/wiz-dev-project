@@ -364,7 +364,7 @@ public class MainActivity extends Activity {
 				}
   				
   			}else if(msg.what == 1){
-  			//조회실패
+  				//조회실패
 				AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
 				String title = "통신 오류";	
 				String message = "통신 중 오류가 발생하였습니다. ";	
