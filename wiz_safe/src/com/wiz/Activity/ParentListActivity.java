@@ -27,6 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.Activity.ChildListActivity.CallGetChildListApiThread;
+import com.wiz.Activity.ChildListActivity.ChildListAdapter;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -61,7 +63,11 @@ public class ParentListActivity extends Activity {
 	
     public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState); 
-        setContentView(R.layout.parent_list);
+    }
+    
+    public void onResume(){
+    	super.onResume();
+    	setContentView(R.layout.parent_list);
         
         //API 호출 쓰레드 시작
     	//부모 리스트를 가져온다.
@@ -73,7 +79,7 @@ public class ParentListActivity extends Activity {
         listView = (ListView)findViewById(R.id.list1);
         View footer = getLayoutInflater().inflate(R.layout.parent_list_footer, null, false);
         listView.addFooterView(footer);
-    } 
+    }
     
     //리스트뷰를 리로드
     public void upDateListView(){
@@ -357,10 +363,14 @@ public class ParentListActivity extends Activity {
   				}
   				//결과를 XML 파싱하여 추출
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
-  				ArrayList<String> encParentName = WizSafeParser.xmlParser_List(returnXML,"<PARENT_NAME>");
-  				ArrayList<String> encParentCtn = WizSafeParser.xmlParser_List(returnXML,"<PARENT_CTN>");
-  				ArrayList<String> state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
-  				ArrayList<String> acceptDate = WizSafeParser.xmlParser_List(returnXML,"<ACCEPT_DATE>");
+  				ArrayList<String> encParentName = new ArrayList<String>();
+  				ArrayList<String> encParentCtn = new ArrayList<String>();
+  				ArrayList<String> state = new ArrayList<String>();
+  				ArrayList<String> acceptDate = new ArrayList<String>();
+  				encParentName = WizSafeParser.xmlParser_List(returnXML,"<PARENT_NAME>");
+  				encParentCtn = WizSafeParser.xmlParser_List(returnXML,"<PARENT_CTN>");
+  				state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
+  				acceptDate = WizSafeParser.xmlParser_List(returnXML,"<ACCEPT_DATE>");
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
@@ -389,6 +399,7 @@ public class ParentListActivity extends Activity {
   				}
   				
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  				parentListArr = new ArrayList<ParentDetail>();
   		    	if(parentList != null){
   			    	for(int i = 0 ; i < parentList.length ; i++){
   			    		ParentDetail addParentList = new ParentDetail(parentList[i][0], parentList[i][1], parentList[i][2], parentList[i][3]);
