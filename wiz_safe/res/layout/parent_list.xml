@@ -157,7 +157,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="34"
-                android:background="@drawable/b_menu_2_selector" />
+                android:background="@drawable/b_menu_4_selector" />
 
             <Button
                 android:id="@+id/useInfoButton"
