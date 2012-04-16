@@ -54,15 +54,21 @@ public class MainActivity extends Activity {
 	//등록대기중인 부모리스트(모두 복호화 된 번호)
 	ArrayList<String> waitParentPhone = new ArrayList<String>();
 	
+	//대기중인 부모리스트에 관하여 설정창이 나오는지 안나오는지 컨트롤하는 변수
+	boolean isParentAddAlert = true;
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-                
-     	//API 호출 쓰레드 시작
+    }
+    
+    public void onResume(){
+    	super.onResume();
+
+    	//API 호출 쓰레드 시작
     	WizSafeDialog.showLoading(MainActivity.this);	//Dialog 보이기
     	CallGetCustomerInformationApiThread thread = new CallGetCustomerInformationApiThread(); 
 		thread.start();
-        
     }
     
     //API 호출 쓰레드 - 고객정보
@@ -99,6 +105,10 @@ public class MainActivity extends Activity {
 					//릴레이션
 					relationCount = WizSafeParser.xmlParser_String(returnXML,"<RELATION_COUNT>");
 					if(Integer.parseInt(relationCount) > 0){
+						relationType = new ArrayList<String>();
+						parentCtn = new ArrayList<String>();
+						childCtn = new ArrayList<String>();
+						relationState = new ArrayList<String>();
 						relationType = WizSafeParser.xmlParser_List(returnXML, "<RELATION_TYPE>");
 						parentCtn = WizSafeParser.xmlParser_List(returnXML, "<RELATION_PARENTCTN>");
 						childCtn = WizSafeParser.xmlParser_List(returnXML, "<RELATION_CHILDCTN>");
@@ -106,6 +116,7 @@ public class MainActivity extends Activity {
 						
 						//등록 대기중인 자녀리스트 판별
 						//자녀등록하기로 등록한 자녀만 해당된다.
+						waitChildPhone = new ArrayList<String>();
 						for(int i = 0 ; i < relationType.size() ; i++){
 							if(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this)).equals(parentCtn.get(i)) && "01".equals(relationType.get(i)) && "01".equals(relationState.get(i))){
 								waitChildPhone.add(WizSafeSeed.seedDec(childCtn.get(i)));
@@ -114,6 +125,7 @@ public class MainActivity extends Activity {
 						//등록 대기중인 부모리스트 판별
 						//부모리스트는 나를 자녀등록하기로 한 부모 + 부모리스트에서 STATE가 01인것을  본다.
 						//즉, 나를 자녀로 등록한 모든 ROW를 본다.
+						waitParentPhone = new ArrayList<String>();
 						for(int i = 0 ; i < relationType.size() ; i++){
 							if(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this)).equals(childCtn.get(i)) && "01".equals(relationState.get(i))){
 								waitParentPhone.add(WizSafeSeed.seedDec(parentCtn.get(i)));
@@ -296,23 +308,27 @@ public class MainActivity extends Activity {
 	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_20);
 	  			        }
   			        	
-  			        	AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
-  						ad.setTitle("부모등록요청");
-  						ad.setMessage(waitParentPhone.size() + "건의 부모등록 요청이 있습니다.\n확인 하시겠습니까?");
-  						ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-  							public void onClick(DialogInterface dialog, int which) {
-  								Intent intent = new Intent(MainActivity.this, AllowLocation.class);
-  								if(waitParentPhone.size() > 0){  								
-  									intent.putExtra("allowPhoneNumber", waitParentPhone.get(0));
-  								}
-  	  							startActivity(intent);
-  							}
-  						});
-  						ad.setNegativeButton("취소", new DialogInterface.OnClickListener(){
-  							public void onClick(DialogInterface dialog, int which) {
-  							}
-  						});
-  						ad.show();
+	  			        //부모등록 요청에 관한 경고창
+	  			        if(isParentAddAlert){
+	  			        	AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
+	  						ad.setTitle("부모등록요청");
+	  						ad.setMessage(waitParentPhone.size() + "건의 부모등록 요청이 있습니다.\n확인 하시겠습니까?");
+	  						ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+	  							public void onClick(DialogInterface dialog, int which) {
+	  								Intent intent = new Intent(MainActivity.this, AllowLocation.class);
+	  								if(waitParentPhone.size() > 0){  								
+	  									intent.putExtra("allowPhoneNumber", waitParentPhone.get(0));
+	  								}
+	  	  							startActivity(intent);
+	  							}
+	  						});
+	  						ad.setNegativeButton("취소", new DialogInterface.OnClickListener(){
+	  							public void onClick(DialogInterface dialog, int which) {
+	  								isParentAddAlert = false;
+	  							}
+	  						});
+	  						ad.show();
+	  			        }
   			        }
 					
   			        //공지사항 노출여부 결정
