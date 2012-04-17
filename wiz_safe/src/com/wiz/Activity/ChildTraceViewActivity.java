@@ -299,7 +299,6 @@ public class ChildTraceViewActivity extends NMapActivity {
   					
   					TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
   			        if(tv_checkTime != null){
-  			        	//연결 상태 확인하여 오차범위를 보여준다. - 미구현
   			        	String gap = "오차범위 : 50m ~2km";
   			        	tv_checkTime.setText("일자 : "+WizSafeUtil.getDateFormat(selectedDay) +"\n"+ gap);
   			        }
@@ -315,6 +314,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   						}
   						
   						//traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
+  						//spinner 백그라운드 이미지만 보여주고 그 위에 글씨를 안보이게 하기 위해서 spinner_item.xml 을 이용
   						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, R.layout.spinner_item, adapterItemList);
   					}
   			        
