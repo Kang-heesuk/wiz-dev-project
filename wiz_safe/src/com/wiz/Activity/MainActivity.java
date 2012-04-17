@@ -59,6 +59,9 @@ public class MainActivity extends Activity {
 	//대기중인 부모리스트에 관하여 설정창이 나오는지 안나오는지 컨트롤하는 변수
 	boolean isParentAddAlert = true;
 	
+	//공지사항 팝업을 띄울지 말지에 관하여 컨트롤하는 변수(앱 실행시에만 뜨고, 안에서 메뉴 이동할때는 안뜨게 해주는 변수)
+	boolean isShowPopView = true;
+	
 	//뒤로가기 두번 눌러야 종료되도록 설정하기 위한 변수
 	private Handler mHandler;
 	private boolean mFlag = false;
@@ -393,19 +396,23 @@ public class MainActivity extends Activity {
 					
   			        //공지사항 노출여부 결정
   			        //로컬변수를 확인하여 공지사항 노출 여부를 확인, 로컬변수 공지사항 번호랑 같다면 띄우지않음
-  					SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
-  					String noticePopVal = LocalSave.getString("noticePopVal","");
-  					if(!noticePopVal.equals(seq)){	
-  						if(httpResult == 0){
-	  						//공지사항 팝업 띄운다
-	  						ArrayList<String> noticeData = new ArrayList<String>();
-	  						noticeData.add(seq);
-	  						noticeData.add(title);
-	  						noticeData.add(content);
-	  						NoticePopView noticePopView = new NoticePopView((LinearLayout)findViewById(R.id.mainlayout), noticeData);
-	  						noticePopView.show();
-  						}
-  					}
+  			        if(isShowPopView){
+  			        	SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+  	  					String noticePopVal = LocalSave.getString("noticePopVal","");
+  	  					if(!noticePopVal.equals(seq)){	
+  	  						if(httpResult == 0){
+  		  						//공지사항 팝업 띄운다
+  		  						ArrayList<String> noticeData = new ArrayList<String>();
+  		  						noticeData.add(seq);
+  		  						noticeData.add(title);
+  		  						noticeData.add(content);
+  		  						NoticePopView noticePopView = new NoticePopView((LinearLayout)findViewById(R.id.mainlayout), noticeData);
+  		  						noticePopView.show();
+  	  						}
+  	  					}
+  	  					isShowPopView = false;
+  			        }
+  					
 
   				}else{
 					//조회실패
