@@ -237,6 +237,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
   				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+selectedDay+"&startTime="+startTime+"&endTime="+endTime+"&interval="+interval;
+  				Log.i("banhong", "url :: "+url);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -304,7 +305,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        }
   			        
   					//발자취 리스트를 보여준다.
-  					Spinner traceSpiner = (Spinner)findViewById(R.id.traceSpinner); 
+  					Spinner traceSpiner = (Spinner)findViewById(R.id.traceSpinner);
   					traceSpiner.setPrompt("발자취 리스트 보기");
   					if(childTraceViewListArr.size() > 0){
   						String[] adapterItemList = new String[childTraceViewListArr.size()];
@@ -313,7 +314,8 @@ public class ChildTraceViewActivity extends NMapActivity {
   							adapterItemList[i] = WizSafeUtil.getDateFormat(tempBean.getDay()) + " " + WizSafeUtil.timeConvertFromNumberToString1to24(tempBean.getHour());
   						}
   						
-  						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
+  						//traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
+  						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, R.layout.spinner_item, adapterItemList);
   					}
   			        
   			        traceAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
