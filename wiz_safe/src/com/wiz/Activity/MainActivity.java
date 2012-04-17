@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -78,11 +79,41 @@ public class MainActivity extends Activity {
     
     public void onResume(){
     	super.onResume();
-
-    	//API 호출 쓰레드 시작
-    	WizSafeDialog.showLoading(MainActivity.this);	//Dialog 보이기
-    	CallGetCustomerInformationApiThread thread = new CallGetCustomerInformationApiThread(); 
-		thread.start();
+    	
+    	//앱 최초로 실행시 알림 경고(3G데이터 사용 시 고객님의 데이터 요금제에 따라...)
+    	SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+		String appFirstStartVal = LocalSave.getString("appFirstStart","0");
+		
+		//최초 실행시 경고창 발생 후 확인 누르면 통신
+    	if("0".equals(appFirstStartVal)){
+    		//조회실패
+			AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
+			String title = "알림";	
+			String message = "3G 데이터 사용 시 고객님의 데이터 요금제에 따라 별도 요금이 발생 될 수 있으며, 자녀의 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.";	
+			String buttonName = "확인";
+			ad.setTitle(title);
+			ad.setMessage(message);
+			ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					//다신 안보이도록 로컬변수에 저장함.
+					SharedPreferences LocalSave_firststart = getSharedPreferences("WizSafeLocalVal", 0);
+					Editor edit_firststart = LocalSave_firststart.edit(); 
+					edit_firststart.putString("appFirstStart", "1");
+					edit_firststart.commit();
+					
+					//API 호출 쓰레드 시작
+		        	WizSafeDialog.showLoading(MainActivity.this);	//Dialog 보이기
+		        	CallGetCustomerInformationApiThread thread = new CallGetCustomerInformationApiThread(); 
+		    		thread.start();
+				}
+			});
+			ad.show();
+    	}else{
+    		//API 호출 쓰레드 시작
+        	WizSafeDialog.showLoading(MainActivity.this);	//Dialog 보이기
+        	CallGetCustomerInformationApiThread thread = new CallGetCustomerInformationApiThread(); 
+    		thread.start();
+    	}
     }
     
     //뒤로가기 2번 눌러야 어플 꺼지도록 onKeyDown설정
