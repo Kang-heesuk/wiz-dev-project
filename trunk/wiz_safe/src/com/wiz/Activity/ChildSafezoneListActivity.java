@@ -407,6 +407,11 @@ public class ChildSafezoneListActivity extends Activity {
   				if(httpResult == 0){
   					
   					if(childSafezoneListArr.size() > 0){
+  						LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+  			        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);  						
+  			        	visibleArea1.setVisibility(View.VISIBLE);
+  			        	visibleArea2.setVisibility(View.GONE);
+  			        	
 	  			        //안심존 등록 버튼액션(리스트 있는경우)
 	  			        findViewById(R.id.btn_addChild).setOnClickListener(
 	  						new Button.OnClickListener(){
