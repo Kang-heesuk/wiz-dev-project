@@ -159,14 +159,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="35"
+                    android:layout_weight="30"
                     android:orientation="vertical" >
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="30"
+                    android:layout_weight="40"
                     android:orientation="horizontal" >
 
                     <LinearLayout
@@ -196,7 +196,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="35"
+                    android:layout_weight="30"
                     android:orientation="vertical" >
                 </LinearLayout>
             </LinearLayout>
@@ -240,14 +240,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="35"
+                    android:layout_weight="30"
                     android:orientation="vertical" >
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="30"
+                    android:layout_weight="40"
                     android:orientation="horizontal" >
 
                     <LinearLayout
@@ -277,7 +277,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="35"
+                    android:layout_weight="30"
                     android:orientation="vertical" >
                 </LinearLayout>
                 
