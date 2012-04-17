@@ -21,8 +21,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeUtil;
@@ -66,9 +64,6 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	
 	//현재 백그라운드 서비스를 종료또는 시작 시키기 위한 변수
 	ComponentName cn;
-	
-	//위성의 갯수에 필요한변수
-	String str_temp[];
 	
 	public void onCreate(){ 
 		super.onCreate(); 
@@ -252,16 +247,6 @@ public class WizSafeGetLocation extends Service implements LocationListener {
   	//현재 포착된 위성의 갯수를 판별(이유는 왠지 GPS를 잘찾는거같아서)
   	GpsStatus.NmeaListener gpsQuentityLoad = new GpsStatus.NmeaListener(){
 		public void onNmeaReceived(long timestamp, String nmea) {
-			str_temp = nmea.split(",");
-			if(str_temp[0].equals("$GPGGA")) { //  NMEA 값중 "$GPGGA"에 gps 위성수 들어옴.     
-				Log.d("childList", "받은위성갯수 : " + str_temp[7]); // 수신된 위성수 확인.
-				if(str_temp[7] == null || "".equals(str_temp[7])){
-					str_temp[7] = "0";
-				}
-				if(Integer.parseInt(str_temp[7]) > 0){
-					Toast.makeText(WizSafeGetLocation.this, "위성갯수?" + str_temp[7], Toast.LENGTH_SHORT).show();
-				}
-			}
 		}
   	};
 }
