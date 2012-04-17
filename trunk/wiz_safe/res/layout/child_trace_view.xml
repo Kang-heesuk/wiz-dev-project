@@ -132,7 +132,7 @@
 	                    android:id="@+id/traceSpinner"
 	                    android:layout_width="match_parent"
 	                    android:layout_height="match_parent"
-	                    android:background="@drawable/retry_selector" />
+	                    android:background="@drawable/list_go_selector" />
                 </LinearLayout>
 
                 <LinearLayout
