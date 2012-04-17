@@ -65,6 +65,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 	private String childCtn;
 	//맵뷰위에 사용될 정보 선언 
 	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	private int payResult = 1;		//0 - 차감성공, 그외 - 실패
 	private String regdate;
 	private double longitude;
 	private double latitude; 
@@ -104,25 +105,28 @@ public class ChildLocationViewActivity extends NMapActivity {
 
 	private NMapViewerResourceProvider mMapViewerResourceProvider;    
 	
+	String payMode = "NOPAY";
+	
+	//※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다. 토스트 등록 여부 판별 변수
+	boolean isShowToast = true; 
+	
 	/** Called when the activity is first created. */
     @Override 
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.child_loca_view); //XML로 생성한 맵뷰를 SetContentView로 현재 레이아웃으로 셋팅
     	
+    	Intent intent = getIntent();
+        childCtn = intent.getStringExtra("phonenum");
+    	if(childCtn == null){childCtn = "";}
+    	
     	//NMAP_LOCATION_DEFAULT = new NGeoPoint(longitude, latitude);
     	//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
-    	Intent intent = getIntent();
-        childCtn = intent.getStringExtra("phonenum");
-    	if(childCtn == null){childCtn = "";}
-    	//API 호출 쓰레드 시작
-    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
-    	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
-        CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
-		thread.start();
+		//정확한 맵을 보여주기 전까지 MapView 영역을 보이지 않게한다.
+		parentView.setVisibility(View.INVISIBLE);
 	
         //body 
         
@@ -133,10 +137,8 @@ public class ChildLocationViewActivity extends NMapActivity {
     	// set a registered API key for Open MapViewer Library
     	mMapView.setApiKey(API_KEY); //지도 키 값을 셋팅한다.
 
-
     	// set the activity content to the parent view
     	//setContentView(mMapView);
-
 
     	// initialize map view
     	mMapView.setClickable(true); //지도 터치드래그가 가능하게 해주는 속성
@@ -145,36 +147,28 @@ public class ChildLocationViewActivity extends NMapActivity {
     	mMapView.setFocusableInTouchMode(true);
     	mMapView.requestFocus();
 
-
     	// register listener for map state changes 
     	mMapView.setOnMapStateChangeListener(onMapViewStateChangeListener);
     	
-
     	// use map controller to zoom in/out, pan and set map center, zoom level etc.
     	mMapController = mMapView.getMapController();
-
 
     	// use built in zoom controls
     	NMapView.LayoutParams lp = new NMapView.LayoutParams(NMapView.LayoutParams.WRAP_CONTENT,
     	NMapView.LayoutParams.WRAP_CONTENT, NMapView.LayoutParams.BOTTOM_RIGHT);
     	mMapView.setBuiltInZoomControls(true, lp);
 
-
     	// create resource provider
     	mMapViewerResourceProvider = new NMapViewerResourceProvider(this);
-
 
     	// set data provider listener
     	super.setMapDataProviderListener(onDataProviderListener);
 
-
     	// create overlay manager
     	mOverlayManager = new NMapOverlayManager(this, mMapView, mMapViewerResourceProvider);
 
-
     	// register callout overlay listener to customize it.
     	mOverlayManager.setOnCalloutOverlayListener(onCalloutOverlayListener);
-
 
     	// location manager
     	mMapLocationManager = new NMapLocationManager(this);
@@ -187,7 +181,37 @@ public class ChildLocationViewActivity extends NMapActivity {
     	mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, mMapCompassManager);
     	//일반 지도 형식으로 보인다.
     	mMapController.setMapViewMode(NMapView.VIEW_MODE_VECTOR);
-
+    	
+    	
+    	//과금 대상인지 아닌지에 따라서 경고창 노출하지만, 결국 같은 쓰레드를 타게 되어있다.
+    	if(getHowManyTry() >= 3){
+    		AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+			ad.setTitle("현위치찾기");
+			ad.setMessage("1일 무료 사용 건수를 초과 하였습니다.(1일 3회 무료)\n포인트로 조회 하시겠습니까?\n1회 조회 시 100포인트 소진");
+			ad.setPositiveButton("위치찾기", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					payMode = "PAY";
+					//API 호출 쓰레드 시작
+			    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+			    	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+			    	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
+					thread.start();
+				}
+			});
+			ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+				public void onClick(DialogInterface dialog, int which) {
+					finish();
+				}
+			});
+			ad.show();
+    	}else{
+    		payMode = "NOPAY";
+    		//API 호출 쓰레드 시작
+        	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
+        	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+        	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
+    		thread.start();
+    	}
     }
 
     
@@ -200,7 +224,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   				if(childCtn != null && !"".equals(childCtn)){
   					enc_ctn = WizSafeSeed.seedEnc(childCtn);
   					
-  					String url = "https://www.heream.com/api/getNowLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  					String url = "https://www.heream.com/api/getNowLocation.jsp?childCtn="+ URLEncoder.encode(enc_ctn) + "&parentCtn=" + WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
   	  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   	  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   	  				String temp;
@@ -239,9 +263,35 @@ public class ChildLocationViewActivity extends NMapActivity {
   		}
   	}
   	
+  	//차감 API 호출 쓰레드
+  	class CallPayApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
+  				String url = "https://www.heream.com/api/nowLocationDeductPoint.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				payResult = Integer.parseInt(resultCode);
+  				pHandler.sendEmptyMessage(3);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(4);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+  	
   	Handler pHandler = new Handler(){
   		public void handleMessage(Message msg){
-			WizSafeDialog.hideLoading();
   			if(msg.what == 0){
   				//핸들러 정상동작
   				if(httpResult == 0){
@@ -253,53 +303,40 @@ public class ChildLocationViewActivity extends NMapActivity {
   			        if(tv_checkTime != null){
   			        	String showDate = WizSafeUtil.getDateFormat(regdate);
   			        	String gap = WizSafeUtil.getGapValue(type);
-  			        	
   			        	tv_checkTime.setText("일자 : "+ showDate +"\n오차범위 : "+ gap);
   			        }
 
-  			         
   			        //새로고침 이미지 버튼 처리
   			        Button btn_alarm = (Button)findViewById(R.id.btn_retry);
   			        btn_alarm.setOnClickListener(new Button.OnClickListener() {
   						public void onClick(View v) {
   							try{
-  						    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
-  						    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
-  						    	
-  			
-  						    	//몇번째 시도인지 확인
-  						    	int tryCount =0;
-  						    	GregorianCalendar calendar = new GregorianCalendar();
-  						    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-  						    	
-  								SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
-  								
-  								String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",sdf.format(calendar.getTime())+"_0");
-  						    	String nowDate = "";
-  								String nowCount = "0";
-  						    	
-  						    	StringTokenizer st = new StringTokenizer(getNowChildLocCnt, "_");
-  						    	while(st.hasMoreTokens())
-  						    	{
-  						    		nowDate = st.nextToken();
-  						    		nowCount = st.nextToken();
+  								//과금 대상인지 아닌지에 따라서 경고창 노출
+  						    	if(getHowManyTry() >= 3){
+  						    		AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+  									ad.setTitle("현위치찾기");
+  									ad.setMessage("1일 무료 사용 건수를 초과 하였습니다.(1일 3회 무료)\n포인트로 조회 하시겠습니까?\n1회 조회 시 100포인트 소진");
+  									ad.setPositiveButton("위치찾기", new DialogInterface.OnClickListener() {
+  										public void onClick(DialogInterface dialog, int which) {
+  											payMode = "PAY";
+  											//API 호출 쓰레드 시작
+  									    	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+  									    	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
+  											thread.start();
+  										}
+  									});
+  									ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+  										public void onClick(DialogInterface dialog, int which) {
+  										}
+  									});
+  									ad.show();
+  						    	}else{
+  						    		payMode = "NOPAY";
+  						    		//API 호출 쓰레드 시작
+  						        	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+  						        	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
+  						    		thread.start();
   						    	}
-  			
-  						    	if(nowDate.equals(sdf.format(calendar.getTime()))){
-  						    		//오늘중에
-  						    		if(3 <= Integer.parseInt(nowCount)){
-  						    			//4회이상 시도 - 과금대상
-  						    			Toast.makeText(ChildLocationViewActivity.this, nowCount+"번째 시도하는 님하는 과금대상이심 과금 궈궈~!!!", Toast.LENGTH_SHORT).show();
-  						    		}
-  						    	}
-  						    	
-  						    	tryCount = Integer.parseInt(nowCount)+1;
-  						    	
-  						    	SharedPreferences.Editor edit;
-  						    	edit = LocalSave.edit();
-  								
-  								edit.putString("getNowChildLocCnt", sdf.format(calendar.getTime())+"_"+tryCount);
-  								edit.commit();
   								
   		  			        }catch(Exception e){}
   						}
@@ -308,48 +345,31 @@ public class ChildLocationViewActivity extends NMapActivity {
   			        try{
 				    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
 				    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
-				    	
-	
-				    	//몇번째 시도인지 확인
-				    	int tryCount =0;
-				    	GregorianCalendar calendar = new GregorianCalendar();
-				    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-				    	
-						SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
-						
-						String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",sdf.format(calendar.getTime())+"_0");
-				    	String nowDate = "";
-						String nowCount = "0";
-				    	
-				    	StringTokenizer st = new StringTokenizer(getNowChildLocCnt, "_");
-				    	while(st.hasMoreTokens())
-				    	{
-				    		nowDate = st.nextToken();
-				    		nowCount = st.nextToken();
-				    	}
-	
-				    	if(nowDate.equals(sdf.format(calendar.getTime()))){
-				    		//오늘중에
-				    		if(3 <= Integer.parseInt(nowCount)){
-				    			//4회이상 시도 - 과금대상
-				    			Toast.makeText(ChildLocationViewActivity.this, nowCount+"번째 시도하는 님하는 과금대상이심 과금 궈궈~!!!", Toast.LENGTH_SHORT).show();
-				    		}
-				    	}
-				    	
-				    	tryCount = Integer.parseInt(nowCount)+1;
-				    	
-				    	SharedPreferences.Editor edit;
-				    	edit = LocalSave.edit();
-						
-						edit.putString("getNowChildLocCnt", sdf.format(calendar.getTime())+"_"+tryCount);
-						edit.commit();
-						
-						//화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
-						Toast.makeText(ChildLocationViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
-						
+				    	//화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
   			        }catch(Exception e){}
-			    	
+  			        
+  			        //과금이 아닐경우 - 맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
+  			        //과금일 경우 - 현위치 조회로 인한 포인트 차감 API 호출
+  			        if("NOPAY".equals(payMode)){
+  			        	RelativeLayout mapViewArea = (RelativeLayout)findViewById(R.id.relayout);
+  			        	mapViewArea.setVisibility(View.VISIBLE);
+  			        	WizSafeDialog.hideLoading();
+  			        	//오늘 현위치 조회를 몇번했는지 셋팅한다.
+				    	setHowManyTry();
+				    	
+				    	//토스트플래그 값을 본후 토스트를 띄우고 난 후 플래그 변경하여 새로고침시에는 토스트를 띄우지 않도록 한다.
+				    	if(isShowToast){
+				    		Toast.makeText(ChildLocationViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
+				    		isShowToast = false;
+				    	}
+
+  			        }else if("PAY".equals(payMode)){
+  			        	CallPayApiThread thread = new CallPayApiThread(); 
+  						thread.start();
+  			        }
+  			        
 				}else{
+					WizSafeDialog.hideLoading();
 					//조회실패
 					AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
 					String title = "자녀현위치찾기실패";	
@@ -365,6 +385,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 					ad.show();
 				}
   			}else if(msg.what == 1){
+  				WizSafeDialog.hideLoading();
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
 				String title = "통신 오류";	
@@ -379,6 +400,56 @@ public class ChildLocationViewActivity extends NMapActivity {
 				});
 				ad.show();
   			}else if(msg.what == 2){
+  				WizSafeDialog.hideLoading();
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 3){
+  				if(payResult == 0){
+  					//== 과금을 지불하고 호출되는 핸들러 ==
+  	  				//과금을 하고 왔으므로, 맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
+  	  				RelativeLayout mapViewArea = (RelativeLayout)findViewById(R.id.relayout);
+  		        	mapViewArea.setVisibility(View.VISIBLE);
+  		        	WizSafeDialog.hideLoading();
+  		        	//오늘 현위치 조회를 몇번했는지 셋팅한다.
+  		        	setHowManyTry();
+  		        	
+  		        	//토스트플래그 값을 본후 토스트를 띄우고 난 후 플래그 변경하여 새로고침시에는 토스트를 띄우지 않도록 한다.
+			    	if(isShowToast){
+			    		Toast.makeText(ChildLocationViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
+			    		isShowToast = false;
+			    	}
+  				}else if(payResult == 1){
+  					//잔액부족인 경우
+  					WizSafeDialog.hideLoading();
+  					AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+					ad.setTitle("포인트 안내");
+					ad.setMessage("보유한 포인트가 부족합니다. 포인트 충전 후 다시 이용해 주세요.");
+					ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+							Toast.makeText(ChildLocationViewActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
+						}
+					});
+					ad.setNegativeButton("현위치찾기\n닫기", new DialogInterface.OnClickListener(){
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+  				}
+  			}else if(msg.what == 4){
+  				WizSafeDialog.hideLoading();
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
 				String title = "통신 오류";	
@@ -498,7 +569,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 	/* Local Functions */
 	private void restoreInstanceState() {
 		mPreferences = getPreferences(MODE_PRIVATE);
-		Log.i("banhong", "여기는 restoreInstanceState 실행됐다");
 		int longitudeE6 = mPreferences.getInt(KEY_CENTER_LONGITUDE, NMAP_LOCATION_DEFAULT.getLongitudeE6());
 		int latitudeE6 = mPreferences.getInt(KEY_CENTER_LATITUDE, NMAP_LOCATION_DEFAULT.getLatitudeE6());
 		int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
@@ -548,7 +618,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 
 			if (errorInfo == null) { // success
 				// restore map view state such as map center position and zoom level.
-				Log.i("banhong", "onMapInitHandler여기는 언제타니??"+latitude+" :: "+longitude);
 				//restoreInstanceState();
 
 			} else { // fail
@@ -670,5 +739,52 @@ public class ChildLocationViewActivity extends NMapActivity {
 	}
 
 	
+	//현위치 찾기를 몇번이나 시도하였는지 확인한다.
+	public int getHowManyTry(){
+		int tryCount =0;
+		GregorianCalendar calendar = new GregorianCalendar();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+		String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",sdf.format(calendar.getTime())+"_0");
+		String nowDate = "";
+		String nowCount = "0";
+		StringTokenizer st = new StringTokenizer(getNowChildLocCnt, "_");
+		
+		while(st.hasMoreTokens())
+		{
+			nowDate = st.nextToken();
+			nowCount = st.nextToken();
+		}
+		
+		//오늘중에 시도한 횟수
+		if(nowDate.equals(sdf.format(calendar.getTime()))){
+			tryCount = Integer.parseInt(nowCount);
+		}else{
+			tryCount = 0;
+		}
+
+		return tryCount;
+	}
 	
+	//위치찾기를 하고 난 후에 그날 몇번째 위치찾기를 하였는지 저장한다.
+	public void setHowManyTry(){
+		int tryCount =0;
+		GregorianCalendar calendar = new GregorianCalendar();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
+		String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",sdf.format(calendar.getTime())+"_0");
+		String nowDate = "";
+		String nowCount = "0";
+		StringTokenizer st = new StringTokenizer(getNowChildLocCnt, "_");
+		while(st.hasMoreTokens())
+		{
+			nowDate = st.nextToken();
+			nowCount = st.nextToken();
+		}
+		tryCount = Integer.parseInt(nowCount)+1;
+		SharedPreferences.Editor edit;
+		edit = LocalSave.edit();
+		edit.putString("getNowChildLocCnt", sdf.format(calendar.getTime())+"_"+tryCount);
+		edit.commit();
+	}
 }
