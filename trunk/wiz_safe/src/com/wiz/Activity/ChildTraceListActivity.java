@@ -216,6 +216,11 @@ public class ChildTraceListActivity extends Activity {
   			        	bgArea.setBackgroundResource(R.drawable.bg_trace1);
   			        	visibleArea1.setVisibility(View.GONE);
   			        	visibleArea2.setVisibility(View.VISIBLE);
+  			        }else{
+  			        	LinearLayout visibleArea1 = (LinearLayout)findViewById(R.id.visibleArea1);
+  			        	LinearLayout visibleArea2 = (LinearLayout)findViewById(R.id.visibleArea2);
+  			        	visibleArea1.setVisibility(View.VISIBLE);
+  			        	visibleArea2.setVisibility(View.GONE);
   			        }
   			        
   			        LinearLayout layout_1 = (LinearLayout)findViewById(R.id.layout_1);
