@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
@@ -33,16 +34,26 @@ import com.wiz.util.WizSafeUtil;
 
 public class ChildSafezoneListActivity extends Activity {
 	
+	//API 호출 후 리턴XML을 받는 벡터
+	ArrayList<String> returnXML;
+	
 	String parentCtn = "";
 	String childCtn = "";
+	
 	//현재 안심존에 등록된 리스트 사이즈
 	int listSize = 0;
+	
+	//현재 고객의 잔여 포인트
+	int myPoint = 0;
+	
 	//API 통신 성공유무 변수 
 	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	int httpMyPointResult = 1;
 	String[][] childSafezoneList;
 	
 	//선택된 ROW의 번호
 	int selectedRow = -1;
+	
 	//삭제 API 호출 후의 결과값
 	int deleteApiResult = -1;	
 		
@@ -196,15 +207,17 @@ public class ChildSafezoneListActivity extends Activity {
 			btn_modify.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
-						intent.putExtra("safezoneCode", arSrc.get(pos).getSafezoneCode());
-						intent.putExtra("latitude", arSrc.get(pos).getSafeLatitude());
-						intent.putExtra("longitude", arSrc.get(pos).getSafeLongitude());
-						intent.putExtra("radius", arSrc.get(pos).getSafeRadius());
-						intent.putExtra("childCtn", childCtn);
-						intent.putExtra("flag", "UPDATE");
-						intent.putExtra("listSize", listSize);
-						startActivity(intent);
+						if(arSrc.get(pos).getSafeAlarmDate() == null || "".equals(arSrc.get(pos).getSafeAlarmDate()) || arSrc.get(pos).getSafeAlarmDate().length() < 10){
+							Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+							intent.putExtra("safezoneCode", arSrc.get(pos).getSafezoneCode());
+							intent.putExtra("latitude", arSrc.get(pos).getSafeLatitude());
+							intent.putExtra("longitude", arSrc.get(pos).getSafeLongitude());
+							intent.putExtra("radius", arSrc.get(pos).getSafeRadius());
+							intent.putExtra("childCtn", childCtn);
+							intent.putExtra("flag", "UPDATE");
+							intent.putExtra("listSize", listSize);
+							startActivity(intent);
+						}
 					}
 				}
 			);
@@ -278,13 +291,36 @@ public class ChildSafezoneListActivity extends Activity {
   	class CallGetSafeZoneListApiThread extends Thread{
   		public void run(){
   			InputStream is = null;
+  			String url = "";
+  			HttpURLConnection urlConn;
+  			BufferedReader br;
+			String temp;
   			try{
-  				String url = "https://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));
+  				//고객의 잔여 포인트를 가져오는 로직
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildSafezoneListActivity.this));
+  				url = "https://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
+  				urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				temp = "";
+  				returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode_mypoint = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				httpMyPointResult = Integer.parseInt(resultCode_mypoint);
+  				if(httpMyPointResult == 0){
+  					myPoint = Integer.parseInt(WizSafeSeed.seedDec(WizSafeParser.xmlParser_String(returnXML,"<MYPOINT>")));
+  				}else{
+  					myPoint = 0;
+  				}
   				
-  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
-  				String temp;
-  				ArrayList<String> returnXML = new ArrayList<String>();
+  				//안심존 리스트 가져오는 로직
+  				url = "https://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));
+  				urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				temp = "";
+  				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
   					returnXML.add(new String(temp));
@@ -416,11 +452,29 @@ public class ChildSafezoneListActivity extends Activity {
 	  			        findViewById(R.id.btn_addChild).setOnClickListener(
 	  						new Button.OnClickListener(){
 	  							public void onClick(View v) {
-	  								Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
-	  								intent.putExtra("flag", "INSERT");
-	  								intent.putExtra("childCtn", childCtn);
-	  								intent.putExtra("listSize", listSize);
-	  								startActivity(intent);
+	  								if(myPoint >= 100){
+	  									Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
+		  								intent.putExtra("flag", "INSERT");
+		  								intent.putExtra("childCtn", childCtn);
+		  								intent.putExtra("listSize", listSize);
+		  								startActivity(intent);
+	  								}else{
+	  									AlertDialog.Builder ad = new AlertDialog.Builder(ChildSafezoneListActivity.this);
+	  									ad.setTitle("포인트 안내");
+	  									ad.setMessage("보유한 포인트가 부족합니다. 포인트 충전 후 다시 이용해 주세요.");
+	  									ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
+	  										public void onClick(DialogInterface dialog, int which) {
+	  											Toast.makeText(ChildSafezoneListActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
+	  										}
+	  									});
+	  									ad.setNegativeButton("안심존등록\n닫기", new DialogInterface.OnClickListener(){
+	  										public void onClick(DialogInterface dialog, int which) {
+	  											finish();
+	  										}
+	  									});
+	  									ad.show();
+	  								}
+	  								
 	  							}
 	  						}
 	  					);

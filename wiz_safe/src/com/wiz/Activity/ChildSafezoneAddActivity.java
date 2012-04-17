@@ -269,7 +269,7 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 					title = "안심존 수정";	
 				}
 				String message = "";
-				if(listSize > 1){
+				if(listSize > 0){
 					message = "현재 시간부터 24시간 이내에 해당 위치에 진입 시 문자로 1회만 알려 드립니다. \n ※ 안심존 추가 등록 시 100 포인트가 소진됩니다.";
 				}else{
 					message = "현재 시간부터 24시간 이내에 해당 위치에 진입 시 문자로 1회만 알려 드립니다.";
