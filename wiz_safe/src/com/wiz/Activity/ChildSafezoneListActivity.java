@@ -258,14 +258,18 @@ public class ChildSafezoneListActivity extends Activity {
     	private String safeLatitude;
 		private String safeLongitude;
 		private String safeRadius;
+		private String safeCtn;
+		private String safeChildCtn;
     	
-    	public ChildSafezoneDetail (String _safezoneCode, String _safeAddress, String _safeAlarmDate, String _safeLatitude, String _safeLongitude, String _safeRadius){
+    	public ChildSafezoneDetail (String _safezoneCode, String _safeAddress, String _safeAlarmDate, String _safeLatitude, String _safeLongitude, String _safeRadius, String _safeCtn, String _safeChildCtn){
     		this.safezoneCode = _safezoneCode;
     		this.safeAddress = _safeAddress;
     		this.safeAlarmDate = _safeAlarmDate;
     		this.safeLatitude = _safeLatitude;
     		this.safeLongitude = _safeLongitude;
     		this.safeRadius = _safeRadius;
+    		this.safeCtn = _safeCtn;
+    		this.safeChildCtn = _safeChildCtn;
     	}
     	private String getSafezoneCode(){
 			return safezoneCode;
@@ -284,6 +288,12 @@ public class ChildSafezoneListActivity extends Activity {
     	}
     	private String getSafeRadius(){
 			return safeRadius;
+    	}
+    	private String getSafeCtn(){
+			return safeCtn;
+    	}
+    	private String getSafeChildCtn(){
+			return safeChildCtn;
     	}
     }
 	
@@ -333,18 +343,22 @@ public class ChildSafezoneListActivity extends Activity {
   				ArrayList<String> encLatitude = new ArrayList<String>(); 
   				ArrayList<String> encLongitude = new ArrayList<String>(); 
   				ArrayList<String> encRadius = new ArrayList<String>(); 
+  				ArrayList<String> encCtn = new ArrayList<String>();
+  				ArrayList<String> encChildCtn = new ArrayList<String>();
   				strSafezoneCode = WizSafeParser.xmlParser_List(returnXML,"<SAFEZONE_CODE>");
   				encAddress = WizSafeParser.xmlParser_List(returnXML,"<ADDRESS>");
   				strAlarmDate = WizSafeParser.xmlParser_List(returnXML,"<ALARM_DATE>");
   				encLatitude = WizSafeParser.xmlParser_List(returnXML,"<LATITUDE>");
   				encLongitude = WizSafeParser.xmlParser_List(returnXML,"<LONGITUDE>");
   				encRadius = WizSafeParser.xmlParser_List(returnXML,"<RADIUS>");
+  				encCtn = WizSafeParser.xmlParser_List(returnXML,"<CTN>");
+  				encChildCtn = WizSafeParser.xmlParser_List(returnXML,"<CHILD_CTN>");
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
   				listSize = strSafezoneCode.size();
-  				childSafezoneList = new String[listSize][6];
+  				childSafezoneList = new String[listSize][8];
   				
   				if(strSafezoneCode.size() > 0){
   					for(int i=0; i < strSafezoneCode.size(); i++){
@@ -354,9 +368,6 @@ public class ChildSafezoneListActivity extends Activity {
   				if(encAddress.size() > 0){
   					for(int i=0; i < encAddress.size(); i++){
   						String tempAddress = (String)encAddress.get(i);
-  						tempAddress = WizSafeUtil.replaceStr(tempAddress,"☆","\r\n");
-  						tempAddress = WizSafeUtil.replaceStr(tempAddress,"★","\r");
-  						tempAddress = WizSafeUtil.replaceStr(tempAddress,"■","\n");
   						//복호화
   						tempAddress = WizSafeSeed.seedDec(tempAddress);
   						//대한민국 제거
@@ -384,12 +395,22 @@ public class ChildSafezoneListActivity extends Activity {
   						childSafezoneList[i][5] = WizSafeSeed.seedDec(encRadius.get(i));
   					}
   				}
+  				if(encCtn.size() > 0){
+  					for(int i=0; i < encCtn.size(); i++){
+  						childSafezoneList[i][6] = WizSafeSeed.seedDec(encCtn.get(i));
+  					}
+  				}
+  				if(encChildCtn.size() > 0){
+  					for(int i=0; i < encChildCtn.size(); i++){
+  						childSafezoneList[i][7] = WizSafeSeed.seedDec(encChildCtn.get(i));
+  					}
+  				}
   				
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
   				childSafezoneListArr = new ArrayList<ChildSafezoneDetail>();
   		    	if(childSafezoneList != null){
   			    	for(int i = 0 ; i < childSafezoneList.length ; i++){
-  			    		ChildSafezoneDetail addChildSafezoneList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2], childSafezoneList[i][3], childSafezoneList[i][4], childSafezoneList[i][5]);
+  			    		ChildSafezoneDetail addChildSafezoneList = new ChildSafezoneDetail(childSafezoneList[i][0], childSafezoneList[i][1], childSafezoneList[i][2], childSafezoneList[i][3], childSafezoneList[i][4], childSafezoneList[i][5], childSafezoneList[i][6], childSafezoneList[i][7]);
   			    		childSafezoneListArr.add(addChildSafezoneList);
   			    	}
   		    	}
@@ -411,8 +432,11 @@ public class ChildSafezoneListActivity extends Activity {
   			InputStream is = null;
   			try{
   				String selectedSafezoneCode = childSafezoneListArr.get(selectedRow).getSafezoneCode();
-  				String url = "https://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode);
+  				String selectedEncCtn = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeCtn());
+  				String selectedEncChildCtn = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeChildCtn());
+  				String url = "https://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode)+"&parentCtn="+URLEncoder.encode(selectedEncCtn)+"&childCtn="+URLEncoder.encode(selectedEncChildCtn);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				android.util.Log.i("banhong", "url :: "+url);
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
   				ArrayList<String> returnXML = new ArrayList<String>();

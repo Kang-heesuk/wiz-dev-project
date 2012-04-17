@@ -430,7 +430,7 @@ public class ChildListActivity extends Activity {
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildListActivity.this));
   				String enc_selectedCtn = WizSafeSeed.seedEnc(childListArr.get(selectedRow).getChildCtn());
-  				String url = "https://www.heream.com/api/deleteRelation.jsp?parentCtn="+ URLEncoder.encode(enc_ctn) + "&childCtn=" + URLEncoder.encode(enc_selectedCtn);
+  				String url = "https://www.heream.com/api/deleteRelation.jsp?parentCtn="+ URLEncoder.encode(enc_ctn) + "&childCtn=" + URLEncoder.encode(enc_selectedCtn) + "&me=parent";
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
