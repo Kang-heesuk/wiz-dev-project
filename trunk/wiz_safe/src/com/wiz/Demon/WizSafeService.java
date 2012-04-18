@@ -3,6 +3,8 @@ package com.wiz.Demon;
 import java.util.Calendar;
 import java.util.List;
 
+import com.wiz.util.WizSafeUtil;
+
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -77,17 +79,21 @@ public class WizSafeService extends Service {
 			while(Quit == false){
 				
 				try{
-					//위치찾기 백그라운드 데몬을 죽였다가 살린다.
-					cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
-					stopService(new Intent().setComponent(cn));
-					WizSafeService.this.startService(new Intent().setComponent(cn));
+					//위치정보 제공을 해야하는 고객인 경우에만 위치찾고 통신하는 로직 수행
+					if(WizSafeUtil.isSendLocationUser(WizSafeService.this)){
+						//위치찾기 백그라운드 데몬을 죽였다가 살린다.
+						cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
+						stopService(new Intent().setComponent(cn));
+						WizSafeService.this.startService(new Intent().setComponent(cn));
+						
+						//최대 17초 유지
+						try{Thread.sleep(1000 * 18);}catch(Exception e){}
+						
+						//위치찾기 백그라운드 데몬을 죽인다.(위치를 못가져오면서 가만히 동작안할경우를 대비하여 죽인다. = 확인사살)
+						cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
+						stopService(new Intent().setComponent(cn));
+					}
 					
-					//최대 17초 유지
-					try{Thread.sleep(1000 * 18);}catch(Exception e){}
-					
-					//위치찾기 백그라운드 데몬을 죽인다.(위치를 못가져오면서 가만히 동작안할경우를 대비하여 죽인다. = 확인사살)
-					cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
-					stopService(new Intent().setComponent(cn));
 				}catch(Exception e){
 				}finally{
 				}
