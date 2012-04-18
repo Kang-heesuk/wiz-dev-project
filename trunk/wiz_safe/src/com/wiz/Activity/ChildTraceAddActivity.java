@@ -37,8 +37,8 @@ public class ChildTraceAddActivity extends Activity {
 	//전역변수로써 API 통신할 변수들을 셋팅한다.
 	String phonenum = "";
 	String childName = "";
-	String startDay = "";			//시작요일
-	String endDay = "";				//종료요일
+	String startWeek = "";			//시작요일
+	String endWeek = "";				//종료요일
 	String startTime = "";			//시작시간
 	String endTime = "";			//종료시간
 	String interval = "";			//간격(분단위)
@@ -62,11 +62,11 @@ public class ChildTraceAddActivity extends Activity {
    		Intent intent = getIntent();
    		phonenum = intent.getStringExtra("phonenum");
    		childName = intent.getStringExtra("childName");
-   		if(intent.getStringExtra("startDay") != null){
-   			startDay = intent.getStringExtra("startDay");
+   		if(intent.getStringExtra("startWeek") != null){
+   			startWeek = intent.getStringExtra("startWeek");
    		}
-   		if(intent.getStringExtra("endDay") != null){
-   			endDay = intent.getStringExtra("endDay");
+   		if(intent.getStringExtra("endWeek") != null){
+   			endWeek = intent.getStringExtra("endWeek");
    		}
 		if(intent.getStringExtra("startTime") != null){
 			startTime = intent.getStringExtra("startTime");
@@ -91,8 +91,8 @@ public class ChildTraceAddActivity extends Activity {
         weekAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         weekSpiner.setAdapter(weekAdspin);
         
-        if(intent.getStringExtra("startDay") != null && intent.getStringExtra("endDay") != null){
-	        if("1".equals(startDay) && "5".equals(endDay)){
+        if(intent.getStringExtra("startWeek") != null && intent.getStringExtra("endWeek") != null){
+	        if("1".equals(startWeek) && "5".equals(endWeek)){
 	        	weekSpiner.setSelection(0);
 	        }else{
 	        	weekSpiner.setSelection(1);
@@ -108,12 +108,12 @@ public class ChildTraceAddActivity extends Activity {
 				textDay = weekAdspin.getItem(position).toString();
 				switch(position){
 				case 0:		//첫번째것을 선택 월~금
-					startDay = "1";
-					endDay = "5";
+					startWeek = "1";
+					endWeek = "5";
 					break;
 				case 1:		//두번째것을 선택 월~일
-					startDay = "1";
-					endDay = "0";
+					startWeek = "1";
+					endWeek = "0";
 					break;
 				}
 			}
@@ -253,7 +253,7 @@ public class ChildTraceAddActivity extends Activity {
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceAddActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
-  				String url = "https://www.heream.com/api/addChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn) +"&childName="+ URLEncoder.encode(enc_childCtn) + "&startDay=" + URLEncoder.encode(startDay) + "&endDay=" + URLEncoder.encode(endDay) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) + "&interval=" + URLEncoder.encode(interval) + "&traceLogCode=" + URLEncoder.encode(traceLogCode);
+  				String url = "https://www.heream.com/api/addChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn) +"&childName="+ URLEncoder.encode(enc_childCtn) + "&startWeek=" + URLEncoder.encode(startWeek) + "&endWeek=" + URLEncoder.encode(endWeek) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) + "&interval=" + URLEncoder.encode(interval) + "&traceLogCode=" + URLEncoder.encode(traceLogCode);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
