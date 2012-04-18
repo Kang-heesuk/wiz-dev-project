@@ -529,4 +529,41 @@ public class WizSafeUtil {
 		buf = bout.toByteArray();
 		return buf;
 	}
+	
+	
+	//해당 단말의 고객이 서버로 위치정보를 보내는 고객인지 아닌지 판단하는 메소드
+	public static boolean isSendLocationUser(Context context) {
+		boolean returnVal = false;
+		SharedPreferences LocalSave;
+    	LocalSave = context.getSharedPreferences("WizSafeLocalVal", 0);
+    	String tempString = LocalSave.getString("isSendLocationUser", "2");
+    	//1 = 로케이션 정보를 서버로 재공하는 고객    	
+    	if("1".equals(tempString)){
+    		returnVal = true;
+    	}else{
+    		returnVal = false;
+    	}
+		return returnVal;
+	}
+	
+	//해당 단말의 고객이 서버로 위치정보를 보낼지 말지 셋팅해주는 메소드
+	//로컬밸류를 바꾸어주는 부분은
+	//1. 부모등록하기 메뉴 : 자녀가 부모리스트에 추가하는 순간 셋팅
+	//2. 자녀등록하기 메뉴로 등록된 자녀가 위치 허용 하는 순간 셋팅
+	//3. 부모자녀관계의 삭제 : 관계가 삭제되는 순간 API 통신을 통하여 내가 자녀인지 아닌지 판단후 셋팅(부모리스트, 자녀리스트 두군데)
+	//그외 : 메인페이지에 접속 하였을 경우, 내가 자녀인지 아닌지 판단하여 셋팅
+	public static void setSendLocationUser(Context context, boolean setVal) {
+		String tempSetVal = "2";
+		if(setVal){
+			tempSetVal = "1";
+		}else{
+			tempSetVal = "2";
+		}
+		SharedPreferences LocalSave;
+		SharedPreferences.Editor edit;
+    	LocalSave = context.getSharedPreferences("WizSafeLocalVal", 0);
+		edit = LocalSave.edit();
+		edit.putString("isSendLocationUser", tempSetVal);
+		edit.commit();
+	}
 }
