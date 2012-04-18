@@ -275,10 +275,13 @@ public class SetupActivity extends Activity {
 				ad.show();
   			}else if(msg.what == 2){
   				if(updateApiResult == 0){
-  					//액티비티 재시작
-  					Intent intent = getIntent();
-  					finish();
-  					startActivity(intent);
+  					if("0".equals(setMyAlramState)){
+  						findViewById(R.id.btn_sms).setBackgroundResource(R.drawable.btn_off);
+						findViewById(R.id.btn_sms).setTag(R.drawable.btn_off);
+  					}else{
+  						findViewById(R.id.btn_sms).setBackgroundResource(R.drawable.btn_on);
+						findViewById(R.id.btn_sms).setTag(R.drawable.btn_on);
+  					}
   				}else{
   					//조회실패
   					AlertDialog.Builder ad = new AlertDialog.Builder(SetupActivity.this);
