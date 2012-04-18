@@ -36,8 +36,8 @@ public class ChildTraceDetailListActivity extends Activity {
 	
 	String phonenum = "";
 	String childName = "";
-	String startDay = "";
-	String endDay = "";
+	String startWeek = "";
+	String endWeek = "";
 	String startTime = "";
 	String endTime = "";
 	String interval = "";
@@ -67,11 +67,11 @@ public class ChildTraceDetailListActivity extends Activity {
         Intent intent = getIntent();
         phonenum = intent.getStringExtra("phonenum");
         childName = intent.getStringExtra("childName");
-        if(intent.getStringExtra("startDay") != null){
-        	startDay = intent.getStringExtra("startDay");
+        if(intent.getStringExtra("startWeek") != null){
+        	startWeek = intent.getStringExtra("startWeek");
         }
-        if(intent.getStringExtra("endDay") != null){
-        	endDay = intent.getStringExtra("endDay");
+        if(intent.getStringExtra("endWeek") != null){
+        	endWeek = intent.getStringExtra("endWeek");
         }
         if(intent.getStringExtra("startTime") != null){
         	startTime = intent.getStringExtra("startTime");
@@ -229,7 +229,7 @@ public class ChildTraceDetailListActivity extends Activity {
   			try{
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceDetailListActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
-  				String url = "https://www.heream.com/api/getChildTraceDetailList.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&startDay=" + URLEncoder.encode(startDay) + "&endDay=" + URLEncoder.encode(endDay) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) ;
+  				String url = "https://www.heream.com/api/getChildTraceDetailList.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&startWeek=" + URLEncoder.encode(startWeek) + "&endWeek=" + URLEncoder.encode(endWeek) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) ;
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				Log.i("banhong", "url : "+url);
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	

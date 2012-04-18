@@ -29,8 +29,8 @@ public class ChildTraceListActivity extends Activity {
 	String phonenum = "";
 	String childName = "";
 	String myPoint = "";
-	String startDay = "";
-	String endDay = "";
+	String startWeek = "";
+	String endWeek = "";
 	String startTime = "";
 	String endTime = "";
 	String interval = "";
@@ -122,8 +122,8 @@ public class ChildTraceListActivity extends Activity {
   					isRegisterTrace = false;
   				}
   				
-				startDay = WizSafeParser.xmlParser_String(returnXML,"<START_DAY>");
-				endDay = WizSafeParser.xmlParser_String(returnXML,"<END_DAY>");
+  				startWeek = WizSafeParser.xmlParser_String(returnXML,"<START_WEEK>");
+				endWeek = WizSafeParser.xmlParser_String(returnXML,"<END_WEEK>");
 				startTime = WizSafeParser.xmlParser_String(returnXML,"<START_TIME>");
 				endTime = WizSafeParser.xmlParser_String(returnXML,"<END_TIME>");
 				interval = WizSafeParser.xmlParser_String(returnXML,"<INTERVAL>");
@@ -249,8 +249,8 @@ public class ChildTraceListActivity extends Activity {
   									Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceDetailListActivity.class);
   									intent.putExtra("phonenum", phonenum);
   									intent.putExtra("childName", childName);
-  									intent.putExtra("startDay", startDay);
-  									intent.putExtra("endDay", endDay);
+  									intent.putExtra("startWeek", startWeek);
+  									intent.putExtra("endWeek", endWeek);
   									intent.putExtra("startTime", startTime);
   									intent.putExtra("endTime", endTime);
   									intent.putExtra("interval", interval);
@@ -286,7 +286,7 @@ public class ChildTraceListActivity extends Activity {
   			        
   			        childNameArea.setText(childName);
   			        phonenumArea.setText("(" + WizSafeUtil.setPhoneNum(phonenum) + ")");
-  			        weekendArea.setText("요일 : " + WizSafeUtil.dayConvertFromNumberToString(startDay) +"요일 ~ "+ WizSafeUtil.dayConvertFromNumberToString(endDay) + "요일");
+  			        weekendArea.setText("요일 : " + WizSafeUtil.dayConvertFromNumberToString(startWeek) +"요일 ~ "+ WizSafeUtil.dayConvertFromNumberToString(endWeek) + "요일");
   			        timeArea.setText("시간 : " + WizSafeUtil.timeConvertFromNumberToString0to23(startTime) +" ~ "+ WizSafeUtil.timeConvertFromNumberToString1to24(endTime));
   			        intervalArea.setText("간격 : " + WizSafeUtil.intervalConvertMinToHour(interval) + "시간");
   			        
@@ -300,8 +300,8 @@ public class ChildTraceListActivity extends Activity {
   								Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceAddActivity.class);
   								intent.putExtra("phonenum", phonenum);
   								intent.putExtra("childName", childName);
-  								intent.putExtra("startDay", startDay);
-  								intent.putExtra("endDay", endDay);
+  								intent.putExtra("startWeek", startWeek);
+  								intent.putExtra("endWeek", endWeek);
   								intent.putExtra("startTime", startTime);
   								intent.putExtra("endTime", endTime);
   								intent.putExtra("interval", interval);
@@ -317,7 +317,7 @@ public class ChildTraceListActivity extends Activity {
   							public void onClick(View v) {
   								AlertDialog.Builder submitAlert = new AlertDialog.Builder(ChildTraceListActivity.this);
   								submitAlert.setTitle("발자취삭제");
-  								submitAlert.setMessage("발자취 설정을 삭제 하시겠습니까?\n휴대폰 번호 : "+ WizSafeUtil.setPhoneNum(phonenum) + "\n설정 요일 : " + WizSafeUtil.dayConvertFromNumberToString(startDay) + "~" + WizSafeUtil.dayConvertFromNumberToString(endDay) + "요일\n설정 시간 : " + WizSafeUtil.timeConvertFromNumberToString0to23(startTime)+ "~" + WizSafeUtil.timeConvertFromNumberToString1to24(endTime) + "까지" + "\n설정 간격 : " + WizSafeUtil.intervalConvertMinToHour(interval) + "시간\n※ 삭제 시 금일 포인트는 환급 되지 않습니다.");
+  								submitAlert.setMessage("발자취 설정을 삭제 하시겠습니까?\n휴대폰 번호 : "+ WizSafeUtil.setPhoneNum(phonenum) + "\n설정 요일 : " + WizSafeUtil.dayConvertFromNumberToString(startWeek) + "~" + WizSafeUtil.dayConvertFromNumberToString(endWeek) + "요일\n설정 시간 : " + WizSafeUtil.timeConvertFromNumberToString0to23(startTime)+ "~" + WizSafeUtil.timeConvertFromNumberToString1to24(endTime) + "까지" + "\n설정 간격 : " + WizSafeUtil.intervalConvertMinToHour(interval) + "시간\n※ 삭제 시 금일 포인트는 환급 되지 않습니다.");
   								submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
   									public void onClick(DialogInterface dialog, int which) {
   										//API 호출 쓰레드 시작
