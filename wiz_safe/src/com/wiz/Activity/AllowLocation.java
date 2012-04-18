@@ -93,6 +93,11 @@ public class AllowLocation extends Activity {
   				}
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
   				allowApiResult = Integer.parseInt(resultCode);
+  				
+  				//자녀리스트 등록이 되고난 후 , 위치허용 동의를 한 순간 부터 서버로 위치 정보를 제공하도록 셋팅
+  				if(allowApiResult == 0){
+  					WizSafeUtil.setSendLocationUser(AllowLocation.this, true);	//로컬벨류셋팅
+  				}
 
   				pHandler.sendEmptyMessage(0);
   				

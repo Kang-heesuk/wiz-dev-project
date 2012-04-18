@@ -27,8 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.wiz.Activity.ChildListActivity.CallGetChildListApiThread;
-import com.wiz.Activity.ChildListActivity.ChildListAdapter;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -425,7 +423,7 @@ public class ParentListActivity extends Activity {
   		}
   	}
   	
-  //API 호출 쓰레드
+  	//API 호출 쓰레드
   	class CallDeleteApiThread extends Thread{
   		public void run(){
   			InputStream is = null;

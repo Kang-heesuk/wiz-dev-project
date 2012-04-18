@@ -170,6 +170,11 @@ public class ParentAddActivity extends Activity {
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
   				addApiResult = Integer.parseInt(resultCode);
   				
+  				//부모등록하기가 정상적으로 이루어진경우 - 해당 시점부터 현재위치를 서버로 전송하도록 로컬밸류를 셋팅
+  				if(addApiResult == 0){
+  					WizSafeUtil.setSendLocationUser(ParentAddActivity.this, true);	//로컬벨류셋팅
+  				}
+  				
   				if(haveCheck){
   					url = "https://www.heream.com/api/sendAppDownSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&d_ctn=" + URLEncoder.encode(enc_parentCtn) + "&stype=" + URLEncoder.encode("02");
   					urlConn = (HttpURLConnection) new URL(url).openConnection();
