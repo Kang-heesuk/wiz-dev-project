@@ -194,6 +194,15 @@ public class MainActivity extends Activity {
 								waitParentPhone.add(WizSafeSeed.seedDec(parentCtn.get(i)));
 							}
 						}
+						
+						//내가 서버로 위치를 제공해야하는지 아닌지 판단하여 셋팅
+						//자녀리스트 번호에 내 폰번호가 있으면서, 그 해당 상태값이 02 인경우 해당 단말은 위치 제공 하도록 셋팅
+						WizSafeUtil.setSendLocationUser(MainActivity.this, false);
+						for(int i = 0 ; i < childCtn.size() ; i++){
+							if(childCtn.get(i).equals(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this))) && "02".equals(relationState.get(i))){
+								WizSafeUtil.setSendLocationUser(MainActivity.this, true);
+							}
+						}
 					}
   				}
   				
