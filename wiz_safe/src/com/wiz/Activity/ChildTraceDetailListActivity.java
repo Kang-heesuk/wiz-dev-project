@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +35,6 @@ public class ChildTraceDetailListActivity extends Activity {
 	
 	String phonenum = "";
 	String childName = "";
-	String startWeek = "";
-	String endWeek = "";
-	String startTime = "";
-	String endTime = "";
-	String interval = "";
 	
 	//발자취 리스트
 	ArrayList<TraceDetail> childLogList = new ArrayList<TraceDetail>();
@@ -67,22 +61,7 @@ public class ChildTraceDetailListActivity extends Activity {
         Intent intent = getIntent();
         phonenum = intent.getStringExtra("phonenum");
         childName = intent.getStringExtra("childName");
-        if(intent.getStringExtra("startWeek") != null){
-        	startWeek = intent.getStringExtra("startWeek");
-        }
-        if(intent.getStringExtra("endWeek") != null){
-        	endWeek = intent.getStringExtra("endWeek");
-        }
-        if(intent.getStringExtra("startTime") != null){
-        	startTime = intent.getStringExtra("startTime");
-        }
-        if(intent.getStringExtra("endTime") != null){
-        	endTime = intent.getStringExtra("endTime");
-        }
-        if(intent.getStringExtra("interval") != null){
-        	interval = intent.getStringExtra("interval");
-        }
-        
+
         //API 호출 쓰레드 시작
     	//발자취 리스트를 가져온다.
     	WizSafeDialog.showLoading(ChildTraceDetailListActivity.this);	//Dialog 보이기
@@ -189,9 +168,6 @@ public class ChildTraceDetailListActivity extends Activity {
 			            Intent intent = new Intent(ChildTraceDetailListActivity.this, ChildTraceViewActivity.class);
 			            intent.putExtra("phonenum", phonenum);
 						intent.putExtra("selectedDay", arSrc.get(pos).getTraceDay());
-						intent.putExtra("startTime", startTime);
-						intent.putExtra("endTime", endTime);
-						intent.putExtra("interval", interval);
 						startActivity(intent);
 					}
 				}
@@ -203,12 +179,10 @@ public class ChildTraceDetailListActivity extends Activity {
     class TraceDetail {
     	private String traceDay;
     	private String traceDayOfWeek;
-    	private String traceLatestTime;
     	
-    	public TraceDetail(String traceDay, String traceDayOfWeek, String traceLatestTime){
+    	public TraceDetail(String traceDay, String traceDayOfWeek){
     		this.traceDay = traceDay;
     		this.traceDayOfWeek = traceDayOfWeek;
-    		this.traceLatestTime = traceLatestTime;
     	}
     	
     	private String getTraceDay(){
@@ -216,9 +190,6 @@ public class ChildTraceDetailListActivity extends Activity {
     	}
     	private String getTraceDayOfWeek(){
 			return traceDayOfWeek;
-    	}
-    	private String getTraceLatestTime(){
-			return traceLatestTime;
     	}
     }
     
@@ -229,9 +200,8 @@ public class ChildTraceDetailListActivity extends Activity {
   			try{
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceDetailListActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
-  				String url = "https://www.heream.com/api/getChildTraceDetailList.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&startWeek=" + URLEncoder.encode(startWeek) + "&endWeek=" + URLEncoder.encode(endWeek) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) ;
+  				String url = "https://www.heream.com/api/getChildTraceDetailList.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-  				Log.i("banhong", "url : "+url);
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
   				ArrayList<String> returnXML = new ArrayList<String>();
@@ -244,14 +214,13 @@ public class ChildTraceDetailListActivity extends Activity {
   				String resultSize = WizSafeParser.xmlParser_String(returnXML,"<RESULT_COUNT>");
   				ArrayList<String> elementDay = WizSafeParser.xmlParser_List(returnXML,"<ELEMENT_DAY>");
   				ArrayList<String> elementDayOfWeek = WizSafeParser.xmlParser_List(returnXML,"<ELEMENT_DAY_OF_WEEK>");
-  				ArrayList<String> elementLatestTime = WizSafeParser.xmlParser_List(returnXML,"<ELEMENT_LATEST_TIME_OF_DAY>");
   				
   				//2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				listSize = Integer.parseInt(resultSize);
   				
   				//조회해온 리스트 사이즈 만큼의 2차원 배열을 선언한다.
-  				traceList = new String[elementDay.size()][3]; 
+  				traceList = new String[elementDay.size()][2]; 
   				
   				//조회해온 값을 2차원 배열에 넣는다.
   				if(elementDay.size() > 0){
@@ -264,15 +233,11 @@ public class ChildTraceDetailListActivity extends Activity {
   						traceList[i][1] = elementDayOfWeek.get(i);
   					}
   				}
-  				if(elementLatestTime.size() > 0){
-  					for(int i=0; i < elementLatestTime.size(); i++){
-  						traceList[i][2] = elementLatestTime.get(i);
-  					}
-  				}
+  				
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
   		    	if(traceList != null){
   			    	for(int i = 0 ; i < traceList.length ; i++){
-  			    		TraceDetail addChildLogList = new TraceDetail(traceList[i][0], traceList[i][1], traceList[i][2]);
+  			    		TraceDetail addChildLogList = new TraceDetail(traceList[i][0], traceList[i][1]);
   			    		childLogList.add(addChildLogList);
   			    	}
   		    	}
