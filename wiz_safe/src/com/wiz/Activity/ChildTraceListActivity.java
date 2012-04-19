@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -113,7 +112,6 @@ public class ChildTraceListActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				String resultCode_getList = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
@@ -133,8 +131,6 @@ public class ChildTraceListActivity extends Activity {
 				nowOperationState = WizSafeParser.xmlParser_String(returnXML,"<TRACE_STATE>");
 				todayDeductState = WizSafeParser.xmlParser_String(returnXML,"<TODAY_DEDUCT_STATE>");
 				traceLogCode = WizSafeParser.xmlParser_String(returnXML,"<TRACELOG_CODE>");
-				
-				Log.i("childList","이런쉬이 > " + todayDeductState);
 
 				pHandler.sendEmptyMessage(0);
   				
@@ -214,8 +210,6 @@ public class ChildTraceListActivity extends Activity {
 			WizSafeDialog.hideLoading();
   			if(msg.what == 0){
   				if(addApiResult == 0 || addApiResult == 1){
-  					
-  					Log.i("childList",myPoint + "==" + todayDeductState);
   					
   					//리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
   			        if(!isRegisterTrace){
