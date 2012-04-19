@@ -79,9 +79,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
 	private String childCtn;
 	private String selectedDay;
-	private String startTime;
-	private String endTime;
-	private String interval;
+	
 	//맵위에 위치를 표시할 값을 가진 arraylist
 	ArrayList<ChildTraceViewDetail> childTraceViewListArr = new ArrayList<ChildTraceViewDetail>();
 
@@ -127,12 +125,8 @@ public class ChildTraceViewActivity extends NMapActivity {
 	
 		//이전액티비티에서 넘겨준 값을 받아온다.
 		Intent intent = getIntent();
-		childCtn = intent.getStringExtra("phonenum");
+		childCtn = intent.getStringExtra("childCtn");
 		selectedDay = intent.getStringExtra("selectedDay");
-        startTime = intent.getStringExtra("startTime");
-        endTime = intent.getStringExtra("endTime");
-        interval = intent.getStringExtra("interval");
-		
 
 		//먼저 해당 뷰의 부모를 초기화 - 하나의 뷰는 하나의 부모만을 가지기 때문에 부모를 초기화하여 재사용을 하자.
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
@@ -236,7 +230,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   			try{
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
-  				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+selectedDay+"&startTime="+startTime+"&endTime="+endTime+"&interval="+interval;
+  				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+selectedDay;
   				Log.i("banhong", "url :: "+url);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
