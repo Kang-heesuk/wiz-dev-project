@@ -434,7 +434,11 @@ public class ChildSafezoneListActivity extends Activity {
   				String selectedSafezoneCode = childSafezoneListArr.get(selectedRow).getSafezoneCode();
   				String selectedEncCtn = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeCtn());
   				String selectedEncChildCtn = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeChildCtn());
-  				String url = "https://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode)+"&parentCtn="+URLEncoder.encode(selectedEncCtn)+"&childCtn="+URLEncoder.encode(selectedEncChildCtn);
+  				String selectedEncRadius = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeRadius());
+  				String selectedEncAddr = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeAddress());
+  				String selectedEncLat = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeLatitude());
+  				String selectedEncLon = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeLongitude());
+  				String url = "https://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode)+"&parentCtn="+URLEncoder.encode(selectedEncCtn)+"&childCtn="+URLEncoder.encode(selectedEncChildCtn)+"&radius="+URLEncoder.encode(selectedEncRadius)+"&addr="+URLEncoder.encode(selectedEncAddr)+"&lat="+URLEncoder.encode(selectedEncLat)+"&lon="+URLEncoder.encode(selectedEncLon);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				android.util.Log.i("banhong", "url :: "+url);
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
