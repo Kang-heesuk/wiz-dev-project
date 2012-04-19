@@ -166,7 +166,7 @@ public class ChildTraceDetailListActivity extends Activity {
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 			            Intent intent = new Intent(ChildTraceDetailListActivity.this, ChildTraceViewActivity.class);
-			            intent.putExtra("phonenum", phonenum);
+			            intent.putExtra("childCtn", phonenum);
 						intent.putExtra("selectedDay", arSrc.get(pos).getTraceDay());
 						startActivity(intent);
 					}
