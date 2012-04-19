@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -35,6 +36,7 @@ public class ChildTraceListActivity extends Activity {
 	String endTime = "";
 	String interval = "";
 	String nowOperationState = "";
+	String todayDeductState = "";
 	String traceLogCode = "";
 	
 	//현재 발자취등록을 하였는지 판단.
@@ -111,6 +113,7 @@ public class ChildTraceListActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
+  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				String resultCode_getList = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
@@ -128,7 +131,10 @@ public class ChildTraceListActivity extends Activity {
 				endTime = WizSafeParser.xmlParser_String(returnXML,"<END_TIME>");
 				interval = WizSafeParser.xmlParser_String(returnXML,"<INTERVAL>");
 				nowOperationState = WizSafeParser.xmlParser_String(returnXML,"<TRACE_STATE>");
+				todayDeductState = WizSafeParser.xmlParser_String(returnXML,"<TODAY_DEDUCT_STATE>");
 				traceLogCode = WizSafeParser.xmlParser_String(returnXML,"<TRACELOG_CODE>");
+				
+				Log.i("childList","이런쉬이 > " + todayDeductState);
 
 				pHandler.sendEmptyMessage(0);
   				
@@ -208,6 +214,9 @@ public class ChildTraceListActivity extends Activity {
 			WizSafeDialog.hideLoading();
   			if(msg.what == 0){
   				if(addApiResult == 0 || addApiResult == 1){
+  					
+  					Log.i("childList",myPoint + "==" + todayDeductState);
+  					
   					//리스트가 존재하느냐 아니냐에 따라서 보이는 레이아웃이 달라진다.
   			        if(!isRegisterTrace){
   			        	LinearLayout bgArea = (LinearLayout)findViewById(R.id.bgArea);
@@ -225,57 +234,64 @@ public class ChildTraceListActivity extends Activity {
   			        
   			        LinearLayout layout_1 = (LinearLayout)findViewById(R.id.layout_1);
   			        Button nowStateBtn = (Button)findViewById(R.id.nowStateBtn);
+  			        TextView pointArea = (TextView)findViewById(R.id.pointArea) ;
   			        
-  			        //현재 포인트에 따라서 100포인트도 없다면 포인트 부족을 보여주고, 동작상태를 비동작중으로 강제설정한다.
+  			        //잔액 설정
   			        int myRemainPoint = 0;
   			        if(myPoint == null || "".equals(myPoint)){
-  			        	myPoint = "0";
-  			        }
-  			        myRemainPoint = Integer.parseInt(myPoint);
-  			        TextView pointArea = (TextView)findViewById(R.id.pointArea) ;
-  			        if(myRemainPoint < 100){
-  			        	pointArea.setVisibility(View.VISIBLE);
-  			        	nowOperationState = "0";
+			        	myPoint = "0";
+			        }
+  			        try{
+  			        	myRemainPoint = Integer.parseInt(myPoint);
+  			        }catch(Exception e){
+  			        	myRemainPoint = 0;
   			        }
   			        
-  			        //현재 상태에 따라 동작중 또는 비동작중에대한 백그라운드 상태 및 클릭 가능 상태 변경
-  			        if("1".equals(nowOperationState)){
-  			        	//1. 백그라운드 변환
-  			        	layout_1.setBackgroundResource(R.drawable.trace_playlist_bg);
-  			        	//2. 레이아웃 클릭시 세부보기로 이동
-  			        	layout_1.setOnClickListener(
-  							new Button.OnClickListener(){
-  								public void onClick(View v) {
-  									Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceDetailListActivity.class);
-  									intent.putExtra("phonenum", phonenum);
-  									intent.putExtra("childName", childName);
-  									intent.putExtra("startWeek", startWeek);
-  									intent.putExtra("endWeek", endWeek);
-  									intent.putExtra("startTime", startTime);
-  									intent.putExtra("endTime", endTime);
-  									intent.putExtra("interval", interval);
-  									
-  									startActivity(intent);
-  								}
-  							}
-  						);
-  			        }else{
-  			        	//1. 백그라운드 변환, 클릭시 반응 없음.
+  			        //배경화면 설정 및 DetailList 클릭 가능 여부 설정
+  			        if("0".equals(todayDeductState) && myRemainPoint <= 0){
+  			        	//아직차감 안했는데 가진돈이 없는경우(0원포함) = 정지화면 , DetailList보기 불가, 실행 액션 안됨, 포인트부족 노출
   			        	layout_1.setBackgroundResource(R.drawable.trace_stoplist_bg);
-  			        }
-  			        
-  			        //자녀발자취 실행 중지 버튼 액션 설정
-  			        nowStateBtn.setOnClickListener(
-						new Button.OnClickListener(){
-							public void onClick(View v) {
-								//API 호출 쓰레드 시작
-						    	//현재 상태 on/off 변경 스레드 호출
-						    	WizSafeDialog.showLoading(ChildTraceListActivity.this);	//Dialog 보이기
-						    	CallSwitchChildTraceListApiThread thread = new CallSwitchChildTraceListApiThread(); 
-								thread.start();
+  			        	pointArea.setVisibility(View.VISIBLE);
+  			        }else{
+  			        	//그외의 경우 - 차감X 잔여O , 차감O 잔여 O, 차감 O 잔여 X 인경우
+  			        	//화면(플레이상태인지 정지상태인지는 고객의 설정정보에 따름), DetailList보기 가능, 실행액션 가능
+  			        	
+  			        	//현재 실행중인지 아닌지 판별하여 화면 설정 후 버튼 액션 설정
+  			        	if("1".equals(nowOperationState)){
+  			        		layout_1.setBackgroundResource(R.drawable.trace_playlist_bg);
+  			        		//세부정보 볼수있는지 없는지 액션
+  			        		layout_1.setOnClickListener(
+	  							new Button.OnClickListener(){
+	  								public void onClick(View v) {
+	  									Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceDetailListActivity.class);
+	  									intent.putExtra("phonenum", phonenum);
+	  									intent.putExtra("childName", childName);
+	  									intent.putExtra("startWeek", startWeek);
+	  									intent.putExtra("endWeek", endWeek);
+	  									intent.putExtra("startTime", startTime);
+	  									intent.putExtra("endTime", endTime);
+	  									intent.putExtra("interval", interval);
+	  									
+	  									startActivity(intent);
+	  								}
+	  							}
+	  						);
+  			        	}else{
+  			        		layout_1.setBackgroundResource(R.drawable.trace_stoplist_bg);
+  			        	}
+  			        	//발자취 ON/OFF 버튼액션
+  			        	nowStateBtn.setOnClickListener(
+							new Button.OnClickListener(){
+								public void onClick(View v) {
+									//API 호출 쓰레드 시작
+							    	//현재 상태 on/off 변경 스레드 호출
+							    	WizSafeDialog.showLoading(ChildTraceListActivity.this);	//Dialog 보이기
+							    	CallSwitchChildTraceListApiThread thread = new CallSwitchChildTraceListApiThread(); 
+									thread.start();
+								}
 							}
-						}
-					);
+						);
+  			        }
   			        
   			        //자녀이름, 폰번호, 요일, 시간 , 간격을 화면에 노출
   					TextView childNameArea = (TextView)findViewById(R.id.childNameArea);
