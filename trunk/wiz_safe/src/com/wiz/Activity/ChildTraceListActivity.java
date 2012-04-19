@@ -260,12 +260,6 @@ public class ChildTraceListActivity extends Activity {
 	  									Intent intent = new Intent(ChildTraceListActivity.this, ChildTraceDetailListActivity.class);
 	  									intent.putExtra("phonenum", phonenum);
 	  									intent.putExtra("childName", childName);
-	  									intent.putExtra("startWeek", startWeek);
-	  									intent.putExtra("endWeek", endWeek);
-	  									intent.putExtra("startTime", startTime);
-	  									intent.putExtra("endTime", endTime);
-	  									intent.putExtra("interval", interval);
-	  									
 	  									startActivity(intent);
 	  								}
 	  							}
