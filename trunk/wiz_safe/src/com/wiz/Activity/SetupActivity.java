@@ -38,10 +38,10 @@ public class SetupActivity extends Activity {
 	int updateApiResult = -1;
 	
 	//현재 나의 문자 수신 상태값
-	String myAlramState = "1";
+	String myAlarmState = "1";
 	
 	//바꿀 나의 문자 수신 상태값
-	String setMyAlramState = "";
+	String setMyAlarmState = "";
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +76,7 @@ public class SetupActivity extends Activity {
   				String resultCode_getCustomerInfo = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");  
   				addApiResult = Integer.parseInt(resultCode_getCustomerInfo);
   				if(addApiResult == 0){
-  					myAlramState = WizSafeParser.xmlParser_String(returnXML,"<ALRAMSTATE>");
+  					myAlarmState = WizSafeParser.xmlParser_String(returnXML,"<ALARMSTATE>");
   				}
 
 				pHandler.sendEmptyMessage(0);
@@ -89,7 +89,7 @@ public class SetupActivity extends Activity {
   	}
   	
   	//API 호출 쓰레드(고객의 문자수신 상태값 변경하기)
-  	class CallSetCustomerAlramStateApiThread extends Thread{
+  	class CallSetCustomerAlarmStateApiThread extends Thread{
   		public void run(){
   			try{
   				HttpURLConnection urlConn;
@@ -100,7 +100,7 @@ public class SetupActivity extends Activity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(SetupActivity.this));
 
   				//문자수신 상태값을 변경시키는 API
-  				url = "https://www.heream.com/api/alarmOnOff.jsp?ctn=" + URLEncoder.encode(enc_ctn) + "&setValue=" + URLEncoder.encode(setMyAlramState);
+  				url = "https://www.heream.com/api/alarmOnOff.jsp?ctn=" + URLEncoder.encode(enc_ctn) + "&setValue=" + URLEncoder.encode(setMyAlarmState);
   				urlConn = (HttpURLConnection) new URL(url).openConnection();
   				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				returnXML = new ArrayList<String>();
@@ -169,7 +169,7 @@ public class SetupActivity extends Activity {
   	  				});
   	  		        
   	  		        Button btn_sms = (Button)findViewById(R.id.btn_sms);
-  	  		        if("1".equals(myAlramState)){
+  	  		        if("1".equals(myAlarmState)){
   	  		        	btn_sms.setTag(R.drawable.btn_on);
   	  		        	btn_sms.setBackgroundResource(R.drawable.btn_on);
   	  		        }else{
@@ -180,22 +180,22 @@ public class SetupActivity extends Activity {
   	  					public void onClick(View v) {
   	  						int compareValue = (Integer)findViewById(R.id.btn_sms).getTag();
   	  						if(compareValue == R.drawable.btn_off){
-  	  							setMyAlramState = "1";
+  	  							setMyAlarmState = "1";
   	  							findViewById(R.id.btn_sms).setBackgroundResource(R.drawable.btn_on);
   	  							findViewById(R.id.btn_sms).setTag(R.drawable.btn_on);
   	  							
   	  							//API 호출 쓰레드 시작
 	  	  				    	WizSafeDialog.showLoading(SetupActivity.this);	//Dialog 보이기
-	  	  				    	CallSetCustomerAlramStateApiThread thread = new CallSetCustomerAlramStateApiThread(); 
+	  	  				    	CallSetCustomerAlarmStateApiThread thread = new CallSetCustomerAlarmStateApiThread(); 
 	  	  						thread.start();
   	  						}else{
-  	  							setMyAlramState = "0";
+  	  							setMyAlarmState = "0";
   	  							findViewById(R.id.btn_sms).setBackgroundResource(R.drawable.btn_off);
   	  							findViewById(R.id.btn_sms).setTag(R.drawable.btn_off);
   	  							
 	  	  						//API 호출 쓰레드 시작
 	  	  				    	WizSafeDialog.showLoading(SetupActivity.this);	//Dialog 보이기
-	  	  				    	CallSetCustomerAlramStateApiThread thread = new CallSetCustomerAlramStateApiThread(); 
+	  	  				    	CallSetCustomerAlarmStateApiThread thread = new CallSetCustomerAlarmStateApiThread(); 
 	  	  						thread.start();
   	  						}
   	  					}
@@ -275,7 +275,7 @@ public class SetupActivity extends Activity {
 				ad.show();
   			}else if(msg.what == 2){
   				if(updateApiResult == 0){
-  					if("0".equals(setMyAlramState)){
+  					if("0".equals(setMyAlarmState)){
   						findViewById(R.id.btn_sms).setBackgroundResource(R.drawable.btn_off);
 						findViewById(R.id.btn_sms).setTag(R.drawable.btn_off);
   					}else{
