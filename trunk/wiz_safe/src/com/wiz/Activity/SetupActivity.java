@@ -100,7 +100,7 @@ public class SetupActivity extends Activity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(SetupActivity.this));
 
   				//문자수신 상태값을 변경시키는 API
-  				url = "https://www.heream.com/api/alramOnOff.jsp?ctn=" + URLEncoder.encode(enc_ctn) + "&setValue=" + URLEncoder.encode(setMyAlramState);
+  				url = "https://www.heream.com/api/alarmOnOff.jsp?ctn=" + URLEncoder.encode(enc_ctn) + "&setValue=" + URLEncoder.encode(setMyAlramState);
   				urlConn = (HttpURLConnection) new URL(url).openConnection();
   				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				returnXML = new ArrayList<String>();
