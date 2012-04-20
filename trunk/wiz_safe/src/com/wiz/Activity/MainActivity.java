@@ -17,7 +17,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -152,7 +151,6 @@ public class MainActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
-  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				//결과를 XML 파싱하여 추출
@@ -245,7 +243,6 @@ public class MainActivity extends Activity {
   			if(msg.what == 0){
   				//핸들러 정상동작
   				if(customerApiResult == 0){
-  					Log.i("childList","내폰의 상태 : " + WizSafeUtil.isSendLocationUser(MainActivity.this));
   					TextView textView1 = (TextView)findViewById(R.id.textView1);
   					TextView textView2 = (TextView)findViewById(R.id.textView2);
   					String myPhoneNumber = WizSafeUtil.setPhoneNum(WizSafeUtil.getCtn(MainActivity.this));
