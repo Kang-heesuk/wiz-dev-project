@@ -77,6 +77,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 			
 	//API 통신에 사용할 변수
 	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	private int payResult = 1;		//0 - 차감성공, 1 - 잔액부족, 2 - 이미사용, 3 - 설정내역문제
 	private String childCtn;
 	private String selectedDay;
 	
@@ -132,6 +133,8 @@ public class ChildTraceViewActivity extends NMapActivity {
     	RelativeLayout parentView = (RelativeLayout) findViewById(R.id.relayout);
 		parentView.removeView(mMapView);
 		
+		//정확한 맵을 보여주기 전까지 MapView 영역을 보이지 않게한다.
+		parentView.setVisibility(View.INVISIBLE);
 		
     	//API 호출 쓰레드 시작
     	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
@@ -278,16 +281,42 @@ public class ChildTraceViewActivity extends NMapActivity {
   			}
   		}
   	}
-
+  	
+  	//차감 API 호출 쓰레드
+  	class CallPayApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
+  				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
+  				String url = "https://www.heream.com/api/traceDeductPoint.jsp?parentCtn=" + URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				payResult = Integer.parseInt(resultCode);
+  				pHandler.sendEmptyMessage(2);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(3);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
   	
   	Handler pHandler = new Handler(){
   		public void handleMessage(Message msg){
-			WizSafeDialog.hideLoading();
   			if(msg.what == 0){
   				//핸들러 정상동작
   				if(httpResult == 0){
+  					WizSafeDialog.hideLoading();
 					//조회성공
-  					
   					// add path POI data overlay
   					testPathPOIdataOverlay();
   					
@@ -331,10 +360,12 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        	
   					});
   			        
-  			        ////화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
-					Toast.makeText(ChildTraceViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
+  			        //정상적으로 화면이 로딩이 완료되면 차감관련 API를 호출한다.
+  			        CallPayApiThread thread = new CallPayApiThread(); 
+					thread.start();
 			    	
 				}else{
+					WizSafeDialog.hideLoading();
 					//조회실패
 					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
 					String title = "자녀현위치찾기실패";	
@@ -349,6 +380,68 @@ public class ChildTraceViewActivity extends NMapActivity {
 					ad.show();
 				}
   			}else if(msg.what == 1){
+  				WizSafeDialog.hideLoading();
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 2){
+  				//== 과금을 지불하고 호출되는 핸들러 ==
+  				if(payResult == 0 || payResult == 2){
+  					//과금을 마치고 보여주어야 하는경우 : 맵뷰 영역을 보이게 하고, 프로그래스 종료, 토스트를 띄운다.
+  					RelativeLayout mapViewArea = (RelativeLayout)findViewById(R.id.relayout);
+  		        	mapViewArea.setVisibility(View.VISIBLE);
+  		        	WizSafeDialog.hideLoading();
+  		        	
+  		        	//토스트플래그 값을 본후 토스트를 띄우고 난 후 플래그 변경하여 새로고침시에는 토스트를 띄우지 않도록 한다.
+		    		Toast.makeText(ChildTraceViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
+  					
+  				}else if(payResult == 1){
+  					//잔액부족인 경우
+  					WizSafeDialog.hideLoading();
+  					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
+					ad.setTitle("포인트 안내");
+					ad.setMessage("보유한 포인트가 부족합니다. 포인트 충전 후 다시 이용해 주세요.");
+					ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+							Toast.makeText(ChildTraceViewActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
+						}
+					});
+					ad.setNegativeButton("발자취\n닫기", new DialogInterface.OnClickListener(){
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+  				}else{
+  					WizSafeDialog.hideLoading();
+  	  				//핸들러 비정상
+  	  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
+  					String title = "통신 오류";	
+  					String message = "통신 중 오류가 발생하였습니다.";	
+  					String buttonName = "확인";
+  					ad.setTitle(title);
+  					ad.setMessage(message);
+  					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  						public void onClick(DialogInterface dialog, int which) {
+  							finish();
+  						}
+  					});
+  					ad.show();
+  				}
+  				
+  			}else if(msg.what == 3){
+  				WizSafeDialog.hideLoading();
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
 				String title = "통신 오류";	
