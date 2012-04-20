@@ -322,7 +322,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   											//API 호출 쓰레드 시작
   									    	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
   									    	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
-  											thread.start();
+  											thread.start();  											
   										}
   									});
   									ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
@@ -343,6 +343,10 @@ public class ChildLocationViewActivity extends NMapActivity {
   					});
   			        
   			        try{
+
+	  			  		//clear all overlay
+	  			  		mOverlayManager.clearOverlays();
+	  			  		
 				    	//네이버 맵 위에 표시하고자 하는 곳의 위치를 오버레이로 띄운다.
 				    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
 				    	//화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
@@ -489,9 +493,10 @@ public class ChildLocationViewActivity extends NMapActivity {
 
 		// select an item
 		//poiDataOverlay.selectPOIitem(0, true);
-
+		
 		// show all POI data
 		poiDataOverlay.showAllPOIdata(0);
+		
 	}
 
 	
