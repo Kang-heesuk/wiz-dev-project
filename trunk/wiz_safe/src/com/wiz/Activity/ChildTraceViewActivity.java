@@ -231,7 +231,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
   				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+selectedDay;
-  				Log.i("banhong", "url :: "+url);
+  				
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -310,7 +310,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   						//traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
   						//spinner 백그라운드 이미지만 보여주고 그 위에 글씨를 안보이게 하기 위해서 spinner_item.xml 을 이용
   						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, R.layout.spinner_item, adapterItemList);
-  					}
+  					} 
   			        
   			        traceAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
   			        traceSpiner.setAdapter(traceAdspin);
