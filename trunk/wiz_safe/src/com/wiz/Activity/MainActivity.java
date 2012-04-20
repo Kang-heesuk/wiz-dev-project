@@ -17,6 +17,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -151,6 +152,7 @@ public class MainActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
+  					Log.i("childList",">>" + temp);
   					returnXML.add(new String(temp));
   				}
   				//결과를 XML 파싱하여 추출
@@ -166,12 +168,14 @@ public class MainActivity extends Activity {
 					myPoint = WizSafeSeed.seedDec(myPoint);
 					
 					//릴레이션
+					relationType = new ArrayList<String>();
+					parentCtn = new ArrayList<String>();
+					childCtn = new ArrayList<String>();
+					relationState = new ArrayList<String>();
+					waitParentPhone = new ArrayList<String>();
+					waitChildPhone = new ArrayList<String>();
 					relationCount = WizSafeParser.xmlParser_String(returnXML,"<RELATION_COUNT>");
 					if(Integer.parseInt(relationCount) > 0){
-						relationType = new ArrayList<String>();
-						parentCtn = new ArrayList<String>();
-						childCtn = new ArrayList<String>();
-						relationState = new ArrayList<String>();
 						relationType = WizSafeParser.xmlParser_List(returnXML, "<RELATION_TYPE>");
 						parentCtn = WizSafeParser.xmlParser_List(returnXML, "<RELATION_PARENTCTN>");
 						childCtn = WizSafeParser.xmlParser_List(returnXML, "<RELATION_CHILDCTN>");
@@ -179,7 +183,6 @@ public class MainActivity extends Activity {
 						
 						//등록 대기중인 자녀리스트 판별
 						//자녀등록하기로 등록한 자녀만 해당된다.
-						waitChildPhone = new ArrayList<String>();
 						for(int i = 0 ; i < relationType.size() ; i++){
 							if(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this)).equals(parentCtn.get(i)) && "01".equals(relationType.get(i)) && "01".equals(relationState.get(i))){
 								waitChildPhone.add(WizSafeSeed.seedDec(childCtn.get(i)));
@@ -188,20 +191,19 @@ public class MainActivity extends Activity {
 						//등록 대기중인 부모리스트 판별
 						//부모리스트는 나를 자녀등록하기로 한 부모 + 부모리스트에서 STATE가 01인것을  본다.
 						//즉, 나를 자녀로 등록한 모든 ROW를 본다.
-						waitParentPhone = new ArrayList<String>();
 						for(int i = 0 ; i < relationType.size() ; i++){
 							if(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this)).equals(childCtn.get(i)) && "01".equals(relationState.get(i))){
 								waitParentPhone.add(WizSafeSeed.seedDec(parentCtn.get(i)));
 							}
 						}
-						
-						//내가 서버로 위치를 제공해야하는지 아닌지 판단하여 셋팅
-						//자녀리스트 번호에 내 폰번호가 있으면서, 그 해당 상태값이 02 인경우 해당 단말은 위치 제공 하도록 셋팅
-						WizSafeUtil.setSendLocationUser(MainActivity.this, false);
-						for(int i = 0 ; i < childCtn.size() ; i++){
-							if(childCtn.get(i).equals(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this))) && "02".equals(relationState.get(i))){
-								WizSafeUtil.setSendLocationUser(MainActivity.this, true);
-							}
+					}
+					
+					//내가 서버로 위치를 제공해야하는지 아닌지 판단하여 셋팅
+					//자녀리스트 번호에 내 폰번호가 있으면서, 그 해당 상태값이 02 인경우 해당 단말은 위치 제공 하도록 셋팅
+					WizSafeUtil.setSendLocationUser(MainActivity.this, false);
+					for(int i = 0 ; i < childCtn.size() ; i++){
+						if(childCtn.get(i).equals(WizSafeSeed.seedEnc(WizSafeUtil.getCtn(MainActivity.this))) && "02".equals(relationState.get(i))){
+							WizSafeUtil.setSendLocationUser(MainActivity.this, true);
 						}
 					}
   				}
@@ -243,7 +245,7 @@ public class MainActivity extends Activity {
   			if(msg.what == 0){
   				//핸들러 정상동작
   				if(customerApiResult == 0){
-  					
+  					Log.i("childList","내폰의 상태 : " + WizSafeUtil.isSendLocationUser(MainActivity.this));
   					TextView textView1 = (TextView)findViewById(R.id.textView1);
   					TextView textView2 = (TextView)findViewById(R.id.textView2);
   					String myPhoneNumber = WizSafeUtil.setPhoneNum(WizSafeUtil.getCtn(MainActivity.this));
@@ -286,10 +288,15 @@ public class MainActivity extends Activity {
   			        
   			        
   			        //대기중인 자녀가 있을경우 자녀리스트 옆에 숫자로 표시
+  			        LinearLayout wait_child = (LinearLayout)findViewById(R.id.wait_child);
+  			        if(waitChildPhone.size() <= 0){
+  			        	wait_child.setVisibility(View.INVISIBLE);
+  			        }else{
+  			        	wait_child.setVisibility(View.VISIBLE);
+  			        }
   			        if(waitChildPhone.size() > 0){
-  			        	LinearLayout wait_child = (LinearLayout)findViewById(R.id.wait_child);
   			        	//대기수 숫자이미지 표시
-  						if(waitChildPhone.size() == 1){
+  			        	if(waitChildPhone.size() == 1){
   							wait_child.setBackgroundResource(R.drawable.img_num_1);
   						}else if(waitChildPhone.size() == 2){
   							wait_child.setBackgroundResource(R.drawable.img_num_2);
@@ -334,11 +341,15 @@ public class MainActivity extends Activity {
   			        
   			        
   			        //대기중인 부모가 있을경우 부모리스트 옆에 숫자로 표시 한 후 경고창 띄움
+  			        LinearLayout wait_parent = (LinearLayout)findViewById(R.id.wait_parent);
+  			        if(waitParentPhone.size() <= 0){
+  			        	wait_parent.setVisibility(View.INVISIBLE);
+			        }else{
+			        	wait_parent.setVisibility(View.VISIBLE);
+			        }
   			        if(waitParentPhone.size() > 0){
-  			        	
-  			        	LinearLayout wait_parent = (LinearLayout)findViewById(R.id.wait_parent);
   			        	//대기수 숫자이미지 표시
-	  			        if(waitParentPhone.size() == 1){
+  			        	if(waitParentPhone.size() == 1){
 	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_1);
 	  			        }else if(waitParentPhone.size() == 2){
 	  			        	wait_parent.setBackgroundResource(R.drawable.img_num_2);
