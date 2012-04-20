@@ -161,12 +161,13 @@ public class ChildListActivity extends Activity {
     	private String childName;
     	private String childCtn;
     	private String childRelation;
+    	private String childRegLocaInfo;
     	
-    	
-    	public ChildDetail (String childName, String phonenum, String childRelation){
+    	public ChildDetail (String childName, String phonenum, String childRelation, String childRegLocaInfo){
     		this.childName = childName;
     		this.childCtn = phonenum;
     		this.childRelation = childRelation;
+    		this.childRegLocaInfo = childRegLocaInfo;
     		
     	}
     	private String getChildName(){
@@ -177,6 +178,9 @@ public class ChildListActivity extends Activity {
     	}
     	private String getChildRelation(){
 			return childRelation;
+    	}
+    	private String getChildRegLocaInfo(){
+			return childRegLocaInfo;
     	}
     }
     
@@ -315,45 +319,45 @@ public class ChildListActivity extends Activity {
 					}
 				}
 			);
-			
-			btn_nowLocation.setOnClickListener(
-				new Button.OnClickListener(){
-					public void onClick(View v) {
-						if("02".equals(arSrc.get(pos).getChildRelation())){
-							Intent intent = new Intent(ChildListActivity.this, ChildLocationViewActivity.class);
-							intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
-							startActivity(intent);
+			if("02".equals(arSrc.get(pos).getChildRelation())){
+				//해당 클릭리스너는 데이터를 조회할 수 있는 경우에만 활성화 시킨다.
+				if(arSrc.get(pos).getChildRegLocaInfo() != null && !"".equals(arSrc.get(pos).getChildRegLocaInfo())){
+					btn_nowLocation.setBackgroundResource(R.drawable.btn_s_now_selector);
+					btn_nowLocation.setOnClickListener(
+						new Button.OnClickListener(){
+							public void onClick(View v) {
+								Intent intent = new Intent(ChildListActivity.this, ChildLocationViewActivity.class);
+								intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
+								startActivity(intent);
+							}
 						}
-					}
+					);
+				}else{
+					btnChildState.setBackgroundResource(R.drawable.icon_5);
 				}
-			);
-			
-			btn_history.setOnClickListener(
-				new Button.OnClickListener(){
-					public void onClick(View v) {
-						if("02".equals(arSrc.get(pos).getChildRelation())){
+				btn_history.setBackgroundResource(R.drawable.btn_s_trace_selector);
+				btn_history.setOnClickListener(
+					new Button.OnClickListener(){
+						public void onClick(View v) {
 							Intent intent = new Intent(ChildListActivity.this, ChildTraceListActivity.class);
 							intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
 							intent.putExtra("childName", arSrc.get(pos).getChildName());
 							startActivity(intent);
 						}
 					}
-				}
-			);
-			
-			btn_safeZone.setOnClickListener(
-				new Button.OnClickListener(){
-					public void onClick(View v) {
-						if("02".equals(arSrc.get(pos).getChildRelation())){
-							Intent intent = new Intent(ChildListActivity.this, ChildSafezoneListActivity.class);
-							intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
-							intent.putExtra("childName", arSrc.get(pos).getChildName());
-							startActivity(intent);
+				);
+				btn_safeZone.setBackgroundResource(R.drawable.btn_s_safe_selector);
+				btn_safeZone.setOnClickListener(
+					new Button.OnClickListener(){
+						public void onClick(View v) {
+								Intent intent = new Intent(ChildListActivity.this, ChildSafezoneListActivity.class);
+								intent.putExtra("phonenum", arSrc.get(pos).getChildCtn());
+								intent.putExtra("childName", arSrc.get(pos).getChildName());
+								startActivity(intent);
 						}
 					}
-				}
-			);
-
+				);
+			}
 			return convertView;
 		}
     }
@@ -374,18 +378,20 @@ public class ChildListActivity extends Activity {
   					returnXML.add(new String(temp));
   				}
   				//결과를 XML 파싱하여 추출
-  				ArrayList<String> encChildName = new ArrayList();
-  				ArrayList<String> encChildCtn = new ArrayList();
-  				ArrayList<String> state = new ArrayList();
+  				ArrayList<String> encChildName = new ArrayList<String>();
+  				ArrayList<String> encChildCtn = new ArrayList<String>();
+  				ArrayList<String> state = new ArrayList<String>();
+  				ArrayList<String> regLocaInfo = new ArrayList<String>();
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
   				encChildName = WizSafeParser.xmlParser_List(returnXML,"<CHILD_NAME>");
   				encChildCtn = WizSafeParser.xmlParser_List(returnXML,"<CHILD_CTN>");
   				state = WizSafeParser.xmlParser_List(returnXML,"<STATE>");
+  				regLocaInfo = WizSafeParser.xmlParser_List(returnXML,"<REGLOCAINFO>");
   				
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
   				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
-  				childList = new String[encChildCtn.size()][3];
+  				childList = new String[encChildCtn.size()][4];
   				if(encChildCtn.size() > 0){
   					for(int i=0; i < encChildCtn.size(); i++){
   						childList[i][1] = WizSafeSeed.seedDec((String) encChildCtn.get(i));
@@ -401,12 +407,17 @@ public class ChildListActivity extends Activity {
   						childList[i][2] = (String) state.get(i);
   					}
   				}
+  				if(regLocaInfo.size() > 0){
+  					for(int i=0; i < regLocaInfo.size(); i++){
+  						childList[i][3] = (String) regLocaInfo.get(i);
+  					}
+  				}
 
   				//2차원 배열을 커스텀 어레이리스트에 담는다.
   				childListArr = new ArrayList<ChildDetail>();
   		    	if(childList != null){
   			    	for(int i = 0 ; i < childList.length ; i++){
-  			    		ChildDetail addChildList = new ChildDetail(childList[i][0], childList[i][1], childList[i][2]);
+  			    		ChildDetail addChildList = new ChildDetail(childList[i][0], childList[i][1], childList[i][2], childList[i][3]);
   			    		childListArr.add(addChildList);
   			    	}
   		    	}

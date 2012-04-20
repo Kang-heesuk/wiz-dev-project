@@ -95,6 +95,21 @@ public class ParentAddActivity extends Activity {
 					ad.show();
 					return;
 				}
+
+				if(!WizSafeUtil.isNumeric(parentPhoneTemp) || !WizSafeUtil.isPhoneNum(parentPhoneTemp) ){
+					AlertDialog.Builder ad = new AlertDialog.Builder(ParentAddActivity.this);
+					String title = "입력 오류";	
+					String message = "휴대폰 번호를 확인해 주세요.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					ad.show();
+					return;
+				}
 				if(parentPhoneTemp.equals(WizSafeUtil.getCtn(ParentAddActivity.this))){
 					AlertDialog.Builder ad = new AlertDialog.Builder(ParentAddActivity.this);
 					String title = "입력 오류";	

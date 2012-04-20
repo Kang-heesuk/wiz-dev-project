@@ -29,6 +29,30 @@ public class WizSafeUtil {
 
 		return true;
 	}
+	//폰번호 양식이 맞는지 확인
+	public static boolean isPhoneNum(String s)
+	{
+		//숫자가 아닌 경우
+		if(!isNumeric(s)){
+			return false;
+		}
+		//01로 시작하지 않는 경우
+		if(!s.startsWith("01")){
+			return false;
+		}
+		//010 or 011 or 016 or 017 or 018 or 019 가 아닌 경우
+		if(!s.startsWith("010") && !s.startsWith("011") && 
+		   !s.startsWith("016") && !s.startsWith("017") &&
+		   !s.startsWith("018") && !s.startsWith("019")){
+			return false;
+		}
+		//자릿수가 10 ~ 11자리가 아닌 경우
+		if(s.length() < 10 || s.length() > 11){		
+			return false;
+		}
+		
+		return true;
+	}
 	
 	//폰번호에 '-' 추가
 	public static String setPhoneNum(String num)

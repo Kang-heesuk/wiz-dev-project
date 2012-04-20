@@ -93,6 +93,20 @@ public class ChildAddActivity extends Activity {
 					ad.show();
 					return;
 				}
+				if(!WizSafeUtil.isNumeric(childPhoneTemp) || !WizSafeUtil.isPhoneNum(childPhoneTemp) ){
+					AlertDialog.Builder ad = new AlertDialog.Builder(ChildAddActivity.this);
+					String title = "입력 오류";	
+					String message = "휴대폰 번호를 확인해 주세요.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					ad.show();
+					return;
+				}
 				if(childPhoneTemp.equals(WizSafeUtil.getCtn(ChildAddActivity.this))){
 					AlertDialog.Builder ad = new AlertDialog.Builder(ChildAddActivity.this);
 					String title = "입력 오류";	

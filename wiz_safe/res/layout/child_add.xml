@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
-                    android:hint="&apos;-&apos;를 제외하고 입력하세요."
+                    android:hint="휴대폰번호 입력 &apos;-&apos;를 제외"
                     android:maxLength="11"
                     android:imeOptions="actionDone"
                     android:inputType="phone"
