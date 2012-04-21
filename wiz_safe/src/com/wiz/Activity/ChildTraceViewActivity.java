@@ -258,6 +258,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   				selectedDay = strDate1;
   				//복호화 하여 2차원배열에 담는다.
   				httpResult = Integer.parseInt(resultCode);
+  				
   				for(int i=0; i < strHour.size(); i++){
   					ChildTraceViewDetail tempBean = new ChildTraceViewDetail();
   					tempBean.setDay(strDate2.get(i));
@@ -328,6 +329,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   					//발자취 리스트를 보여준다.
   					Spinner traceSpiner = (Spinner)findViewById(R.id.traceSpinner);
   					traceSpiner.setPrompt("발자취 리스트 보기");
+  					
   					if(childTraceViewListArr.size() > 0){
   						String[] adapterItemList = new String[childTraceViewListArr.size()];
   						for(int i=0; i < childTraceViewListArr.size(); i++){
@@ -338,10 +340,12 @@ public class ChildTraceViewActivity extends NMapActivity {
   						//traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
   						//spinner 백그라운드 이미지만 보여주고 그 위에 글씨를 안보이게 하기 위해서 spinner_item.xml 을 이용
   						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, R.layout.spinner_item, adapterItemList);
+  						
+  						traceAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+  	  			        traceSpiner.setAdapter(traceAdspin);
   					} 
   			        
-  			        traceAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-  			        traceSpiner.setAdapter(traceAdspin);
+  			        
   			        //셀렉트 박스 액션(요일설정)
   			        traceSpiner.setOnItemSelectedListener(new OnItemSelectedListener() {
   			        	//셀렉트 될때마다 탄다.
@@ -380,8 +384,8 @@ public class ChildTraceViewActivity extends NMapActivity {
 					WizSafeDialog.hideLoading();
 					//조회실패
 					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
-					String title = "자녀현위치찾기실패";	
-					String message = "자녀 현위치 정보를 조회할 수 없습니다.";	
+					String title = "자녀발자취조회실패";	
+					String message = "자녀 발자취 정보를 조회할 수 없습니다.";	
 					String buttonName = "확인";
 					ad.setTitle(title);
 					ad.setMessage(message);
@@ -475,9 +479,8 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private void testPathPOIdataOverlay() {
 
 		// set POI data
-		NMapPOIdata poiData = new NMapPOIdata(4, mMapViewerResourceProvider, true);
-		
-		//api통신하여 받아온 결과 크기만큼 poi아이템을 추가한다.
+		NMapPOIdata poiData = new NMapPOIdata(1, mMapViewerResourceProvider, true);
+		//api통신하여 받아온 결과 크기만큼+ poi아이템을 추가한다.
 		poiData.beginPOIdata(childTraceViewListArr.size());
 		for(int i=0; i < childTraceViewListArr.size(); i++){
 			ChildTraceViewDetail tempBean = new ChildTraceViewDetail();
@@ -485,11 +488,10 @@ public class ChildTraceViewActivity extends NMapActivity {
 			double tmpLongitude = tempBean.getLongitude();
 			double tmpLatitude = tempBean.getLatitude();
 			String dateInfo = WizSafeUtil.getDateFormat(((String)tempBean.getDay()+(String)tempBean.getHour()));
-			
 			if(i == 0){
 				//첫번째 데이터는 시작PIN을 사용한다.
 				poiData.addPOIitem(tmpLongitude, tmpLatitude, dateInfo, NMapPOIflagType.CUSTOM_BASE + 2, 0);
-			}else if(i == childTraceViewListArr.size()){
+			}else if(i == childTraceViewListArr.size()-1){
 				//마지막 데이터는 종료PIN을 사용한다.
 				poiData.addPOIitem(tmpLongitude, tmpLatitude, dateInfo, NMapPOIflagType.CUSTOM_BASE + 4, 0);
 			}else{
