@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
 	//고객의 정보를 가져올 변수 선언(인코딩 포함됨)
 	int customerApiResult = -1;
 	String myPoint = "";
+	String stateSmsRecv = "";
 	String relationCount = "";
 	ArrayList<String> relationType;
 	ArrayList<String> parentCtn;
@@ -164,6 +165,7 @@ public class MainActivity extends Activity {
   					myPoint = WizSafeParser.xmlParser_String(returnXML,"<MYPOINT>");
 					if(myPoint == null) myPoint = WizSafeSeed.seedEnc("0");
 					myPoint = WizSafeSeed.seedDec(myPoint);
+					stateSmsRecv = WizSafeParser.xmlParser_String(returnXML,"<ALARMSTATE>");
 					
 					//릴레이션
 					relationType = new ArrayList<String>();
@@ -249,6 +251,12 @@ public class MainActivity extends Activity {
   					String myPointStr = myPoint + "P";
   					textView1.setText("내번호(" + myPhoneNumber + ")");
   					textView2.setText(myPointStr);
+  					
+  					//sms 수신 상태를 로컬밸류에 셋팅
+  					SharedPreferences LocalSave_smsState = getSharedPreferences("WizSafeLocalVal", 0);
+					Editor edit_smsState = LocalSave_smsState.edit(); 
+					edit_smsState.putString("stateSmsRecv", stateSmsRecv);
+					edit_smsState.commit();
   					
   					LinearLayout btn01 = (LinearLayout)findViewById(R.id.btn1);
   			        btn01.setOnClickListener(new Button.OnClickListener() {

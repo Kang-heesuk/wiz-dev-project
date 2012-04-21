@@ -13,7 +13,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -57,6 +59,7 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeSms;
 import com.wiz.util.WizSafeUtil;
 
 /**
@@ -218,10 +221,6 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 	@Override
 	protected void onDestroy() {
-
-		// save map view state such as map center position and zoom level.
-		saveInstanceState();
-
 		super.onDestroy();
 	}
 
@@ -359,6 +358,19 @@ public class ChildTraceViewActivity extends NMapActivity {
   						}
   			        	
   					});
+  			        
+  			        //자녀에게 위치조회했음을 sms로 알린다.
+  					GregorianCalendar gc = new GregorianCalendar();
+  					SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
+  					String checkTime = dateFormat.format(gc.getTime());
+
+  					String myCtn = WizSafeUtil.getCtn(ChildTraceViewActivity.this);
+  					String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
+  					if(WizSafeSms.stateSmsReceive(childCtn, ChildTraceViewActivity.this)){
+  						boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
+  					}
+  					//자녀에게 위치조회했음을 sms로 알린다.
+  			        
   			        
   			        //정상적으로 화면이 로딩이 완료되면 차감관련 API를 호출한다.
   			        CallPayApiThread thread = new CallPayApiThread(); 
@@ -586,9 +598,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 		public void onMapInitHandler(NMapView mapView, NMapError errorInfo) {
 
 			if (errorInfo == null) { // success
-				// restore map view state such as map center position and zoom level.
-				//restoreInstanceState();
-
+				
 			} else { // fail
 				Log.e(LOG_TAG, "onFailedToInitializeWithError: " + errorInfo.toString());
 
@@ -742,50 +752,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 	};
 
 	/* Local Functions */
-
-	private void restoreInstanceState() {
-		mPreferences = getPreferences(MODE_PRIVATE);
-
-		int longitudeE6 = mPreferences.getInt(KEY_CENTER_LONGITUDE, NMAP_LOCATION_DEFAULT.getLongitudeE6());
-		int latitudeE6 = mPreferences.getInt(KEY_CENTER_LATITUDE, NMAP_LOCATION_DEFAULT.getLatitudeE6());
-		int level = mPreferences.getInt(KEY_ZOOM_LEVEL, NMAP_ZOOMLEVEL_DEFAULT);
-		int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
-		boolean trafficMode = mPreferences.getBoolean(KEY_TRAFFIC_MODE, NMAP_TRAFFIC_MODE_DEFAULT);
-		boolean bicycleMode = mPreferences.getBoolean(KEY_BICYCLE_MODE, NMAP_BICYCLE_MODE_DEFAULT);
-
-		mMapController.setMapViewMode(viewMode);
-		mMapController.setMapViewTrafficMode(trafficMode);
-		mMapController.setMapViewBicycleMode(bicycleMode);
 	
-		mMapController.setMapCenter(new NGeoPoint(longitudeE6, latitudeE6), level);
-	}
-
-	private void saveInstanceState() {
-		if (mPreferences == null) {
-			return;
-		}
-
-		NGeoPoint center = mMapController.getMapCenter();
-		int level = mMapController.getZoomLevel();
-		int viewMode = mMapController.getMapViewMode();
-		boolean trafficMode = mMapController.getMapViewTrafficMode();
-		boolean bicycleMode = mMapController.getMapViewBicycleMode();
-
-		SharedPreferences.Editor edit = mPreferences.edit();
-
-		edit.putInt(KEY_CENTER_LONGITUDE, center.getLongitudeE6());
-		edit.putInt(KEY_CENTER_LATITUDE, center.getLatitudeE6());
-		edit.putInt(KEY_ZOOM_LEVEL, level);
-		edit.putInt(KEY_VIEW_MODE, viewMode);
-		edit.putBoolean(KEY_TRAFFIC_MODE, trafficMode);
-		edit.putBoolean(KEY_BICYCLE_MODE, bicycleMode);
-
-		edit.commit();
-
-	}
-
-	
-	   
     class ChildTraceViewDetail {
     	private String day;
     	private String hour;

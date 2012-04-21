@@ -50,6 +50,7 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeSms;
 import com.wiz.util.WizSafeUtil;
 
 
@@ -497,6 +498,17 @@ public class ChildLocationViewActivity extends NMapActivity {
 		// show all POI data
 		poiDataOverlay.showAllPOIdata(0);
 		
+		//자녀에게 위치조회했음을 sms로 알린다.
+		GregorianCalendar gc = new GregorianCalendar();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
+		String checkTime = dateFormat.format(gc.getTime());
+
+		String myCtn = WizSafeUtil.getCtn(ChildLocationViewActivity.this);
+		String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
+		if(WizSafeSms.stateSmsReceive(childCtn, ChildLocationViewActivity.this)){
+			boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
+		}
+		//자녀에게 위치조회했음을 sms로 알린다.
 	}
 
 	

@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -282,6 +283,13 @@ public class SetupActivity extends Activity {
   						findViewById(R.id.btn_sms).setBackgroundResource(R.drawable.btn_on);
 						findViewById(R.id.btn_sms).setTag(R.drawable.btn_on);
   					}
+  					
+  					//로컬밸류도 재셋팅한다
+  					SharedPreferences LocalSave_smsState = getSharedPreferences("WizSafeLocalVal", 0);
+					Editor edit_smsState = LocalSave_smsState.edit(); 
+					edit_smsState.putString("stateSmsRecv", setMyAlarmState);
+					edit_smsState.commit();
+					
   				}else{
   					//조회실패
   					AlertDialog.Builder ad = new AlertDialog.Builder(SetupActivity.this);
