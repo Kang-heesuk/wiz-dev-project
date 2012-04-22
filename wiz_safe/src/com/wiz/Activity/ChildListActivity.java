@@ -296,13 +296,6 @@ public class ChildListActivity extends Activity {
 				btnChildState.setVisibility(View.VISIBLE);
 			}
 			
-			
-			//메뉴에서 삭제하기 눌렀을 경우 버튼 노출 문구 정의
-			if(menuClickDelete){
-				btnChildState.setBackgroundResource(R.drawable.icon_del_selector);
-				btnChildState.setVisibility(View.VISIBLE);
-			}
-			
 			//각 버튼 액션 정의
 			btnChildState.setOnClickListener(
 				new Button.OnClickListener(){
@@ -358,6 +351,14 @@ public class ChildListActivity extends Activity {
 					}
 				);
 			}
+			
+		
+			//메뉴에서 삭제하기 눌렀을 경우 버튼 노출 문구 정의
+			if(menuClickDelete){
+				btnChildState.setBackgroundResource(R.drawable.icon_del_selector);
+				btnChildState.setVisibility(View.VISIBLE);
+			}
+			
 			return convertView;
 		}
     }

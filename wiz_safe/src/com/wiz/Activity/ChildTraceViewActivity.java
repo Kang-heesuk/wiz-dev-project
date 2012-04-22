@@ -18,10 +18,12 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -205,22 +207,10 @@ public class ChildTraceViewActivity extends NMapActivity {
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-
-	@Override
 	protected void onDestroy() {
+		//액티비티를 종료할때 맵뷰에 사용된 provider 를 반환한다. 
+		LocationManager locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationMgr.removeUpdates(mMapLocationManager);
 		super.onDestroy();
 	}
 
