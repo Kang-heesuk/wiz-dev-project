@@ -326,13 +326,15 @@ public class ChildTraceViewActivity extends NMapActivity {
   							ChildTraceViewDetail tempBean = childTraceViewListArr.get(i);
   							adapterItemList[i] = WizSafeUtil.getDateFormat(tempBean.getDay()) + " " + WizSafeUtil.timeConvertFromNumberToString1to24(tempBean.getHour());
   						}
-  						
-  						//traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
-  						//spinner 백그라운드 이미지만 보여주고 그 위에 글씨를 안보이게 하기 위해서 spinner_item.xml 을 이용
-  						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, R.layout.spinner_item, adapterItemList);
-  						
-  						traceAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-  	  			        traceSpiner.setAdapter(traceAdspin);
+  						//데이터가 있으면 스피너 셋팅
+  						if(adapterItemList.length > 0){
+	  						//traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, android.R.layout.simple_spinner_item, adapterItemList);
+	  						//spinner 백그라운드 이미지만 보여주고 그 위에 글씨를 안보이게 하기 위해서 spinner_item.xml 을 이용
+	  						traceAdspin = new ArrayAdapter<String>(ChildTraceViewActivity.this, R.layout.spinner_item, adapterItemList);
+	  						
+	  						traceAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	  	  			        traceSpiner.setAdapter(traceAdspin);
+  						}
   					} 
   			        
   			        
