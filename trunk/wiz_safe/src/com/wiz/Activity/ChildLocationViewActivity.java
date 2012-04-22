@@ -12,11 +12,14 @@ import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,6 +50,7 @@ import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
+import com.wiz.Demon.WizSafeGetLocation;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -215,8 +219,17 @@ public class ChildLocationViewActivity extends NMapActivity {
     	}
     }
 
-    
-    //API 호출 쓰레드
+
+	@Override
+	protected void onDestroy() {
+		//액티비티를 종료할때 맵뷰에 사용된 provider 를 반환한다. 
+		LocationManager locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationMgr.removeUpdates(mMapLocationManager);
+		super.onDestroy();
+	}
+
+
+	//API 호출 쓰레드
   	class CallGetNowLocationApiThread extends Thread{
   		public void run(){
   			InputStream is = null;

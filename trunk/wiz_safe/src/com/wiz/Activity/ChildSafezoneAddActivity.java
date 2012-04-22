@@ -44,6 +44,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -92,7 +95,7 @@ import com.wiz.util.WizSafeUtil;
  * 
  * @author kyjkim
  */
-public class ChildSafezoneAddActivity extends NMapActivity {	
+public class ChildSafezoneAddActivity extends NMapActivity implements LocationListener{	
 	
 	//신규 등록인지 수정인지를 구분하는 값
 	private String flag = "";
@@ -352,14 +355,6 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 		mMapLocationManager = new NMapLocationManager(this);
 		mMapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
 		
-		// compass manager - 전방으로 각도를 보여주는 컴퍼스
-		//mMapCompassManager = new NMapCompassManager(this);
-		
-		// create my location overlay
-		//mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, mMapCompassManager);
-		//컴퍼스 기능 제거
-		//mMyLocationOverlay = mOverlayManager.createMyLocationOverlay(mMapLocationManager, null);
-		
 		// 맵뷰에 있는 오버레이를 모두 가져온다.
 		List<NMapOverlay> overlays = mMapView.getOverlays();
 
@@ -376,29 +371,14 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-
-	@Override
 	protected void onDestroy() {
-
-		// save map view state such as map center position and zoom level.
-		saveInstanceState();
-
+		//액티비티를 종료할때 맵뷰에 사용된 provider 를 반환한다. 
+		LocationManager locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationMgr.removeUpdates(mMapLocationManager);
 		super.onDestroy();
 	}
 
+	
   	//API 호출 쓰레드
   	class CallInsertSafeZoneApiThread extends Thread{
   		public void run(){
@@ -1094,6 +1074,30 @@ public class ChildSafezoneAddActivity extends NMapActivity {
 			Log.i("banhong", "익셈숀!!!!   : "+e.toString());
 		}
 	
+		
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
 		
 	}
 	
