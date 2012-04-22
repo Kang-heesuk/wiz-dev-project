@@ -57,14 +57,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="11"
+            android:layout_weight="10.3"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="4.7"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -151,20 +151,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="7"
+            android:layout_weight="5"
             android:orientation="horizontal" >
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5" >
+                android:layout_weight="6" >
 
                 <TextView
                     android:id="@+id/checkBox1"
@@ -175,7 +175,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="11" >
+                android:layout_weight="8" >
 
                 <TextView
                     android:id="@+id/checkBox2"
@@ -188,7 +188,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="84" >
+                android:layout_weight="86" >
 
                 <TextView
                     android:id="@+id/checkBox3"
@@ -200,7 +200,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:orientation="vertical" >
         </LinearLayout>
 
