@@ -41,7 +41,8 @@ public class JoinAuthActivity extends Activity {
         setContentView(R.layout.join_auth);
         
         //2분뒤에 활성화 되도록 하는버튼에 필요한 변수
-        tempTime = System.currentTimeMillis();
+        //tempTime = System.currentTimeMillis();
+        tempTime = 0;	//최초 1번은 바로 재전송하도록 하고 이후부터는 2분간격으로만 가능
         
         editText1 = (EditText)findViewById(R.id.editText1);
         
@@ -53,18 +54,39 @@ public class JoinAuthActivity extends Activity {
         btn_join.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				tempEditText = editText1.getText().toString();
+				
+				if("".equals(tempEditText.trim())){
+					AlertDialog.Builder ad = new AlertDialog.Builder(JoinAuthActivity.this);
+					String title = "인증 오류";	
+					String message = "인증번호를 입력해주세요.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					ad.show();
+					return;
+				}
+				
 				//API 호출 쓰레드 시작
 		        WizSafeDialog.showLoading(JoinAuthActivity.this);	//Dialog 보이기
 		        callAuthCompleteApiThread thread = new callAuthCompleteApiThread(); 
 				thread.start();
+
 			} 
 		}); 
         
-        Button btn_renum = (Button)findViewById(R.id.btn_renum);
+        final Button btn_renum = (Button)findViewById(R.id.btn_renum);
         btn_renum.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
+  				
 				//비활성화 된지 2분이 지났다면 활성화 시킴
 				if(System.currentTimeMillis() - tempTime >= (1000 * 60 * 2)){
+					
+					btn_renum.setBackgroundResource(R.drawable.btn_certify_renum_on);
+	  				
 					//API 호출 쓰레드 시작
 			        WizSafeDialog.showLoading(JoinAuthActivity.this);	//Dialog 보이기
 			        callAuthSMSApiThread thread = new callAuthSMSApiThread(); 
@@ -92,7 +114,9 @@ public class JoinAuthActivity extends Activity {
   				}
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
   				authResult = Integer.parseInt(resultCode);
+
   				pHandler.sendEmptyMessage(0);
+  				
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
@@ -114,6 +138,7 @@ public class JoinAuthActivity extends Activity {
   				{
   					returnXML.add(new String(temp));
   				}
+  				
   				pHandler.sendEmptyMessage(2);
   			}catch(Exception e){
   				//통신중 에러발생
@@ -121,6 +146,21 @@ public class JoinAuthActivity extends Activity {
   			}
   		}
   	}
+  	
+	//API 호출 쓰레드
+	class renumBtnImgSetThread extends Thread{
+		public void run(){
+			try{
+				//120sec 후
+				renumBtnImgSetThread.sleep(1000*60*2);
+
+				pHandler.sendEmptyMessage(4);
+			}catch(Exception e){				
+				pHandler.sendEmptyMessage(5);
+			}
+		}
+	}
+
   	
   	Handler pHandler = new Handler(){
   		public void handleMessage(Message msg){
@@ -166,6 +206,11 @@ public class JoinAuthActivity extends Activity {
 				});
 				ad.show();
   			}else if(msg.what == 2){
+  				
+  				//API 호출 쓰레드 시작 - 2분 체크 스레드
+		        renumBtnImgSetThread subThread = new renumBtnImgSetThread(); 
+		        subThread.start();
+  				
   				//현재시간을 다시 셋팅
   				tempTime = System.currentTimeMillis();
   			}else if(msg.what == 3){
@@ -180,6 +225,14 @@ public class JoinAuthActivity extends Activity {
 					}
 				});
 				ad.show();
+  			}else if(msg.what == 4){
+  				//2분 자고 일어나서 버튼 활성화
+  				Button btn_renum = (Button)findViewById(R.id.btn_renum);
+  				btn_renum.setBackgroundResource(R.drawable.btn_certify_renum);
+  			}else if(msg.what == 5){
+  				//2분 재우기 익셉션시 버튼 재활성화
+  				Button btn_renum = (Button)findViewById(R.id.btn_renum);
+  				btn_renum.setBackgroundResource(R.drawable.btn_certify_renum);
   			}
   		}
   	};
