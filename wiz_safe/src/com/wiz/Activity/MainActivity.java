@@ -285,9 +285,8 @@ public class MainActivity extends Activity {
   			        Button btn04 = (Button)findViewById(R.id.btn_charge_pt);
   			        btn04.setOnClickListener(new Button.OnClickListener() {
   						public void onClick(View v) {
-  							Intent intent = new Intent(MainActivity.this, JoinAcceptActivity.class);
+  							Intent intent = new Intent(MainActivity.this, PointChargeActivity.class);
   							startActivity(intent);
-  							Toast.makeText(MainActivity.this, "open other site page!!", Toast.LENGTH_SHORT).show();
   						}
   					});
   			        

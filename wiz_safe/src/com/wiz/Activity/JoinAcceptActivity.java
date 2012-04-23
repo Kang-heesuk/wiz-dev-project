@@ -310,6 +310,7 @@ public class JoinAcceptActivity extends Activity {
   				{
   					returnXML.add(new String(temp));
   				}
+  				
   				pHandler.sendEmptyMessage(0);
   			}catch(Exception e){
   				//통신중 에러발생

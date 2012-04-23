@@ -67,7 +67,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:orientation="vertical" >
         </LinearLayout>
 
@@ -103,7 +103,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="number|phone"
                     android:textColor="#ffaaaaaa"
-                    android:textSize="14sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -117,7 +117,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="2.5"
             android:orientation="vertical" >
         </LinearLayout>
 
@@ -185,7 +185,7 @@
                     android:id="@+id/btn_renum"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_certify_renum_selector" />
+                    android:background="@drawable/btn_certify_renum" />
             </LinearLayout>
 
             <LinearLayout
