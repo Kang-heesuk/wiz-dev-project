@@ -234,9 +234,10 @@ public class ChildLocationViewActivity extends NMapActivity {
   				String enc_ctn = "";
   				if(childCtn != null && !"".equals(childCtn)){
   					enc_ctn = WizSafeSeed.seedEnc(childCtn);
+  					String enc_ParentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
+  					String url = "https://www.heream.com/api/getNowLocation.jsp?childCtn="+ URLEncoder.encode(enc_ctn) + "&parentCtn=" + URLEncoder.encode(enc_ParentCtn);
   					
-  					String url = "https://www.heream.com/api/getNowLocation.jsp?childCtn="+ URLEncoder.encode(enc_ctn) + "&parentCtn=" + WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
-  	  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  					HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   	  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   	  				String temp;
   	  				ArrayList<String> returnXML = new ArrayList<String>();
@@ -261,6 +262,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 	  	  				address = WizSafeSeed.seedDec(encAddress);
 	  	  				type = strType;
   	  				}
+  	  				
   	  				pHandler.sendEmptyMessage(0);
   				}else{
   					pHandler.sendEmptyMessage(1);
@@ -508,7 +510,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 		// show all POI data
 		poiDataOverlay.showAllPOIdata(0);
 		
-		//자녀에게 위치조회했음을 sms로 알린다.
+		//자녀에게 위치조회했음을 sms로 알린다. 
 		GregorianCalendar gc = new GregorianCalendar();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
 		String checkTime = dateFormat.format(gc.getTime());
@@ -519,7 +521,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 			boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
 		}
 		//자녀에게 위치조회했음을 sms로 알린다.
-	}
+	} 
 
 	
 	/* NMapDataProvider Listener */
