@@ -180,6 +180,12 @@
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
+        
+        <activity
+            android:name=".PointChargeActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
         <!-- END : Activity -->
         
         <!-- START : service -->
