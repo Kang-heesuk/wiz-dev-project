@@ -280,7 +280,7 @@
                     android:id="@+id/btn_sms"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_on" />
+                    android:background="#00000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -320,7 +320,7 @@
                     android:id="@+id/btn_hide"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_off" />
+                    android:background="#00000000" />
             </LinearLayout>
 
             <LinearLayout
