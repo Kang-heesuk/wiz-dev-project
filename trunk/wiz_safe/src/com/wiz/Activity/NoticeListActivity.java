@@ -248,13 +248,9 @@ public class NoticeListActivity extends Activity {
 			final LinearLayout noticeContentArea = (LinearLayout)convertView.findViewById(R.id.noticeContentArea);
 			final LinearLayout titleBackImgArea = (LinearLayout)convertView.findViewById(R.id.titleBackImgArea);
 			
-			
 			noticeTitle.setText(arSrc.get(position).getNoticeTitle());
 			noticeRegdate.setText(arSrc.get(position).getNoticeRegdate());
 			noticeContent.setText(arSrc.get(position).getNoticeContent());
-			
-			//마퀴를 위한 추가
-			noticeTitle.setSelected(true);
 			
 			noticeTitleArea.setOnClickListener(
 				new Button.OnClickListener(){

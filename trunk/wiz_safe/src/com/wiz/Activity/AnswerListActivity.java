@@ -168,9 +168,6 @@ public class AnswerListActivity extends Activity {
 				titleBackImgArea.setBackgroundDrawable(titleAreaImg2);
 			}
 			
-			//마퀴를 위한 추가
-			answerTitle.setSelected(true);
-			
 			answerTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
@@ -180,7 +177,7 @@ public class AnswerListActivity extends Activity {
 							contentArea.setVisibility(View.VISIBLE);
 							
 							//title부분 background 이미지 변경
-							if(!"".equals(arSrc.get(pos).getAnswerContent())){
+							if("1".equals(arSrc.get(pos).getState())){
 								//답이 있으면
 								Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn2);
 								titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
@@ -194,7 +191,7 @@ public class AnswerListActivity extends Activity {
 							contentArea.setVisibility(View.GONE);
 							
 							//title부분 background 이미지 변경
-							if(!"".equals(arSrc.get(pos).getAnswerContent())){
+							if("1".equals(arSrc.get(pos).getState())){
 								Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn2_on);
 								titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
 							}else{
