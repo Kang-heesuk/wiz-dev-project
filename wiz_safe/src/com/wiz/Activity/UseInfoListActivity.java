@@ -127,9 +127,6 @@ public class UseInfoListActivity extends Activity {
 			useInfoTitle.setText(arSrc.get(position).getUseInfoTitle());
 			useInfoContent.setText(arSrc.get(position).getUseInfoContent());
 			
-			//마퀴를 위한 추가
-			useInfoTitle.setSelected(true);
-			
 			useInfoTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
