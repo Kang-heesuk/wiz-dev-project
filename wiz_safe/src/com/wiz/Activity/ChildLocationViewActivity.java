@@ -68,6 +68,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 	//맵뷰위에 사용될 정보 선언 
 	private int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
 	private int payResult = 1;		//0 - 차감성공, 그외 - 실패
+	private int locationLogResult = 1;		//0 - 차감성공, 그외 - 실패
 	private String regdate;
 	private double longitude;
 	private double latitude; 
@@ -303,6 +304,32 @@ public class ChildLocationViewActivity extends NMapActivity {
   		}
   	}
   	
+  	//LocationLog 쌓는 스레드 : 핸들러로 리턴되는것 없이 호출만하고 끝이다.
+  	class CallInsertLocationLogThread extends Thread{
+  		public void run(){
+  			try{
+  				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
+  				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
+  				String enc_address = WizSafeSeed.seedEnc(address);
+  				String url = "https://www.heream.com/api/insertLocationBoard.jsp?parentCtn="+ URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&address=" + URLEncoder.encode(enc_address);
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				locationLogResult = Integer.parseInt(resultCode);
+  				pHandler.sendEmptyMessage(5);
+  			}catch(Exception e){
+  				pHandler.sendEmptyMessage(6);
+  			}
+  		}
+  	}
+  	
+  	
   	Handler pHandler = new Handler(){
   		public void handleMessage(Message msg){
   			if(msg.what == 0){
@@ -368,17 +395,9 @@ public class ChildLocationViewActivity extends NMapActivity {
   			        //과금이 아닐경우 - 맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
   			        //과금일 경우 - 현위치 조회로 인한 포인트 차감 API 호출
   			        if("NOPAY".equals(payMode)){
-  			        	RelativeLayout mapViewArea = (RelativeLayout)findViewById(R.id.relayout);
-  			        	mapViewArea.setVisibility(View.VISIBLE);
-  			        	WizSafeDialog.hideLoading();
-  			        	//오늘 현위치 조회를 몇번했는지 셋팅한다.
-				    	setHowManyTry();
-				    	
-				    	//토스트플래그 값을 본후 토스트를 띄우고 난 후 플래그 변경하여 새로고침시에는 토스트를 띄우지 않도록 한다.
-				    	if(isShowToast){
-				    		Toast.makeText(ChildLocationViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
-				    		isShowToast = false;
-				    	}
+  			        	//현재 부모가 자식을 조회했다는 Location 로그를 남기는 쓰레드시작 
+  			        	CallInsertLocationLogThread thread = new CallInsertLocationLogThread(); 
+						thread.start();
 
   			        }else if("PAY".equals(payMode)){
   			        	CallPayApiThread thread = new CallPayApiThread(); 
@@ -434,18 +453,10 @@ public class ChildLocationViewActivity extends NMapActivity {
   			}else if(msg.what == 3){
   				if(payResult == 0){
   					//== 과금을 지불하고 호출되는 핸들러 ==
-  	  				//과금을 하고 왔으므로, 맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
-  	  				RelativeLayout mapViewArea = (RelativeLayout)findViewById(R.id.relayout);
-  		        	mapViewArea.setVisibility(View.VISIBLE);
-  		        	WizSafeDialog.hideLoading();
-  		        	//오늘 현위치 조회를 몇번했는지 셋팅한다.
-  		        	setHowManyTry();
-  		        	
-  		        	//토스트플래그 값을 본후 토스트를 띄우고 난 후 플래그 변경하여 새로고침시에는 토스트를 띄우지 않도록 한다.
-			    	if(isShowToast){
-			    		Toast.makeText(ChildLocationViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
-			    		isShowToast = false;
-			    	}
+  					//현재 부모가 자식을 조회했다는 Location 로그를 남기는 쓰레드시작 = 받는 핸들러는 없으며, 통신이 되면 종료됨 
+			        CallInsertLocationLogThread thread = new CallInsertLocationLogThread(); 
+					thread.start();
+  	  				
   				}else if(payResult == 1){
   					//잔액부족인 경우
   					WizSafeDialog.hideLoading();
@@ -466,6 +477,54 @@ public class ChildLocationViewActivity extends NMapActivity {
 					ad.show();
   				}
   			}else if(msg.what == 4){
+  				WizSafeDialog.hideLoading();
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}else if(msg.what == 5){
+  				if(locationLogResult == 0){
+  					//== 최종적으로 맵뷰를 보여주며, 오늘 몇번 봤는지 셋팅하는 핸들러 ==
+  	  				WizSafeDialog.hideLoading();
+  	  				//맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
+  	  				RelativeLayout mapViewArea = (RelativeLayout)findViewById(R.id.relayout);
+  		        	mapViewArea.setVisibility(View.VISIBLE);
+  		        	WizSafeDialog.hideLoading();
+  		        	//오늘 현위치 조회를 몇번했는지 셋팅한다.
+  		        	setHowManyTry();
+  		        	
+  			        //토스트플래그 값을 본후 토스트를 띄우고 난 후 플래그 변경하여 새로고침시에는 토스트를 띄우지 않도록 한다.
+  			    	if(isShowToast){
+  			    		Toast.makeText(ChildLocationViewActivity.this, "※ 해당 위치정보는 3G/wi-fi/GPS수신 상태에 따라 실제 위치와 다를 수 있습니다.", Toast.LENGTH_LONG).show();
+  			    		isShowToast = false;
+  			    	}
+  				}else{
+  					WizSafeDialog.hideLoading();
+  	  				//핸들러 비정상
+  	  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
+  					String title = "통신 오류";	
+  					String message = "통신 중 오류가 발생하였습니다.";	
+  					String buttonName = "확인";
+  					ad.setTitle(title);
+  					ad.setMessage(message);
+  					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  						public void onClick(DialogInterface dialog, int which) {
+  							finish();
+  						}
+  					});
+  					ad.show();
+  				}
+  				
+  			}else if(msg.what == 6){
   				WizSafeDialog.hideLoading();
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildLocationViewActivity.this);
