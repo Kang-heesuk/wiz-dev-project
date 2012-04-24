@@ -425,7 +425,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 							Toast.makeText(ChildTraceViewActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
 						}
 					});
-					ad.setNegativeButton("발자취\n닫기", new DialogInterface.OnClickListener(){
+					ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
 						public void onClick(DialogInterface dialog, int which) {
 							finish();
 						}
