@@ -25,6 +25,7 @@ import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
 import com.wiz.util.WizSafeUtil;
 
+
 public class JoinAuthActivity extends Activity {
     
 	EditText editText1;
@@ -123,6 +124,7 @@ public class JoinAuthActivity extends Activity {
   				pHandler.sendEmptyMessage(1);
   			}
   		}
+
   	}
   	
   	//API 호출 쓰레드
