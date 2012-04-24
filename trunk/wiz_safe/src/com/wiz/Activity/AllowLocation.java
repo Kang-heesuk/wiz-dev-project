@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.wiz.Activity.ChildSafezoneListActivity.CallDeleteApiThread;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -66,10 +67,23 @@ public class AllowLocation extends Activity {
         btn_cancel.setOnClickListener(
 			new Button.OnClickListener(){
 				public void onClick(View v) {
-					//API 통신 쓰레드 시작한다.
-			        WizSafeDialog.showLoading(AllowLocation.this);	//Dialog 보이기
-			        CallAllowLocationRejectApiThread thread = new CallAllowLocationRejectApiThread();
-					thread.start();
+					AlertDialog.Builder submitAlert = new AlertDialog.Builder(AllowLocation.this);
+					submitAlert.setTitle("위치허용동의");
+					submitAlert.setMessage(WizSafeUtil.setPhoneNum(allowPhoneNumber)+"님의 부모 요청을 거절 하시겠습니까? ");
+					submitAlert.setPositiveButton("거절", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							//API 통신 쓰레드 시작한다.
+					        WizSafeDialog.showLoading(AllowLocation.this);	//Dialog 보이기
+					        CallAllowLocationRejectApiThread thread = new CallAllowLocationRejectApiThread();
+							thread.start();
+						}
+					});
+					submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+					submitAlert.show();
+					
 				}
 			}
 		);
@@ -183,7 +197,7 @@ public class AllowLocation extends Activity {
   			}else if(msg.what == 2){
   				if(rejectApiResult == 0){
 	  				AlertDialog.Builder ad = new AlertDialog.Builder(AllowLocation.this);
-					String title = "거부";	
+					String title = "위치허용동의";	
 					String message = WizSafeUtil.setPhoneNum(allowPhoneNumber) + "님의 부모 요청을 거절하였습니다.";	
 					String buttonName = "확인";
 					ad.setTitle(title);
