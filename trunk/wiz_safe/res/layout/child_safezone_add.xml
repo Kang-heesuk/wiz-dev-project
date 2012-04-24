@@ -65,7 +65,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="70" >
+                        android:layout_weight="76" >
 
                         <EditText
                             android:id="@+id/tv_search"
@@ -84,7 +84,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="30" >
+                        android:layout_weight="24" >
                     </LinearLayout>
                 </LinearLayout>
 
@@ -106,7 +106,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="70" >
+                        android:layout_weight="76" >
 
                         <Button
                             android:id="@+id/btn_search"
@@ -118,7 +118,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="30" >
+                        android:layout_weight="24" >
                     </LinearLayout>
                 </LinearLayout>
 
