@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.Activity.ChildListActivity.CallDeleteApiThread;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -291,11 +292,25 @@ public class ParentListActivity extends Activity {
 						//삭제하기 버튼을 클릭하였을 경우
 						if(menuClickDelete){
 							selectedRow = pos;
+							
+							//경고창 출력
+							AlertDialog.Builder submitAlert = new AlertDialog.Builder(ParentListActivity.this);
+							submitAlert.setTitle("삭제하기");
+							submitAlert.setMessage("부모("+WizSafeUtil.setPhoneNum(arSrc.get(selectedRow).getparentCtn())+")님을 삭제 하시겠습니까?\n삭제 시 해당 부모님은 자녀님의 위치를 찾을 수 없습니다.");
+							submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									//삭제하기 API 호출 쓰레드 시작
+							    	WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
+							        CallDeleteApiThread thread = new CallDeleteApiThread(); 
+									thread.start();
+								}
+							});
+							submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							});
+							submitAlert.show();
 
-							//삭제하기 API 호출 쓰레드 시작
-					    	WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
-					        CallDeleteApiThread thread = new CallDeleteApiThread(); 
-							thread.start();
 						}
 					}
 				}
