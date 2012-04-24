@@ -40,10 +40,11 @@ public class JoinAuthActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.join_auth);
         
-        //2분뒤에 활성화 되도록 하는버튼에 필요한 변수
-        //tempTime = System.currentTimeMillis();
-        tempTime = 0;	//최초 1번은 바로 재전송하도록 하고 이후부터는 2분간격으로만 가능
-        
+        //들어오게되면 인증번호 재전송 비활성화
+        renumBtnImgSetThread subThread = new renumBtnImgSetThread(); 
+        subThread.start();
+        tempTime = System.currentTimeMillis();
+                
         editText1 = (EditText)findViewById(R.id.editText1);
         
         String ctn = WizSafeUtil.setPhoneNum(WizSafeUtil.getCtn(JoinAuthActivity.this));
@@ -93,7 +94,7 @@ public class JoinAuthActivity extends Activity {
 					thread.start();
 				}
 			} 
-		}); 
+		});
     }
     
   	
