@@ -185,7 +185,7 @@
                     android:id="@+id/btn_renum"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_certify_renum" />
+                    android:background="@drawable/btn_certify_renum_on" />
             </LinearLayout>
 
             <LinearLayout
