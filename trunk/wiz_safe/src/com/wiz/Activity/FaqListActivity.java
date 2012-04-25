@@ -43,6 +43,8 @@ public class FaqListActivity extends Activity {
 	FaqListAdapter listAdapter;
 	ListView listView;
 	
+	String selectedPosition;
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.faq_list);
@@ -227,6 +229,7 @@ public class FaqListActivity extends Activity {
 		} 
 
 		public View getView(int position, View convertView, ViewGroup parent) {
+			final int pos = position;
 			
 			if(convertView == null){
 				convertView = Inflater.inflate(layout, parent, false);
@@ -239,29 +242,36 @@ public class FaqListActivity extends Activity {
 			final LinearLayout faqContentArea = (LinearLayout)convertView.findViewById(R.id.faqContentArea);
 			final LinearLayout titleBackImgArea = (LinearLayout)convertView.findViewById(R.id.titleBackImgArea);
 			
-			
 			faqTitle.setText(arSrc.get(position).getFaqTitle());
 			faqContent.setText(arSrc.get(position).getFaqContent());
+			
+			if(arSrc.get(position).getFaqTitle().equals(selectedPosition)){
+				faqContentArea.setVisibility(View.VISIBLE);
+				//title부분 background 이미지 변경
+				Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn);
+				titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+			}else{
+				faqContentArea.setVisibility(View.GONE);
+				//title부분 background 이미지 변경
+				Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn_on);
+				titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+			}
 			
 			faqTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						if(faqContentArea.getVisibility() == 8){
-							//gone 상태(8)이면
+						if(faqContentArea.getVisibility() == View.GONE){
+							selectedPosition = arSrc.get(pos).getFaqTitle();
 							faqContentArea.setVisibility(View.VISIBLE);
-							
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
-							
 						}else{
-							//visible 상태(0)이면
+							selectedPosition = "";
 							faqContentArea.setVisibility(View.GONE);
-							
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn_on);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
-							
 						}
 					}
 				}
