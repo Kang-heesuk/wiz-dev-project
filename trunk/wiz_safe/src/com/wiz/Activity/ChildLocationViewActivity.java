@@ -51,7 +51,6 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeSms;
 import com.wiz.util.WizSafeUtil;
 
 
@@ -403,9 +402,11 @@ public class ChildLocationViewActivity extends NMapActivity {
 
   	  					String myCtn = WizSafeUtil.getCtn(ChildLocationViewActivity.this);
   	  					String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
-  	  					if(WizSafeSms.stateSmsReceive(childCtn, ChildLocationViewActivity.this)){
-  	  						boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
-  	  					}
+  	  					
+  	  					//if(자녀 번호가 sms 수신이 가능한지 확인한다.){
+  	  						//자녀에게 sms를 보낸
+  	  						//boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
+  	  					//}
   	  					//자녀에게 위치조회했음을 sms로 알린다.
   	  			        
   			        	//현재 부모가 자식을 조회했다는 Location 로그를 남기는 쓰레드시작 
@@ -466,19 +467,6 @@ public class ChildLocationViewActivity extends NMapActivity {
   			}else if(msg.what == 3){
   				if(payResult == 0){
   					//== 과금을 지불하고 호출되는 핸들러 ==
-  					
-  					//자녀에게 위치조회했음을 sms로 알린다. 
-  					GregorianCalendar gc = new GregorianCalendar();
-  					SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
-  					String checkTime = dateFormat.format(gc.getTime());
-
-  					String myCtn = WizSafeUtil.getCtn(ChildLocationViewActivity.this);
-  					String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
-  					if(WizSafeSms.stateSmsReceive(childCtn, ChildLocationViewActivity.this)){
-  						boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
-  					}
-  					//자녀에게 위치조회했음을 sms로 알린다.
-  					
   					
   					//현재 부모가 자식을 조회했다는 Location 로그를 남기는 쓰레드시작 = 받는 핸들러는 없으며, 통신이 되면 종료됨 
 			        CallInsertLocationLogThread thread = new CallInsertLocationLogThread(); 
