@@ -34,7 +34,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:textColor="#ff000000"
-                android:textSize="18dp" />
+                android:textSize="16dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -56,7 +56,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:textColor="#ff000000"
-                android:textSize="18dp" />
+                android:textSize="16dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -82,7 +82,7 @@
                 android:textColor="#ff000000"
                 android:focusable="true" 
                 android:scrollHorizontally="true"
-                android:textSize="18dp" />
+                android:textSize="16dp" />
         </LinearLayout>
 
         <LinearLayout
