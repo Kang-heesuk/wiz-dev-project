@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -220,6 +221,7 @@ public class AnswerListActivity extends Activity {
     			ArrayList<String> returnXML = new ArrayList<String>();
     			while((temp = br.readLine()) != null)
     			{
+    				Log.i("childList",temp);
     				returnXML.add(new String(temp));
     			}
     			//결과를 XML 파싱하여 추출

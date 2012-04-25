@@ -428,8 +428,8 @@ public class MainActivity extends Activity {
   		  						//°øÁö»çÇ× ÆË¾÷ ¶ç¿î´Ù
   		  						ArrayList<String> noticeData = new ArrayList<String>();
   		  						noticeData.add(seq);
-  		  						noticeData.add(title);
-  		  						noticeData.add(content);
+  		  						noticeData.add(WizSafeSeed.seedDec(title));
+  		  						noticeData.add(WizSafeSeed.seedDec(content));
   		  						NoticePopView noticePopView = new NoticePopView((LinearLayout)findViewById(R.id.mainlayout), noticeData);
   		  						noticePopView.show();
   	  						}
