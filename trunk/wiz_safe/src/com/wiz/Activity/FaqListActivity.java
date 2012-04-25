@@ -61,6 +61,8 @@ public class FaqListActivity extends Activity {
         listAdapter = new FaqListAdapter(this, R.layout.faq_list_customlist, faqListArr);
         listView = (ListView)findViewById(R.id.list1);
         listView.setAdapter(listAdapter);
+        
+        
     }
     
     //리스트뷰를 리로드
@@ -266,12 +268,14 @@ public class FaqListActivity extends Activity {
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+							listAdapter.notifyDataSetChanged();
 						}else{
 							selectedPosition = "";
 							faqContentArea.setVisibility(View.GONE);
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn_on);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+							listAdapter.notifyDataSetChanged();
 						}
 					}
 				}

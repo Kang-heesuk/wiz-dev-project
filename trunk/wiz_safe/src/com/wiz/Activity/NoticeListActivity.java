@@ -43,12 +43,12 @@ public class NoticeListActivity extends Activity {
 
 	NoticeListAdapter listAdapter;
 	ListView listView;
+    
+	String selectedPosition;
 	
-    /** Called when the activity is first created. */ 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notice_list);
-        
         
         //API 호출 쓰레드 시작
     	//자녀 리스트를 가져온다.
@@ -59,7 +59,6 @@ public class NoticeListActivity extends Activity {
         listAdapter = new NoticeListAdapter(this, R.layout.notice_list_customlist, noticeListArr);
         ListView listView = (ListView)findViewById(R.id.list1);
         listView.setAdapter(listAdapter);
-        
     }
     
     //리스트뷰를 리로드
@@ -254,26 +253,36 @@ public class NoticeListActivity extends Activity {
 			noticeRegdate.setText(arSrc.get(position).getNoticeRegdate());
 			noticeContent.setText(arSrc.get(position).getNoticeContent());
 			
+			if(arSrc.get(position).getNoticeTitle().equals(selectedPosition)){
+				noticeContentArea.setVisibility(View.VISIBLE);
+				//title부분 background 이미지 변경
+				Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn);
+				titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+			}else{
+				noticeContentArea.setVisibility(View.GONE);
+				//title부분 background 이미지 변경
+				Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn_on);
+				titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+			}
+			
 			noticeTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 						
-						if(noticeContentArea.getVisibility() == 8){
-							//gone 상태(8)이면
+						if(noticeContentArea.getVisibility() == View.GONE){
+							selectedPosition = arSrc.get(pos).getNoticeTitle();
 							noticeContentArea.setVisibility(View.VISIBLE);
-							
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
-							
+							listAdapter.notifyDataSetChanged();
 						}else{
-							//visible 상태(0)이면
+							selectedPosition = "";
 							noticeContentArea.setVisibility(View.GONE);
-							
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn_on);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
-							
+							listAdapter.notifyDataSetChanged();
 						}
 					}
 				}
