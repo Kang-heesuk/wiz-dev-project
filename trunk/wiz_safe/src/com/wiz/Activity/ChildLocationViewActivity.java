@@ -391,10 +391,23 @@ public class ChildLocationViewActivity extends NMapActivity {
 				    	getCurrentLocationInfoPOIdataOverlay(); //Overlay에 띠울 것을 모아놓은 사용자 메소드 호출 (핀과 Path 그리기를 셋팅해놓은 사용자 메소드)
 				    	//화면 로딩 완료후 안내정보 토스트를 4초간 보여준다.
   			        }catch(Exception e){}
-  			        
+  			       
   			        //과금이 아닐경우 - 맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
   			        //과금일 경우 - 현위치 조회로 인한 포인트 차감 API 호출
   			        if("NOPAY".equals(payMode)){
+  		  			  	
+  	  					//자녀에게 위치조회했음을 sms로 알린다. 
+  	  					GregorianCalendar gc = new GregorianCalendar();
+  	  					SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
+  	  					String checkTime = dateFormat.format(gc.getTime());
+
+  	  					String myCtn = WizSafeUtil.getCtn(ChildLocationViewActivity.this);
+  	  					String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
+  	  					if(WizSafeSms.stateSmsReceive(childCtn, ChildLocationViewActivity.this)){
+  	  						boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
+  	  					}
+  	  					//자녀에게 위치조회했음을 sms로 알린다.
+  	  			        
   			        	//현재 부모가 자식을 조회했다는 Location 로그를 남기는 쓰레드시작 
   			        	CallInsertLocationLogThread thread = new CallInsertLocationLogThread(); 
 						thread.start();
@@ -453,6 +466,20 @@ public class ChildLocationViewActivity extends NMapActivity {
   			}else if(msg.what == 3){
   				if(payResult == 0){
   					//== 과금을 지불하고 호출되는 핸들러 ==
+  					
+  					//자녀에게 위치조회했음을 sms로 알린다. 
+  					GregorianCalendar gc = new GregorianCalendar();
+  					SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
+  					String checkTime = dateFormat.format(gc.getTime());
+
+  					String myCtn = WizSafeUtil.getCtn(ChildLocationViewActivity.this);
+  					String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
+  					if(WizSafeSms.stateSmsReceive(childCtn, ChildLocationViewActivity.this)){
+  						boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
+  					}
+  					//자녀에게 위치조회했음을 sms로 알린다.
+  					
+  					
   					//현재 부모가 자식을 조회했다는 Location 로그를 남기는 쓰레드시작 = 받는 핸들러는 없으며, 통신이 되면 종료됨 
 			        CallInsertLocationLogThread thread = new CallInsertLocationLogThread(); 
 					thread.start();
@@ -567,19 +594,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 		//poiDataOverlay.selectPOIitem(0, true);
 		
 		// show all POI data
-		poiDataOverlay.showAllPOIdata(0);
-		
-		//자녀에게 위치조회했음을 sms로 알린다. 
-		GregorianCalendar gc = new GregorianCalendar();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
-		String checkTime = dateFormat.format(gc.getTime());
-
-		String myCtn = WizSafeUtil.getCtn(ChildLocationViewActivity.this);
-		String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
-		if(WizSafeSms.stateSmsReceive(childCtn, ChildLocationViewActivity.this)){
-			boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
-		}
-		//자녀에게 위치조회했음을 sms로 알린다.
+		poiDataOverlay.showAllPOIdata(0);	
 	} 
 
 	
