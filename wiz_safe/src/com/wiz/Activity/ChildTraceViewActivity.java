@@ -13,9 +13,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -61,7 +59,6 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeSms;
 import com.wiz.util.WizSafeUtil;
 
 /**
@@ -355,17 +352,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        	
   					});
   			        
-  			        //자녀에게 위치조회했음을 sms로 알린다.
-  					GregorianCalendar gc = new GregorianCalendar();
-  					SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
-  					String checkTime = dateFormat.format(gc.getTime());
-
-  					String myCtn = WizSafeUtil.getCtn(ChildTraceViewActivity.this);
-  					String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
-  					if(WizSafeSms.stateSmsReceive(childCtn, ChildTraceViewActivity.this)){
-  						boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
-  					}
-  					//자녀에게 위치조회했음을 sms로 알린다.
+  			        
   			        
   			        
   			        //정상적으로 화면이 로딩이 완료되면 차감관련 API를 호출한다.

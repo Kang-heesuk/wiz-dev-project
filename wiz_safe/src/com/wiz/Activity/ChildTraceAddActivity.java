@@ -281,22 +281,7 @@ public class ChildTraceAddActivity extends Activity {
   			if(msg.what == 0){
   				if(addApiResult == 0){
 					finish();
-				}else if(addApiResult == 1){
-					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceAddActivity.this);
-					ad.setTitle("포인트 안내");
-					ad.setMessage("보유한 포인트가 부족합니다. 포인트 충전 후 다시 이용해 주세요.");
-					ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							Toast.makeText(ChildTraceAddActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
-						}
-					});
-					ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
-						public void onClick(DialogInterface dialog, int which) {
-							finish();
-						}
-					});
-					ad.show();
-				}else if(addApiResult == -1){
+				}else{
 					AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceAddActivity.this);
 					String title = "등록 오류";	
 					String message = "발자취 등록 중 오류가 발생하였습니다.";	
