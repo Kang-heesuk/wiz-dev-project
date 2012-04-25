@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
 import com.wiz.util.WizSafeUtil;
@@ -94,7 +95,7 @@ public class NoticeListActivity extends Activity {
   				noticeList = new String[title.size()][3];
   				if(title.size() > 0){
   					for(int i=0; i < title.size(); i++){
-  						noticeList[i][0] = title.get(i);
+  						noticeList[i][0] = WizSafeSeed.seedDec((String) title.get(i));
   					}
   				}
   				if(regdate.size() > 0){
@@ -104,7 +105,7 @@ public class NoticeListActivity extends Activity {
   				}
   				if(content.size() > 0){
   					for(int i=0; i < content.size(); i++){
-  						noticeList[i][2] = content.get(i);
+  						noticeList[i][2] = WizSafeSeed.seedDec((String) content.get(i));
   					}
   				}
 
