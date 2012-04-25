@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -74,7 +75,7 @@ public class NoticeListActivity extends Activity {
   		public void run(){
   			InputStream is = null;
   			try{
-  				String url = "https://www.heream.com/api/getNoticeList.jsp";
+  				String url = "https://www.heream.com/api/getBaordList.jsp?type="+URLEncoder.encode("01");
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
