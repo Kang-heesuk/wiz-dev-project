@@ -39,6 +39,8 @@ public class UseInfoListActivity extends Activity {
 	UseInfoListAdapter listAdapter;
 	ListView listView;
 	
+	String selectedPosition;
+	
 	//등록된 자녀의 이름
 	ArrayList<UseInfoDetail> useInfoListArr = new ArrayList<UseInfoDetail>();
 	ArrayAdapter<UseInfoDetail> useInfoAdapter;
@@ -228,7 +230,8 @@ public class UseInfoListActivity extends Activity {
 		} 
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-		
+			final int pos = position;
+			
 			if(convertView == null){
 				convertView = Inflater.inflate(layout, parent, false);
 			}
@@ -242,27 +245,39 @@ public class UseInfoListActivity extends Activity {
 			
 			useInfoTitle.setText(arSrc.get(position).getUseInfoTitle());
 			useInfoContent.setText(arSrc.get(position).getUseInfoContent());
+
+			if(arSrc.get(position).getUseInfoTitle().equals(selectedPosition)){
+				useInfoContentArea.setVisibility(View.VISIBLE);
+				//title부분 background 이미지 변경
+				Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn);
+				titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+				listAdapter.notifyDataSetChanged();
+			}else{
+				useInfoContentArea.setVisibility(View.GONE);
+				//title부분 background 이미지 변경
+				Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn_on);
+				titleBackImgArea.setBackgroundDrawable(titleAreaImg);
+				listAdapter.notifyDataSetChanged();
+			}
 			
 			useInfoTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
 						
 						if(useInfoContentArea.getVisibility() == 8){
-							//gone 상태(8)이면
+							selectedPosition = arSrc.get(pos).getUseInfoTitle();
 							useInfoContentArea.setVisibility(View.VISIBLE);
-							
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
-							
+							listAdapter.notifyDataSetChanged();
 						}else{
-							//visible 상태(0)이면
+							selectedPosition = "";
 							useInfoContentArea.setVisibility(View.GONE);
-							
 							//title부분 background 이미지 변경
 							Drawable titleAreaImg = getResources().getDrawable(R.drawable.list_line_btn_on);
 							titleBackImgArea.setBackgroundDrawable(titleAreaImg);
-							
+							listAdapter.notifyDataSetChanged();
 						}
 					}
 				}
