@@ -292,25 +292,32 @@ public class ParentListActivity extends Activity {
 						//삭제하기 버튼을 클릭하였을 경우
 						if(menuClickDelete){
 							selectedRow = pos;
-							
-							//경고창 출력
-							AlertDialog.Builder submitAlert = new AlertDialog.Builder(ParentListActivity.this);
-							submitAlert.setTitle("삭제하기");
-							submitAlert.setMessage("부모("+WizSafeUtil.setPhoneNum(arSrc.get(selectedRow).getparentCtn())+")님을 삭제 하시겠습니까?\n삭제 시 해당 부모님은 자녀님의 위치를 찾을 수 없습니다.");
-							submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									//삭제하기 API 호출 쓰레드 시작
-							    	WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
-							        CallDeleteApiThread thread = new CallDeleteApiThread(); 
-									thread.start();
-								}
-							});
-							submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
-								public void onClick(DialogInterface dialog, int which) {
-								}
-							});
-							submitAlert.show();
-
+							String selectedAcceptDate = arSrc.get(selectedRow).getAcceptDate();
+							if("".equals(selectedAcceptDate)){
+								//대기중 상태의것(수락 날짜가 없는 데이터)은 얼럿 없이 바로 삭제 api호출
+								WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
+						        CallDeleteApiThread thread = new CallDeleteApiThread(); 
+								thread.start();
+							}else{
+								//02 승인 상태의 것은 얼럿을 통하여 재확인후 삭제  api호출
+								//경고창 출력
+								AlertDialog.Builder submitAlert = new AlertDialog.Builder(ParentListActivity.this);
+								submitAlert.setTitle("삭제하기");
+								submitAlert.setMessage("부모("+WizSafeUtil.setPhoneNum(arSrc.get(selectedRow).getparentCtn())+")님을 삭제 하시겠습니까?\n삭제 시 해당 부모님은 자녀님의 위치를 찾을 수 없습니다.");
+								submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+										//삭제하기 API 호출 쓰레드 시작
+								    	WizSafeDialog.showLoading(ParentListActivity.this);	//Dialog 보이기
+								        CallDeleteApiThread thread = new CallDeleteApiThread(); 
+										thread.start();
+									}
+								});
+								submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+									public void onClick(DialogInterface dialog, int which) {
+									}
+								});
+								submitAlert.show();
+							}
 						}
 					}
 				}
