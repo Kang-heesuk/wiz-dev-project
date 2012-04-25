@@ -75,7 +75,7 @@ public class NoticeListActivity extends Activity {
   		public void run(){
   			InputStream is = null;
   			try{
-  				String url = "https://www.heream.com/api/getBaordList.jsp?part="+URLEncoder.encode("01");
+  				String url = "https://www.heream.com/api/getBoardList.jsp?part="+URLEncoder.encode("01");
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
