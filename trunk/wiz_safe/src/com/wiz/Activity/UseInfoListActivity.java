@@ -1,11 +1,21 @@
 package com.wiz.Activity;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +26,22 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wiz.Seed.WizSafeSeed;
+import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeParser;
+
 public class UseInfoListActivity extends Activity {
 
+	//API 통신 성공유무 변수 
+	int httpResult = 1;		//0 - 조회성공 , 그외 - 실패
+	String[][] useInfoList;
+
+	UseInfoListAdapter listAdapter;
+	ListView listView;
+	
 	//등록된 자녀의 이름
-	ArrayList<useInfoDetail> useInfoList = new ArrayList<useInfoDetail>();
-	ArrayAdapter<useInfoDetail> useInfoAdapter;
+	ArrayList<UseInfoDetail> useInfoListArr = new ArrayList<UseInfoDetail>();
+	ArrayAdapter<UseInfoDetail> useInfoAdapter;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,49 +49,144 @@ public class UseInfoListActivity extends Activity {
         
         
         //이용안내 리스트를 가져오는 프로세스를 진행한다. 진행하면 arrayList에 담긴다.
-        getUseInfoList();
+        //API 호출 쓰레드 시작
+    	//자녀 리스트를 가져온다.
+    	WizSafeDialog.showLoading(UseInfoListActivity.this);	//Dialog 보이기
+        CallGetUseInfoListApiThread thread = new CallGetUseInfoListApiThread(); 
+		thread.start();
 
-        useInfoListAdapter listAdapter = new useInfoListAdapter(this, R.layout.useinfo_list_customlist, useInfoList);
-        ListView listView = (ListView)findViewById(R.id.list1);
+        listAdapter = new UseInfoListAdapter(this, R.layout.useinfo_list_customlist, useInfoListArr);
+        listView = (ListView)findViewById(R.id.list1);
         listView.setAdapter(listAdapter);
     }
     
-    
-    //이용안내 내용을 가져온다.
-    public void getUseInfoList() {
-    	
-    	ArrayList<String> title = new ArrayList<String>();
-    	ArrayList<String> content = new ArrayList<String>();
-    	
-    	//이용안내 내용
-    	title.add("자녀란? 부모란?");
-    	content.add("자녀 : 위치를 찾고 싶은 사용자(피위치추적자)\n부모 : 위치를 조회하고 싶은 사용자(위치추적자)");
-    	
-    	title.add("현위치찾기/발자취/안심존이란");
-    	content.add("현위치찾기 : 현재 자녀의 위치를 찾을 수 있는 메뉴\n발자취 : 지정된 시간 동안 자녀의 위치를 매정시에 조회/설정/변경/삭제 하는 메뉴\n안심존 : 지정된 지역을 설정 자녀가 이탈 시 알려주는 메뉴");
-    	
-    	title.add("위치허용동의란?");
-    	content.add("자녀의 위치를 찾기 위해서 부모님은 위치허용동의를 자녀에게 받아야 합니다.\n동의가 없을 경우 위치 조회를 할 수 없습니다");
-    	
-    	title.add("이용요금 안내");
-    	content.add("현위치찾기 : 1일 3회 무료(초과 이용 시 100포인트/건당)\n발자취 : 1일 100포인 소진(자동)\n안심존 : 1건 무료(초과 이용 시 100포인트/건당)");
-    	
-    	title.add("위치조회즉시통보 문자란?");
-    	content.add("스마트자녀안심은 “위치정보의 보호 및 이용 등에 관한 법률 제19조”에 의거 부모가 위치조회 시 즉시 자녀에게 위치조회 결과 내용을 통보하고 있습니다.");
-    	
-    	useInfoList = new ArrayList<useInfoDetail>();
-    	for(int i = 0 ; i < title.size() ; i++){
-    		useInfoDetail addUseInfoList = new useInfoDetail(title.get(i), content.get(i));
-    		useInfoList.add(addUseInfoList);
-    	}
+    //리스트뷰를 리로드
+    public void upDateListView(){
+    	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
+  		listAdapter = new UseInfoListAdapter(this, R.layout.useinfo_list_customlist, useInfoListArr);
+  		listView = (ListView)findViewById(R.id.list1);
+    	listView.setAdapter(listAdapter);
     }
+      
+    
+    //API 호출 쓰레드
+  	class CallGetUseInfoListApiThread extends Thread{
+  		public void run(){
+  			InputStream is = null;
+  			try{
+  				String url = "https://www.heream.com/api/getBoardList.jsp?part="+URLEncoder.encode("02");
+  				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
+  				String temp;
+  				ArrayList<String> returnXML = new ArrayList<String>();
+  				while((temp = br.readLine()) != null)
+  				{
+  					returnXML.add(new String(temp));
+  				}
+  				//결과를 XML 파싱하여 추출
+  				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
+  				ArrayList<String> title = WizSafeParser.xmlParser_List(returnXML,"<TITLE>");  				
+  				ArrayList<String> content = WizSafeParser.xmlParser_List(returnXML,"<CONTENT>");
+  				
+  				//복호화 하여 2차원배열에 담는다.
+  				httpResult = Integer.parseInt(resultCode);
+  				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
+  				useInfoList = new String[title.size()][2];
+  				if(title.size() > 0){
+  					for(int i=0; i < title.size(); i++){
+  						useInfoList[i][0] = WizSafeSeed.seedDec((String) title.get(i));
+  					}
+  				}
+  				if(content.size() > 0){
+  					for(int i=0; i < content.size(); i++){
+  						useInfoList[i][1] = WizSafeSeed.seedDec((String) content.get(i));
+  					}
+  				}
+
+  				//2차원 배열을 커스텀 어레이리스트에 담는다.
+  		    	if(useInfoList != null){
+  			    	for(int i = 0 ; i < useInfoList.length ; i++){
+  			    		UseInfoDetail useInfoDetail = new UseInfoDetail(useInfoList[i][0], useInfoList[i][1]);
+  			    		useInfoListArr.add(useInfoDetail);
+  			    	}
+  		    	}
+
+  		    	pHandler.sendEmptyMessage(0);
+  			}catch(Exception e){
+  				//통신중 에러발생
+  				pHandler.sendEmptyMessage(1);
+  			}finally{
+  				if(is != null){ try{is.close();}catch(Exception e){} }
+  			}
+  		}
+  	}
+ 	
+
+  	Handler pHandler = new Handler(){
+  		public void handleMessage(Message msg){
+			WizSafeDialog.hideLoading();
+  			if(msg.what == 0){
+  				//핸들러 정상동작
+  				if(httpResult == 0){
+					//조회성공
+  			        if(useInfoListArr.size() > 0){
+  			        	upDateListView();
+  			        	
+  			        }else{
+  			        //조회실패
+  						AlertDialog.Builder ad = new AlertDialog.Builder(UseInfoListActivity.this);
+  						String title = "공지사항";	
+  						String message = "등록된 공지사항이 없습니다.";	
+  						String buttonName = "확인";
+  						ad.setTitle(title);
+  						ad.setMessage(message);
+  						ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+  							public void onClick(DialogInterface dialog, int which) {
+  								finish();
+  							}
+  						});
+  						ad.show();
+  			        }
+				}else{
+					//조회실패
+					AlertDialog.Builder ad = new AlertDialog.Builder(UseInfoListActivity.this);
+					String title = "통신 오류";	
+					String message = "부모 리스트 정보를 조회할 수 없습니다.";	
+					String buttonName = "확인";
+					ad.setTitle(title);
+					ad.setMessage(message);
+					ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					ad.show();
+				}
+  			}else if(msg.what == 1){
+  				//핸들러 비정상
+  				AlertDialog.Builder ad = new AlertDialog.Builder(UseInfoListActivity.this);
+				String title = "통신 오류";	
+				String message = "통신 중 오류가 발생하였습니다.";	
+				String buttonName = "확인";
+				ad.setTitle(title);
+				ad.setMessage(message);
+				ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+				ad.show();
+  			}
+  		}
+  	}; 	    
     
     
-    class useInfoDetail {
+    
+    class UseInfoDetail {
     	private String useInfoTitle;
     	private String useInfoContent;
     	
-    	public useInfoDetail (String useInfoTitle,  String useInfoContent){
+    	public UseInfoDetail (String useInfoTitle,  String useInfoContent){
     		this.useInfoTitle = useInfoTitle;
     		this.useInfoContent = useInfoContent;
     	}
@@ -84,15 +200,15 @@ public class UseInfoListActivity extends Activity {
     }
     
     
-    class useInfoListAdapter extends BaseAdapter {
+    class UseInfoListAdapter extends BaseAdapter {
 
     	Context maincon;
     	LayoutInflater Inflater;
-    	ArrayList<useInfoDetail> arSrc;
+    	ArrayList<UseInfoDetail> arSrc;
     	int layout;
     	
     	//최초 커스텀리스트 뷰를 보여줄때
-    	public useInfoListAdapter(Context context, int alayout, ArrayList<useInfoDetail> aarSrc){
+    	public UseInfoListAdapter(Context context, int alayout, ArrayList<UseInfoDetail> aarSrc){
     		maincon = context;
     		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		arSrc = aarSrc;
@@ -103,7 +219,7 @@ public class UseInfoListActivity extends Activity {
 			return arSrc.size();
 		}
 
-		public useInfoDetail getItem(int position) {
+		public UseInfoDetail getItem(int position) {
 			return arSrc.get(position);
 		}
 
