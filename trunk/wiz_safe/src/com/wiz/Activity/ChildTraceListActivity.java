@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
@@ -243,9 +244,30 @@ public class ChildTraceListActivity extends Activity {
   			        
   			        //배경화면 설정 및 DetailList 클릭 가능 여부 설정
   			        if("0".equals(todayDeductState) && myRemainPoint <= 0){
-  			        	//아직차감 안했는데 가진돈이 없는경우(0원포함) = 정지화면 , DetailList보기 불가, 실행 액션 안됨, 포인트부족 노출
+  			        	//아직차감 안했는데 가진돈이 없는경우(0원포함) = 정지화면 , DetailList보기 불가, 실행 액션 시 포인트 부족 경고창, 포인트부족 노출
   			        	layout_1.setBackgroundResource(R.drawable.trace_stoplist_bg);
   			        	pointArea.setVisibility(View.VISIBLE);
+  			        	nowStateBtn.setOnClickListener(
+							new Button.OnClickListener(){
+								public void onClick(View v) {
+									//API 호출 쓰레드 시작
+							    	//현재 상태 on/off 변경 스레드 호출
+									AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceListActivity.this);
+			  						ad.setTitle("포인트 안내");
+			  						ad.setMessage("보유한 포인트가 부족합니다. 포인트 충전 후 다시 이용해 주세요.");
+			  						ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
+			  							public void onClick(DialogInterface dialog, int which) {
+			  								Toast.makeText(ChildTraceListActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
+			  							}
+			  						});
+			  						ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+			  							public void onClick(DialogInterface dialog, int which) {
+			  							}
+			  						});
+			  						ad.show();
+								}
+							}
+						);
   			        }else{
   			        	//그외의 경우 - 차감X 잔여O , 차감O 잔여 O, 차감 O 잔여 X 인경우
   			        	//화면(플레이상태인지 정지상태인지는 고객의 설정정보에 따름), DetailList보기 가능, 실행액션 가능
