@@ -497,7 +497,6 @@ public class ChildSafezoneListActivity extends Activity {
 	  									});
 	  									ad.setNegativeButton("´Ý±â", new DialogInterface.OnClickListener(){
 	  										public void onClick(DialogInterface dialog, int which) {
-	  											finish();
 	  										}
 	  									});
 	  									ad.show();

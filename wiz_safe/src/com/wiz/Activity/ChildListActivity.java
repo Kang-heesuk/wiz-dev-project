@@ -27,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.wiz.Activity.ChildTraceAddActivity.CallChildTraceAddApiThread;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -287,12 +286,15 @@ public class ChildListActivity extends Activity {
 			
 			//각 버튼 이름 및 노출 여부 정의
 			if("01".equals(arSrc.get(position).getChildRelation())){
+				//01:승인대기
 				btnChildState.setBackgroundResource(R.drawable.icon_3);
 				btnChildState.setVisibility(View.VISIBLE);
 			}else if("02".equals(arSrc.get(position).getChildRelation())){
+				//02:승인완료
 				btnChildState.setBackgroundResource(R.drawable.icon_1);
 				btnChildState.setVisibility(View.VISIBLE);
 			}else{
+				//기타:승인거절
 				btnChildState.setBackgroundResource(R.drawable.icon_2);
 				btnChildState.setVisibility(View.VISIBLE);
 			}
@@ -304,24 +306,34 @@ public class ChildListActivity extends Activity {
 						//삭제하기 버튼을 클릭하였을 경우
 						if(menuClickDelete){
 							selectedRow = pos;
+							String selectedState = arSrc.get(selectedRow).getChildRelation();
+							//선택한 삭제 버튼 데이터가 승인거절 데이터면 경고창 없이 바로 삭제한다.
+							if("03".equals(selectedState)){
+								//경고창 없이 삭제 api 호출
+								//삭제하기 API 호출 쓰레드 시작
+						    	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
+						        CallDeleteApiThread thread = new CallDeleteApiThread(); 
+								thread.start();
+							}else{
+								//경고창 출력
+								AlertDialog.Builder submitAlert = new AlertDialog.Builder(ChildListActivity.this);
+								submitAlert.setTitle("삭제하기");
+								submitAlert.setMessage("자녀("+WizSafeUtil.setPhoneNum(arSrc.get(selectedRow).getChildCtn())+")님을 삭제 하시겠습니까?\n삭제 시 자녀의 동의를 다시 받아야하며 기존 설정 내역도 함께 삭제 됩니다.");
+								submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+										//삭제하기 API 호출 쓰레드 시작
+								    	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
+								        CallDeleteApiThread thread = new CallDeleteApiThread(); 
+										thread.start();
+									}
+								});
+								submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
+									public void onClick(DialogInterface dialog, int which) {
+									}
+								});
+								submitAlert.show();
 							
-							//경고창 출력
-							AlertDialog.Builder submitAlert = new AlertDialog.Builder(ChildListActivity.this);
-							submitAlert.setTitle("삭제하기");
-							submitAlert.setMessage("자녀("+WizSafeUtil.setPhoneNum(arSrc.get(selectedRow).getChildCtn())+")님을 삭제 하시겠습니까?\n삭제 시 자녀의 동의를 다시 받아야하며 기존 설정 내역도 함께 삭제 됩니다.");
-							submitAlert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									//삭제하기 API 호출 쓰레드 시작
-							    	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
-							        CallDeleteApiThread thread = new CallDeleteApiThread(); 
-									thread.start();
-								}
-							});
-							submitAlert.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
-								public void onClick(DialogInterface dialog, int which) {
-								}
-							});
-							submitAlert.show();
+							}
 
 						}
 					}
