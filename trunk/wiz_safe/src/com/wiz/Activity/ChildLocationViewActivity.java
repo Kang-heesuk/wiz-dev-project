@@ -256,14 +256,20 @@ public class ChildLocationViewActivity extends NMapActivity {
   	  				//필요한 데이터 타입으로 형변환
   	  				httpResult = Integer.parseInt(resultCode);
   	  				if(httpResult == 0){
-	  	  				regdate = strRegdate;
-	  	  				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
-	  	  				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
-	  	  				address = WizSafeSeed.seedDec(encAddress);
-	  	  				type = strType;
+  	  					
+  	  					if(longitude == Double.parseDouble(WizSafeSeed.seedDec(encLongitude)) && latitude == Double.parseDouble(WizSafeSeed.seedDec(encLatitude))){
+  	  						pHandler.sendEmptyMessage(7);
+  	  					}else{
+		  					regdate = strRegdate;
+		  	  				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
+		  	  				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
+		  	  				address = WizSafeSeed.seedDec(encAddress);
+		  	  				type = strType;
+		  	  				pHandler.sendEmptyMessage(0);
+  	  					}
   	  				}
   	  				
-  	  				pHandler.sendEmptyMessage(0);
+  	  				
   				}else{
   					pHandler.sendEmptyMessage(1);
   				}
@@ -394,22 +400,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   			        //과금이 아닐경우 - 맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
   			        //과금일 경우 - 현위치 조회로 인한 포인트 차감 API 호출
   			        if("NOPAY".equals(payMode)){
-  		  			  	
-  	  					//자녀에게 위치조회했음을 sms로 알린다. 
-  	  					GregorianCalendar gc = new GregorianCalendar();
-  	  					SimpleDateFormat dateFormat = new SimpleDateFormat("hh시 mm분");  
-  	  					String checkTime = dateFormat.format(gc.getTime());
 
-  	  					String myCtn = WizSafeUtil.getCtn(ChildLocationViewActivity.this);
-  	  					String smsMsg = "[스마트안심]"+myCtn+"님이 "+ checkTime +"에 고객님의 위치를 조회했습니다.";
-  	  					
-  	  					//if(자녀 번호가 sms 수신이 가능한지 확인한다.){
-  	  						//자녀에게 sms를 보낸
-  	  						//boolean smsResult = WizSafeSms.sendSmsMsg(childCtn, smsMsg);
-  	  					//}
-  	  					//자녀에게 위치조회했음을 sms로 알린다.
-  	  			        
-  			        	//현재 부모가 자식을 조회했다는 Location 로그를 남기는 쓰레드시작 
   			        	CallInsertLocationLogThread thread = new CallInsertLocationLogThread(); 
 						thread.start();
 
@@ -509,7 +500,6 @@ public class ChildLocationViewActivity extends NMapActivity {
   			}else if(msg.what == 5){
   				if(locationLogResult == 0){
   					//== 최종적으로 맵뷰를 보여주며, 오늘 몇번 봤는지 셋팅하는 핸들러 ==
-  	  				WizSafeDialog.hideLoading();
   	  				//맵뷰영역을 보이게 하고, 프로그래스를 종료하고, 오늘 몇번째 보여줬는지 셋팅
   	  				RelativeLayout mapViewArea = (RelativeLayout)findViewById(R.id.relayout);
   		        	mapViewArea.setVisibility(View.VISIBLE);
@@ -554,6 +544,9 @@ public class ChildLocationViewActivity extends NMapActivity {
 					}
 				});
 				ad.show();
+  			}else if(msg.what == 7){
+  				//retry 버튼을 눌렀는데, 그전에 가져온 정보와 같을 경우 처리
+  				WizSafeDialog.hideLoading();
   			}
   		}
   	};
