@@ -246,7 +246,6 @@ public class FaqListActivity extends Activity {
 			faqTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						
 						if(faqContentArea.getVisibility() == 8){
 							//gone 상태(8)이면
 							faqContentArea.setVisibility(View.VISIBLE);
