@@ -308,7 +308,7 @@ public class ChildListActivity extends Activity {
 							selectedRow = pos;
 							String selectedState = arSrc.get(selectedRow).getChildRelation();
 							//선택한 삭제 버튼 데이터가 승인거절 데이터면 경고창 없이 바로 삭제한다.
-							if("03".equals(selectedState)){
+							if("03".equals(selectedState) || "01".equals(selectedState)){
 								//경고창 없이 삭제 api 호출
 								//삭제하기 API 호출 쓰레드 시작
 						    	WizSafeDialog.showLoading(ChildListActivity.this);	//Dialog 보이기
