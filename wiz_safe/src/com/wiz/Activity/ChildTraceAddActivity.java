@@ -87,7 +87,7 @@ public class ChildTraceAddActivity extends Activity {
         //셀렉트 박스 구성(요일설정)
         Spinner weekSpiner = (Spinner)findViewById(R.id.weekSpinner);
         weekSpiner.setPrompt("요일을 설정하세요.");
-        weekAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_weekSetup, android.R.layout.simple_spinner_item);
+        weekAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_weekSetup, R.layout.text_spinner_item);
         weekAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         weekSpiner.setAdapter(weekAdspin);
         
@@ -126,7 +126,7 @@ public class ChildTraceAddActivity extends Activity {
         //셀렉트 박스 구성(시작시간설정)
         Spinner timeStartSpinner = (Spinner)findViewById(R.id.timeStartSpinner);
         timeStartSpinner.setPrompt("시작시간을 설정하세요.");
-        startTimeAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_startTimeSetup, android.R.layout.simple_spinner_item);
+        startTimeAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_startTimeSetup, R.layout.text_spinner_item);
         startTimeAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeStartSpinner.setAdapter(startTimeAdspin);
         if(intent.getStringExtra("startTime") != null){
@@ -154,7 +154,7 @@ public class ChildTraceAddActivity extends Activity {
         //셀렉트 박스 구성(종료시간설정)
         Spinner timeEndSpinner = (Spinner)findViewById(R.id.timeEndSpinner);
         timeEndSpinner.setPrompt("종료시간을 설정하세요.");
-        endTimeAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_endTimeSetup, android.R.layout.simple_spinner_item);
+        endTimeAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_endTimeSetup, R.layout.text_spinner_item);
         endTimeAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeEndSpinner.setAdapter(endTimeAdspin);
         if(intent.getStringExtra("endTime") != null){
@@ -192,7 +192,7 @@ public class ChildTraceAddActivity extends Activity {
         //셀렉트 박스 구성(간격설정)
         Spinner timeIntervalSpinner = (Spinner)findViewById(R.id.timeIntervalSpinner);
         timeIntervalSpinner.setPrompt("시간간격을 설정하세요.");
-        timeIntervalAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_timeIntervalSetup, android.R.layout.simple_spinner_item);
+        timeIntervalAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_timeIntervalSetup, R.layout.text_spinner_item);
         timeIntervalAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeIntervalSpinner.setAdapter(timeIntervalAdspin);
         if(intent.getStringExtra("interval") != null){
