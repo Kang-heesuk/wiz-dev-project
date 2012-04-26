@@ -256,20 +256,13 @@ public class ChildLocationViewActivity extends NMapActivity {
   	  				//필요한 데이터 타입으로 형변환
   	  				httpResult = Integer.parseInt(resultCode);
   	  				if(httpResult == 0){
-  	  					
-  	  					if(longitude == Double.parseDouble(WizSafeSeed.seedDec(encLongitude)) && latitude == Double.parseDouble(WizSafeSeed.seedDec(encLatitude))){
-  	  						pHandler.sendEmptyMessage(7);
-  	  					}else{
-		  					regdate = strRegdate;
-		  	  				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
-		  	  				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
-		  	  				address = WizSafeSeed.seedDec(encAddress);
-		  	  				type = strType;
-		  	  				pHandler.sendEmptyMessage(0);
-  	  					}
+  	  					regdate = strRegdate;
+	  	  				longitude = Double.parseDouble(WizSafeSeed.seedDec(encLongitude));
+	  	  				latitude = Double.parseDouble(WizSafeSeed.seedDec(encLatitude));
+	  	  				address = WizSafeSeed.seedDec(encAddress);
+	  	  				type = strType;
+	  	  				pHandler.sendEmptyMessage(0);
   	  				}
-  	  				
-  	  				
   				}else{
   					pHandler.sendEmptyMessage(1);
   				}
@@ -544,9 +537,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 					}
 				});
 				ad.show();
-  			}else if(msg.what == 7){
-  				//retry 버튼을 눌렀는데, 그전에 가져온 정보와 같을 경우 처리
-  				WizSafeDialog.hideLoading();
   			}
   		}
   	};
