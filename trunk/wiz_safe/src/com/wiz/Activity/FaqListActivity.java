@@ -98,12 +98,12 @@ public class FaqListActivity extends Activity {
   				faqList = new String[title.size()][2];
   				if(title.size() > 0){
   					for(int i=0; i < title.size(); i++){
-  						faqList[i][0] = WizSafeSeed.seedDec((String) title.get(i));
+  						faqList[i][0] = (String) title.get(i);
   					}
   				}
   				if(content.size() > 0){
   					for(int i=0; i < content.size(); i++){
-  						faqList[i][1] = WizSafeSeed.seedDec((String) content.get(i));
+  						faqList[i][1] = (String) content.get(i);
   					}
   				}
 

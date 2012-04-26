@@ -95,7 +95,7 @@ public class NoticeListActivity extends Activity {
   				noticeList = new String[title.size()][3];
   				if(title.size() > 0){
   					for(int i=0; i < title.size(); i++){
-  						noticeList[i][0] = WizSafeSeed.seedDec((String) title.get(i));
+  						noticeList[i][0] = (String) title.get(i);
   					}
   				}
   				if(regdate.size() > 0){
@@ -105,7 +105,7 @@ public class NoticeListActivity extends Activity {
   				}
   				if(content.size() > 0){
   					for(int i=0; i < content.size(); i++){
-  						noticeList[i][2] = WizSafeSeed.seedDec((String) content.get(i));
+  						noticeList[i][2] = (String) content.get(i);
   					}
   				}
 
