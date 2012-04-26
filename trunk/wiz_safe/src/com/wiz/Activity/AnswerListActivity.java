@@ -46,6 +46,8 @@ public class AnswerListActivity extends Activity {
 	answerListAdapter listAdapter;
     ListView listView;
 	
+    String selectedPosition;
+    
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.answer_list);
@@ -146,11 +148,11 @@ public class AnswerListActivity extends Activity {
 			final LinearLayout answerTitleArea = (LinearLayout)convertView.findViewById(R.id.answerTitleArea);
 			final LinearLayout contentArea = (LinearLayout)convertView.findViewById(R.id.contentArea);
 			final LinearLayout titleBackImgArea = (LinearLayout)convertView.findViewById(R.id.titleBackImgArea);
-			
-			//답변내용영역
+			final LinearLayout questionContentArea = (LinearLayout)convertView.findViewById(R.id.questionContentArea);
 			final LinearLayout answerContentArea = (LinearLayout)convertView.findViewById(R.id.answerContentArea);
 			
 			answerTitle.setText(arSrc.get(position).getAnswerTitle());
+
 			//날짜 형식 변환
 			String tempDate = arSrc.get(position).getAnswerRegdate();
 			tempDate = tempDate.substring(4,6) + "/" + tempDate.substring(6,8);
@@ -168,40 +170,70 @@ public class AnswerListActivity extends Activity {
 				titleBackImgArea.setBackgroundDrawable(titleAreaImg2);
 			}
 			
+			if(arSrc.get(pos).getAnswerTitle().equals(selectedPosition)){
+				if("1".equals(arSrc.get(pos).getState())){
+					Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn2);
+					titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
+					contentArea.setVisibility(View.VISIBLE);
+					questionContentArea.setVisibility(View.VISIBLE);
+					answerContentArea.setVisibility(View.VISIBLE);
+				}else{
+					Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn1);
+					titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
+					contentArea.setVisibility(View.VISIBLE);
+					questionContentArea.setVisibility(View.VISIBLE);
+					answerContentArea.setVisibility(View.GONE);
+				}
+			}else{
+				if("1".equals(arSrc.get(pos).getState())){
+					Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn2_on);
+					titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
+				}else{
+					Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn1_on);
+					titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
+				}
+				contentArea.setVisibility(View.GONE);
+				questionContentArea.setVisibility(View.GONE);
+				answerContentArea.setVisibility(View.GONE);
+			}
+			
 			answerTitleArea.setOnClickListener(
 				new Button.OnClickListener(){
 					public void onClick(View v) {
-						
-						if(contentArea.getVisibility() == 8){
-							//gone 상태(8)이면
-							contentArea.setVisibility(View.VISIBLE);
-							
-							//title부분 background 이미지 변경
+						if(contentArea.getVisibility() == View.GONE){
+							selectedPosition = arSrc.get(pos).getAnswerTitle();
 							if("1".equals(arSrc.get(pos).getState())){
-								//답이 있으면
 								Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn2);
 								titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
+								contentArea.setVisibility(View.VISIBLE);
+								questionContentArea.setVisibility(View.VISIBLE);
+								answerContentArea.setVisibility(View.VISIBLE);
 							}else{
-								Drawable titleAreaImg2 = getResources().getDrawable(R.drawable.q_list_line_btn1);
-								titleBackImgArea.setBackgroundDrawable(titleAreaImg2);
+								Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn1);
+								titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
+								contentArea.setVisibility(View.VISIBLE);
+								questionContentArea.setVisibility(View.VISIBLE);
+								answerContentArea.setVisibility(View.GONE);
 							}
-							
+							listAdapter.notifyDataSetChanged();
 						}else{
-							//visible 상태(0)이면
-							contentArea.setVisibility(View.GONE);
-							
-							//title부분 background 이미지 변경
+							selectedPosition = "";
 							if("1".equals(arSrc.get(pos).getState())){
 								Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn2_on);
 								titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
 							}else{
-								Drawable titleAreaImg2 = getResources().getDrawable(R.drawable.q_list_line_btn1_on);
-								titleBackImgArea.setBackgroundDrawable(titleAreaImg2);
+								Drawable titleAreaImg1 = getResources().getDrawable(R.drawable.q_list_line_btn1_on);
+								titleBackImgArea.setBackgroundDrawable(titleAreaImg1);
 							}
+							contentArea.setVisibility(View.GONE);
+							questionContentArea.setVisibility(View.GONE);
+							answerContentArea.setVisibility(View.GONE);
+							listAdapter.notifyDataSetChanged();
 						}
 					}
 				}
 			);
+			
 			return convertView;
 		}
     }
