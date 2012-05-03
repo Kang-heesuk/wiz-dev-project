@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animated-rotate xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/glass"
-    android:pivotX="50%"
-    android:pivotY="50%">
-</animated-rotate>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false" >
+
+    <item
+        android:drawable="@drawable/diagram_1"
+        android:duration="200"
+        />
+    <item
+        android:drawable="@drawable/diagram_2"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/diagram_3"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/diagram_4"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/diagram_5"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/diagram_6"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/diagram_7"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/diagram_8"
+        android:duration="200"/>
+
+</animation-list>
