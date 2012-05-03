@@ -231,6 +231,9 @@ public class ChildLocationViewActivity extends NMapActivity {
   		public void run(){
   			InputStream is = null;
   			try{
+  				//2초동안 딜레이(뭔가 찾는 모습을 보여주기위함)
+  				try{Thread.sleep(2000);}catch(Exception e){}
+  				
   				String enc_ctn = "";
   				if(childCtn != null && !"".equals(childCtn)){
   					enc_ctn = WizSafeSeed.seedEnc(childCtn);

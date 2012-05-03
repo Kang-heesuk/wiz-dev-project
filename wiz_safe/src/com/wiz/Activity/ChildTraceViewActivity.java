@@ -217,6 +217,9 @@ public class ChildTraceViewActivity extends NMapActivity {
   		public void run(){
   			InputStream is = null;
   			try{
+  				//2초동안 딜레이(뭔가 찾는 모습을 보여주기위함)
+  				try{Thread.sleep(2000);}catch(Exception e){}
+  				
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
   				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+URLEncoder.encode(selectedDay);
