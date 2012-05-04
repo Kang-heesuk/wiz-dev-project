@@ -998,7 +998,7 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
 				 
 				Bitmap bitmap2 = ((BitmapDrawable)dis_info).getBitmap();
 				canvas.drawBitmap(bitmap2, (windowWidth/2 - (bitmap2.getWidth()/2)), windowHeight/2-60-radiusPixel, null);
-				
+				bitmap2.recycle();
 			}
 			super.draw(canvas,mapView,shadow);
 		}
