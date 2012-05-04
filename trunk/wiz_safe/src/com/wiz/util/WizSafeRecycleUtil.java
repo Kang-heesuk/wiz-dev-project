@@ -18,6 +18,7 @@ package com.wiz.util;
  
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
  
@@ -63,6 +64,11 @@ public class WizSafeRecycleUtil {
             ((ImageView)root).setImageDrawable(null);
         }
  
+        // destroy webview
+ 		if (root instanceof WebView) {
+ 			((WebView) root).destroyDrawingCache();
+ 			((WebView) root).destroy();
+ 		}
  
         root = null;
  
