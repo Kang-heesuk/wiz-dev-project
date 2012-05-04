@@ -28,6 +28,7 @@ import com.wiz.Seed.WizSafeSeed;
 import com.wiz.View.NoticePopView;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class MainActivity extends Activity {
@@ -120,7 +121,15 @@ public class MainActivity extends Activity {
     	}
     }
     
-    //뒤로가기 2번 눌러야 어플 꺼지도록 onKeyDown설정
+    
+    public void onDestroy() {
+
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
+
+	//뒤로가기 2번 눌러야 어플 꺼지도록 onKeyDown설정
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if(!mFlag) {
