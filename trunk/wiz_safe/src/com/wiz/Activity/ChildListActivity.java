@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 
@@ -80,7 +81,14 @@ public class ChildListActivity extends Activity {
 		thread.start();
     }
     
-    //리스트뷰를 리로드
+    public void onDestroy() {
+    	
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
+
+	//리스트뷰를 리로드
     public void upDateListView(){
     	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
   		listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
