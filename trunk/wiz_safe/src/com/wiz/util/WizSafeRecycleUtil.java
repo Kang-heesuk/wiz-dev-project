@@ -35,17 +35,17 @@ public class WizSafeRecycleUtil {
         if (root == null)
             return;
         
-    //모든 리스너를 반환
-    // set all listeners to null (not every view and not every API level supports the methods)
-	try {root.setOnClickListener(null);} catch (Throwable mayHappen) {};
-	try {root.setOnCreateContextMenuListener(null);} catch (Throwable mayHappen) {};
-	try {root.setOnFocusChangeListener(null);} catch (Throwable mayHappen) {};
-	try {root.setOnKeyListener(null);} catch (Throwable mayHappen) {};
-	try {root.setOnLongClickListener(null);} catch (Throwable mayHappen) {};
-	try {root.setOnClickListener(null);} catch (Throwable mayHappen) {};
+	    //모든 리스너를 반환
+	    // set all listeners to null (not every view and not every API level supports the methods)
+		try {root.setOnClickListener(null);} catch (Throwable mayHappen) {};
+		try {root.setOnCreateContextMenuListener(null);} catch (Throwable mayHappen) {};
+		try {root.setOnFocusChangeListener(null);} catch (Throwable mayHappen) {};
+		try {root.setOnKeyListener(null);} catch (Throwable mayHappen) {};
+		try {root.setOnLongClickListener(null);} catch (Throwable mayHappen) {};
+		try {root.setOnClickListener(null);} catch (Throwable mayHappen) {};
 
 	
-	//뷰의 자식객체 반환
+		//뷰의 자식객체 반환
         root.setBackgroundDrawable(null);
         if (root instanceof ViewGroup) {
             ViewGroup group = (ViewGroup)root;
