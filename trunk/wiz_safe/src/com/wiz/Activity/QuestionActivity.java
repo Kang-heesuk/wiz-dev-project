@@ -21,6 +21,7 @@ import android.widget.EditText;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class QuestionActivity extends Activity {
@@ -104,6 +105,13 @@ public class QuestionActivity extends Activity {
 			}
 		});
     }
+    
+    public void onDestroy() {
+    	
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
     
     //API 호출 쓰레드
   	class CallManToManRequestApi extends Thread{

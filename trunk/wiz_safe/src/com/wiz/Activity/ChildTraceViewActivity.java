@@ -59,6 +59,7 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 /**
@@ -203,12 +204,15 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 	}
 
-	@Override
 	protected void onDestroy() {
 		//액티비티를 종료할때 맵뷰에 사용된 provider 를 반환한다. 
 		LocationManager locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationMgr.removeUpdates(mMapLocationManager);
-		super.onDestroy();
+		
+		WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+		
+    	super.onDestroy();
 	}
 
     
