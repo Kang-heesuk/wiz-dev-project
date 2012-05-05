@@ -27,10 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.wiz.Activity.ChildListActivity.CallDeleteApiThread;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class ParentListActivity extends Activity {
@@ -63,6 +63,13 @@ public class ParentListActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState); 
     }
+    
+    public void onDestroy() {
+    	
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
     
     public void onResume(){
     	super.onResume();

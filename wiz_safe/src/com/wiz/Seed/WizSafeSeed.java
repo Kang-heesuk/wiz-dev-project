@@ -1,8 +1,8 @@
 package com.wiz.Seed;
 
-import com.wiz.Seed.SeedCipher;
-import com.wiz.util.WizSafeUtil;
 import java.io.UnsupportedEncodingException;
+
+import com.wiz.util.WizSafeUtil;
 
 public class WizSafeSeed {
 	

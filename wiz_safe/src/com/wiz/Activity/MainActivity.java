@@ -82,6 +82,13 @@ public class MainActivity extends Activity {
         };
     }
     
+    public void onDestroy() {
+    	
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
+    
     public void onResume(){
     	super.onResume();
     	
@@ -121,14 +128,6 @@ public class MainActivity extends Activity {
     	}
     }
     
-    
-    public void onDestroy() {
-
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
-
 	//뒤로가기 2번 눌러야 어플 꺼지도록 onKeyDown설정
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

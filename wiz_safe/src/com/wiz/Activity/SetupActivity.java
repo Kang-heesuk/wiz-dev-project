@@ -22,6 +22,7 @@ import android.widget.Button;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
+import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class SetupActivity extends Activity {
@@ -53,6 +54,13 @@ public class SetupActivity extends Activity {
     	CallGetCustomerInformationApiThread thread = new CallGetCustomerInformationApiThread(); 
 		thread.start();
     }
+    
+    public void onDestroy() {
+    	
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
     
     //API 호출 쓰레드(고객의 문자수신 상태값 가져오기)
   	class CallGetCustomerInformationApiThread extends Thread{

@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
+import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class JoinAcceptActivity extends Activity {
@@ -294,6 +295,12 @@ public class JoinAcceptActivity extends Activity {
         textView2.setText(strBuf2.toString());
     }
     
+    public void onDestroy() {
+    	
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
     
     //API 호출 쓰레드
   	class callAuthSMSApiThread extends Thread{

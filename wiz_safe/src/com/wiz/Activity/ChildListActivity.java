@@ -65,6 +65,13 @@ public class ChildListActivity extends Activity {
         super.onCreate(savedInstanceState); 
     }
     
+    public void onDestroy() {
+    	
+    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
+    	System.gc();
+    	super.onDestroy();
+	}
+    
     public void onResume(){
     	super.onResume();
     	setContentView(R.layout.child_list);
@@ -80,13 +87,6 @@ public class ChildListActivity extends Activity {
         CallGetChildListApiThread thread = new CallGetChildListApiThread(); 
 		thread.start();
     }
-    
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
 
 	//리스트뷰를 리로드
     public void upDateListView(){
