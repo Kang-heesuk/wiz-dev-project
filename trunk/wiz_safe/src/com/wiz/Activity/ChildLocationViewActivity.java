@@ -851,6 +851,12 @@ public class ChildLocationViewActivity extends NMapActivity {
 			nowDate = st.nextToken();
 			nowCount = st.nextToken();
 		}
+		//오늘중에 시도한 횟수 셋팅
+		if(nowDate.equals(sdf.format(calendar.getTime()))){
+			tryCount = Integer.parseInt(nowCount)+1;
+		}else{
+			tryCount = 1;
+		}
 		tryCount = Integer.parseInt(nowCount)+1;
 		SharedPreferences.Editor edit;
 		edit = LocalSave.edit();
