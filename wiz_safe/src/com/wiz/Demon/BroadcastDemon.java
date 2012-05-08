@@ -1,12 +1,12 @@
 
 package com.wiz.Demon;
 
+import com.wiz.util.WizSafeUtil;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-
-import com.wiz.util.WizSafeUtil;
 
 
 //해당 클래스는 시스템 재시작시에 사라진 데몬을 재 실행 하는 클래스이다.

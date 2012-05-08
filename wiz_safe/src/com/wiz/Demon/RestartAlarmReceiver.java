@@ -1,11 +1,11 @@
 package com.wiz.Demon;
 
+import com.wiz.util.WizSafeUtil;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-
-import com.wiz.util.WizSafeUtil;
 
 public class RestartAlarmReceiver extends BroadcastReceiver {
 	
