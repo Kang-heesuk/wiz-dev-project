@@ -201,6 +201,9 @@ public class ChildSafezoneListActivity extends Activity {
 				String time = textView2.substring(8, 10);
 				textArea2.setText(year + "년 " + month + "월 " + day + "일 " + WizSafeUtil.timeConvertFromNumberToString0to23(time) + " 진입");
 				textArea2.setVisibility(View.VISIBLE);
+			}else if("00000000000000".equals(textView2)){
+				textArea2.setText("안심존 시간 만료");
+				textArea2.setVisibility(View.VISIBLE);
 			}
 			
 			btn_modify.setOnClickListener(
