@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.wiz.Demon.WizSafeService;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class SplashActivity extends Activity {
@@ -79,11 +78,4 @@ public class SplashActivity extends Activity {
        		timer.schedule(myTask, 3000);
         }
     }
-    
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
 }

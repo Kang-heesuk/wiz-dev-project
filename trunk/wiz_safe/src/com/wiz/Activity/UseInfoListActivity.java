@@ -1,7 +1,6 @@
 package com.wiz.Activity;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 
 public class UseInfoListActivity extends Activity {
 
@@ -62,13 +60,6 @@ public class UseInfoListActivity extends Activity {
         listView.setAdapter(listAdapter);
     }
     
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
-    
     //리스트뷰를 리로드
     public void upDateListView(){
     	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
@@ -81,7 +72,6 @@ public class UseInfoListActivity extends Activity {
     //API 호출 쓰레드
   	class CallGetUseInfoListApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				String url = "https://www.heream.com/api/getBoardList.jsp?part="+URLEncoder.encode("02");
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
@@ -124,8 +114,6 @@ public class UseInfoListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}

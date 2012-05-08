@@ -1,7 +1,6 @@
 package com.wiz.Activity;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -28,7 +27,6 @@ import com.wiz.Seed.WizSafeSeed;
 import com.wiz.View.NoticePopView;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class MainActivity extends Activity {
@@ -82,13 +80,6 @@ public class MainActivity extends Activity {
         };
     }
     
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
-    
     public void onResume(){
     	super.onResume();
     	
@@ -127,7 +118,7 @@ public class MainActivity extends Activity {
     		thread.start();
     	}
     }
-    
+
 	//뒤로가기 2번 눌러야 어플 꺼지도록 onKeyDown설정
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -146,7 +137,6 @@ public class MainActivity extends Activity {
     //API 호출 쓰레드 - 고객정보
   	class CallGetCustomerInformationApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			String url = "";
   			HttpURLConnection urlConn;
   			BufferedReader br;
@@ -241,8 +231,6 @@ public class MainActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}

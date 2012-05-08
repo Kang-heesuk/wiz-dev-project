@@ -1,7 +1,6 @@
 package com.wiz.Activity;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class LocationLogActivity extends Activity {
@@ -52,13 +50,6 @@ public class LocationLogActivity extends Activity {
     	CallGetLocationLogApi thread = new CallGetLocationLogApi(); 
 		thread.start();
     }
-    
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
     
     //리스트뷰를 리로드
     public void upDateListView(){
@@ -167,7 +158,6 @@ public class LocationLogActivity extends Activity {
     //API 호출 쓰레드
   	class CallGetLocationLogApi extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(LocationLogActivity.this));
   				String url = "https://www.heream.com/api/getLocationBoard.jsp?ctn="+ URLEncoder.encode(enc_ctn);
@@ -220,8 +210,6 @@ public class LocationLogActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}

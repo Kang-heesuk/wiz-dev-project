@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class ChildTraceListActivity extends Activity {
@@ -60,13 +59,6 @@ public class ChildTraceListActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
-	}
-	
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
 	}
 	
 	public void onResume(){

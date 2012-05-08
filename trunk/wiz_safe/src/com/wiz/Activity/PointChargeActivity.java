@@ -8,7 +8,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.wiz.Seed.WizSafeSeed;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class PointChargeActivity extends Activity {
@@ -27,11 +26,6 @@ public class PointChargeActivity extends Activity {
 	    pointWebView.setWebChromeClient(new WebChromeClient());
     }
     
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
+   
 
 }
