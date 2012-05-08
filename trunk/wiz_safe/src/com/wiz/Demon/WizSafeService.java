@@ -3,6 +3,8 @@ package com.wiz.Demon;
 import java.util.Calendar;
 import java.util.List;
 
+import com.wiz.util.WizSafeUtil;
+
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -12,8 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.PowerManager;
-
-import com.wiz.util.WizSafeUtil;
 
 public class WizSafeService extends Service {
 	
