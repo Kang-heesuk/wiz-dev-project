@@ -1,7 +1,6 @@
 package com.wiz.Activity;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,7 +29,6 @@ import android.widget.Toast;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class ChildSafezoneListActivity extends Activity {
@@ -71,13 +69,6 @@ public class ChildSafezoneListActivity extends Activity {
 		super.onCreate(savedInstanceState); 
 	}
 	
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
-    
 	public void onResume(){
     	super.onResume();
     	setContentView(R.layout.child_safezone_list);
@@ -308,7 +299,6 @@ public class ChildSafezoneListActivity extends Activity {
 	//API 호출 쓰레드
   	class CallGetSafeZoneListApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			String url = "";
   			HttpURLConnection urlConn;
   			BufferedReader br;
@@ -427,8 +417,6 @@ public class ChildSafezoneListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}
@@ -437,7 +425,6 @@ public class ChildSafezoneListActivity extends Activity {
   	//API 호출 쓰레드
   	class CallDeleteApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				String selectedSafezoneCode = childSafezoneListArr.get(selectedRow).getSafezoneCode();
   				String selectedEncCtn = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeCtn());
@@ -465,8 +452,6 @@ public class ChildSafezoneListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(3);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}

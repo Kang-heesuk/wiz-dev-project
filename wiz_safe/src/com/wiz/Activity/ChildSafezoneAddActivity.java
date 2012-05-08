@@ -87,7 +87,6 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 
@@ -370,15 +369,12 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
 		mOverlayManager.populate();
 
 	}
-	
+
+	@Override
 	protected void onDestroy() {
 		//액티비티를 종료할때 맵뷰에 사용된 provider 를 반환한다. 
 		LocationManager locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationMgr.removeUpdates(mMapLocationManager);
-		
-		WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-		System.gc();
-		
 		super.onDestroy();
 	}
 
@@ -386,7 +382,6 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
   	//API 호출 쓰레드
   	class CallInsertSafeZoneApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				String encCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildSafezoneAddActivity.this));
   				String encChildCtn = WizSafeSeed.seedEnc(childCtn);
@@ -419,8 +414,6 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}
@@ -1002,7 +995,7 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
 				 
 				Bitmap bitmap2 = ((BitmapDrawable)dis_info).getBitmap();
 				canvas.drawBitmap(bitmap2, (windowWidth/2 - (bitmap2.getWidth()/2)), windowHeight/2-60-radiusPixel, null);
-				
+				bitmap2.recycle();
 			}
 			super.draw(canvas,mapView,shadow);
 		}

@@ -1,7 +1,6 @@
 package com.wiz.Activity;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -51,7 +50,6 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 
@@ -216,15 +214,13 @@ public class ChildLocationViewActivity extends NMapActivity {
     		thread.start();
     	}
     }
-    
+
+
+	@Override
 	protected void onDestroy() {
 		//액티비티를 종료할때 맵뷰에 사용된 provider 를 반환한다. 
 		LocationManager locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationMgr.removeUpdates(mMapLocationManager);
-		
-		WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	
 		super.onDestroy();
 	}
 
@@ -232,7 +228,6 @@ public class ChildLocationViewActivity extends NMapActivity {
 	//API 호출 쓰레드
   	class CallGetNowLocationApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				//2초동안 딜레이(뭔가 찾는 모습을 보여주기위함)
   				try{Thread.sleep(2000);}catch(Exception e){}
@@ -275,8 +270,6 @@ public class ChildLocationViewActivity extends NMapActivity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(2);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}
@@ -284,7 +277,6 @@ public class ChildLocationViewActivity extends NMapActivity {
   	//차감 API 호출 쓰레드
   	class CallPayApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
   				String url = "https://www.heream.com/api/nowLocationDeductPoint.jsp?ctn="+ URLEncoder.encode(enc_ctn);
@@ -302,8 +294,6 @@ public class ChildLocationViewActivity extends NMapActivity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(4);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}

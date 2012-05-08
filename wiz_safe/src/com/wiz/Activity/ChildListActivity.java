@@ -1,7 +1,6 @@
 package com.wiz.Activity;
  
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,7 +29,6 @@ import android.widget.TextView;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 
@@ -65,13 +63,6 @@ public class ChildListActivity extends Activity {
         super.onCreate(savedInstanceState); 
     }
     
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
-    
     public void onResume(){
     	super.onResume();
     	setContentView(R.layout.child_list);
@@ -87,8 +78,8 @@ public class ChildListActivity extends Activity {
         CallGetChildListApiThread thread = new CallGetChildListApiThread(); 
 		thread.start();
     }
-
-	//리스트뷰를 리로드
+    
+    //리스트뷰를 리로드
     public void upDateListView(){
     	//재호출로써 커스텀 리스트 뷰를 다시 보여준다.
   		listAdapter = new ChildListAdapter(this, R.layout.child_list_customlist, childListArr);
@@ -401,7 +392,6 @@ public class ChildListActivity extends Activity {
     //API 호출 쓰레드
   	class CallGetChildListApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildListActivity.this));
   				String url = "https://www.heream.com/api/getChildList.jsp?ctn="+ URLEncoder.encode(enc_ctn);
@@ -462,8 +452,6 @@ public class ChildListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(1);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}
@@ -472,7 +460,6 @@ public class ChildListActivity extends Activity {
   	//API 호출 쓰레드
   	class CallDeleteApiThread extends Thread{
   		public void run(){
-  			InputStream is = null;
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildListActivity.this));
   				String enc_selectedCtn = WizSafeSeed.seedEnc(childListArr.get(selectedRow).getChildCtn());
@@ -494,8 +481,6 @@ public class ChildListActivity extends Activity {
   			}catch(Exception e){
   				//통신중 에러발생
   				pHandler.sendEmptyMessage(3);
-  			}finally{
-  				if(is != null){ try{is.close();}catch(Exception e){} }
   			}
   		}
   	}

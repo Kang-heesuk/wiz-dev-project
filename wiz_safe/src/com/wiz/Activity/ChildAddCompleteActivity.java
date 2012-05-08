@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class ChildAddCompleteActivity extends Activity {
@@ -43,12 +42,5 @@ public class ChildAddCompleteActivity extends Activity {
 				}
 			}
 		);
-	}
-	
-	public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
 	}
 }

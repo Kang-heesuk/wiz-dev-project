@@ -24,7 +24,6 @@ import android.widget.Spinner;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class ChildTraceAddActivity extends Activity {
@@ -217,12 +216,6 @@ public class ChildTraceAddActivity extends Activity {
 
 	}
 	
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
 	
 	Button.OnClickListener mClickListener = new Button.OnClickListener(){
 		public void onClick(View v) {

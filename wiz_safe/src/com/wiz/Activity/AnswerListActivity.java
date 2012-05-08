@@ -1,7 +1,6 @@
 package com.wiz.Activity;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,7 +29,6 @@ import android.widget.TextView;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class AnswerListActivity extends Activity {
@@ -67,13 +65,6 @@ public class AnswerListActivity extends Activity {
     	CallGetManToManListApiThread thread = new CallGetManToManListApiThread(); 
 		thread.start();
     }
-
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
     
     //리스트뷰를 리로드
     public void upDateListView(){
@@ -250,7 +241,6 @@ public class AnswerListActivity extends Activity {
     //API 호출 쓰레드
     class CallGetManToManListApiThread extends Thread{
     	public void run(){
-    		InputStream is = null;
     		try{
     			String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(AnswerListActivity.this));
     			String url = "https://www.heream.com/api/manToManResponse.jsp?ctn="+ URLEncoder.encode(enc_ctn);
@@ -315,8 +305,6 @@ public class AnswerListActivity extends Activity {
     		}catch(Exception e){
     			//통신중 에러발생
     			pHandler.sendEmptyMessage(1);
-    		}finally{
-    			if(is != null){ try{is.close();}catch(Exception e){} }
     		}
     	}
     }

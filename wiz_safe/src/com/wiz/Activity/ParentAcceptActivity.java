@@ -1,7 +1,5 @@
 package com.wiz.Activity;
 
-import com.wiz.util.WizSafeRecycleUtil;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,13 +51,6 @@ public class ParentAcceptActivity extends Activity {
 				ParentAcceptActivity.this.finish();
 			}
 		});
-    }
-    
-    public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
-	}
+    }   
     
 }

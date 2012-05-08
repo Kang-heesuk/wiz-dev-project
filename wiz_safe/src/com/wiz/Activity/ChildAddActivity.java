@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
-import com.wiz.util.WizSafeRecycleUtil;
 import com.wiz.util.WizSafeUtil;
 
 public class ChildAddActivity extends Activity {
@@ -64,13 +63,6 @@ public class ChildAddActivity extends Activity {
         findViewById(R.id.checkBox1).setOnClickListener(mClickListener_checkBodx);
         findViewById(R.id.checkBox2).setOnClickListener(mClickListener_checkBodx);
         findViewById(R.id.checkBox3).setOnClickListener(mClickListener_checkBodx);
-	}
-	
-	public void onDestroy() {
-    	
-    	WizSafeRecycleUtil.recursiveRecycle(getWindow().getDecorView());
-    	System.gc();
-    	super.onDestroy();
 	}
 	
 	Button.OnClickListener mClickListener = new Button.OnClickListener(){
