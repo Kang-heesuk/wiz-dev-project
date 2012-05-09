@@ -96,13 +96,36 @@ public class PointChargeActivity extends Activity {
     		PointChargeActivity.this.finish();
     	}
     	
+    	public void webViewGoBack(){
+    		
+    		WebView pointWebView = (WebView)findViewById(R.id.webview);
+    		if(pointWebView.canGoBack()){
+    			pointWebView.goBack();
+    		}else{
+    			AlertDialog.Builder ad = new AlertDialog.Builder(PointChargeActivity.this);
+    			String title = "스마트자녀안심";	
+    			String message = "뒤로 갈 페이지가 없습니다.";	
+    			String buttonName = "확인";
+    			ad.setTitle(title);
+    			ad.setMessage(message);
+    			ad.setNeutralButton(buttonName, new DialogInterface.OnClickListener() {
+    				public void onClick(DialogInterface dialog, int which) {
+    					
+    				}
+    			});
+    			ad.show();
+    		}
+    	}
+    	
     	//must be final
     	public void openSubWebView(final String arg){
     		String url = "";
     		if("MoveHelp".equals(arg)){
-				url = "http://web.teledit.com/Danal/TMobile/help/mguide.html";
+				//url = "http://web.teledit.com/Danal/TMobile/help/mguide.html";
+    			url = "https://www.heream.com/microPayment/Mguide.jsp";
 			}else if("OpenYak".equals(arg)){
-				url = "http://web.teledit.com/Danal/TMobile/help/myak.html";
+				//url = "http://web.teledit.com/Danal/TMobile/help/myak.html";
+				url = "https://www.heream.com/microPayment/Myak.jsp";
 			}
     		
     		//WebView subWebView = (WebView)findViewById(R.id.webview);
