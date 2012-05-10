@@ -590,4 +590,31 @@ public class WizSafeUtil {
 		edit.putString("isSendLocationUser", tempSetVal);
 		edit.commit();
 	}
+	
+	
+	//최종적으로 위치를 전송한 시간을 로컬변수에 셋팅한다.
+	public static void setLastSendLocation(Context context, String setVal) {
+		String tempSetVal = setVal;
+		SharedPreferences LocalSave;
+		SharedPreferences.Editor edit;
+    	LocalSave = context.getSharedPreferences("WizSafeLocalVal", 0);
+		edit = LocalSave.edit();
+		edit.putString("lastSendLocation", tempSetVal);
+		edit.commit();
+	}
+	
+	//현재 위치를 전송할지 안할지 판단한다.
+	public static boolean isSendLocationPassibleUser(Context context) {
+		boolean returnVal = false;
+		SharedPreferences LocalSave;
+		LocalSave = context.getSharedPreferences("WizSafeLocalVal", 0);
+    	String tempString = LocalSave.getString("lastSendLocation", "0");
+    	if(System.currentTimeMillis() - Long.parseLong(tempString) >= (1000 * 60* 5)){
+    		returnVal = true;
+    	}else{
+    		returnVal = false;
+    	}
+    	return returnVal;
+	}
+	
 }
