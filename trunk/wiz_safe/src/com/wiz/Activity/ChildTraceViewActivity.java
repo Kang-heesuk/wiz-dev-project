@@ -48,9 +48,9 @@ import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.nmapmodel.NMapPlacemark;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.maps.overlay.NMapPOIitem;
-import com.nhn.android.mapviewer.NMapCalloutBasicOverlay;
 import com.nhn.android.mapviewer.NMapPOIflagType;
 import com.nhn.android.mapviewer.NMapViewerResourceProvider;
+import com.nhn.android.mapviewer.overlay.NMapCalloutCustomOverlay;
 import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
@@ -720,10 +720,10 @@ public class ChildTraceViewActivity extends NMapActivity {
 			}
 
 			// use custom callout overlay
-			//return new NMapCalloutCustomOverlay(itemOverlay, overlayItem, itemBounds, mMapViewerResourceProvider);
+			return new NMapCalloutCustomOverlay(itemOverlay, overlayItem, itemBounds, mMapViewerResourceProvider);
 
 			// set basic callout overlay
-			return new NMapCalloutBasicOverlay(itemOverlay, overlayItem, itemBounds, ChildTraceViewActivity.this);	 		
+			//return new NMapCalloutBasicOverlay(itemOverlay, overlayItem, itemBounds, ChildTraceViewActivity.this);	 		
 		}
 
 	};
