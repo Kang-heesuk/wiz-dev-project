@@ -97,10 +97,13 @@ public class NMapCalloutBasicOverlay extends NMapCalloutOverlay {
  
 		Bitmap speechBubble = BitmapFactory.decodeResource(context.getResources(), R.drawable.speech_bubble);
 		//말풍선 백이미지의 위치를 구한다.
-		canvas.drawBitmap(speechBubble,  mOffsetX, mOffsetY - (speechBubble.getHeight()*7)/9, null);
+		//canvas.drawBitmap(speechBubble,  mOffsetX, mOffsetY - (speechBubble.getHeight()*7)/9, null);
+		canvas.drawBitmap(speechBubble,  mOffsetX, mOffsetY, null);
 		
 		//  Draw title
-		canvas.drawText("  "+mOverlayItem.getTitle(), mOffsetX, mOffsetY - (speechBubble.getHeight()*2)/5, mTextPaint);
+		//canvas.drawText("  "+mOverlayItem.getTitle(), mOffsetX, mOffsetY - (speechBubble.getHeight()*2)/5, mTextPaint);
+		canvas.drawText("111111 00 111111", mOffsetX, mOffsetY, mTextPaint);
+		
 	}
 
 	/* Internal Functions */
