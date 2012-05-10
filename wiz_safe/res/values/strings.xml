@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">Wiz_safe</string>
+    <string name="app_name">자녀안심</string>
     
     <string name="btn_string_01">자녀리스트</string>
     <string name="btn_string_02">부모리스트</string>
