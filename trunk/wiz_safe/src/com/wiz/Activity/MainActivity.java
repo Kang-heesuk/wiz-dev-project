@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wiz.Demon.WizSafeGetLocation;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.View.NoticePopView;
 import com.wiz.util.WizSafeDialog;
@@ -69,6 +71,16 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        //인증된 사람인지 아닌지 판별하여 현재 위치를 전송해야 하는 USER 이면 데몬을 한번 실행시켜 위치를 전송한다.
+        if(WizSafeUtil.isAuthOkUser(MainActivity.this)){
+            if(WizSafeUtil.isSendLocationPassibleUser(MainActivity.this)){
+            	//백그라운드에 DemonService라는 Sevice가 존재하는지 가져옴.
+        		ComponentName cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
+        		//서비스 시작(위에서 중지 시킨 데몬을 시작시킴)
+        		startService(new Intent().setComponent(cn));
+            }
+        }
         
         //뒤로가기 두번 눌러야 종료되도록 설정
         mHandler = new Handler() {
