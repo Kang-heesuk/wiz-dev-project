@@ -257,7 +257,8 @@ public class ChildTraceListActivity extends Activity {
 			  						ad.setMessage("보유한 포인트가 부족합니다. 포인트 충전 후 다시 이용해 주세요.");
 			  						ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
 			  							public void onClick(DialogInterface dialog, int which) {
-			  								Toast.makeText(ChildTraceListActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
+			  								Intent intent = new Intent(ChildTraceListActivity.this, PointChargeActivity.class);
+			  	  							startActivity(intent);
 			  							}
 			  						});
 			  						ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){

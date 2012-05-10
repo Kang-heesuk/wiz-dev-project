@@ -461,7 +461,8 @@ public class ChildLocationViewActivity extends NMapActivity {
 					ad.setPositiveButton("포인트\n충전하기", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							finish();
-							Toast.makeText(ChildLocationViewActivity.this, "포인트 충전하기로 액티비티 이동", Toast.LENGTH_SHORT).show();
+							Intent intent = new Intent(ChildLocationViewActivity.this, PointChargeActivity.class);
+  							startActivity(intent);
 						}
 					});
 					ad.setNegativeButton("닫기", new DialogInterface.OnClickListener(){
