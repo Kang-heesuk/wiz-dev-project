@@ -22,8 +22,7 @@
         android:orientation="vertical" >
 
         <!-- START : 자녀가 존재 할경우 보이는 뷰 -->
-
-        <LinearLayout
+        <LinearLayout
             android:id="@+id/visibleArea1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
