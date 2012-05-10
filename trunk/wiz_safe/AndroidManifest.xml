@@ -189,11 +189,6 @@
         <!-- END : Activity -->
         
         <!-- START : service -->
-        <service android:name="com.wiz.Demon.WizSafeService" android:enabled="true">
-		    <intent-filter >
-				<action android:name="com.wiz.Demon.WizSafeService"></action>		        
-		    </intent-filter>
-	    </service>
 	    <service android:name="com.wiz.Demon.WizSafeGetLocation" android:enabled="true">
 		    <intent-filter >
 				<action android:name="com.wiz.Demon.WizSafeGetLocation"></action>		        
