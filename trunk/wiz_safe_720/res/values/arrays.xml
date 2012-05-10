@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="ChildTraceAddActivity_weekSetup"
+        >
+        <item>월~금요일</item>
+        <item>월~일요일</item>
+    </string-array>
+    
+    <string-array
+        name="ChildTraceAddActivity_startTimeSetup"
+        >
+        <item>오전0시</item>
+        <item>오전1시</item>
+        <item>오전2시</item>
+        <item>오전3시</item>
+        <item>오전4시</item>
+        <item>오전5시</item>
+        <item>오전6시</item>
+        <item>오전7시</item>
+        <item>오전8시</item>
+        <item>오전9시</item>
+        <item>오전10시</item>
+        <item>오전11시</item>
+        <item>오후12시</item>
+        <item>오후1시</item>
+        <item>오후2시</item>
+        <item>오후3시</item>
+        <item>오후4시</item>
+        <item>오후5시</item>
+        <item>오후6시</item>
+        <item>오후7시</item>
+        <item>오후8시</item>
+        <item>오후9시</item>
+        <item>오후10시</item>
+        <item>오후11시</item>
+    </string-array>
+    
+    <string-array
+        name="ChildTraceAddActivity_endTimeSetup"
+        >
+        <item>오전1시</item>
+        <item>오전2시</item>
+        <item>오전3시</item>
+        <item>오전4시</item>
+        <item>오전5시</item>
+        <item>오전6시</item>
+        <item>오전7시</item>
+        <item>오전8시</item>
+        <item>오전9시</item>
+        <item>오전10시</item>
+        <item>오전11시</item>
+        <item>오후12시</item>
+        <item>오후1시</item>
+        <item>오후2시</item>
+        <item>오후3시</item>
+        <item>오후4시</item>
+        <item>오후5시</item>
+        <item>오후6시</item>
+        <item>오후7시</item>
+        <item>오후8시</item>
+        <item>오후9시</item>
+        <item>오후10시</item>
+        <item>오후11시</item>
+        <item>오전12시</item>
+    </string-array>
+    
+    <string-array
+        name="ChildTraceAddActivity_timeIntervalSetup"
+        >
+        <item>1시간</item>
+        <item>2시간</item>
+        <item>3시간</item>
+    </string-array>
+    
+</resources>
