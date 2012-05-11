@@ -138,6 +138,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	}
 	
 	public void onLocationChanged(Location arg0) {
+		writeLog_print("====LocationChange!!");
 		
 		//위치가 어떤것으로 변하던 두가지 방식 모두를 가지고 둘 중 조건에 맞는 값을 가져온다.
 		mLocation_GPS = mLocationManager_GPS.getLastKnownLocation(LocationManager.GPS_PROVIDER);
