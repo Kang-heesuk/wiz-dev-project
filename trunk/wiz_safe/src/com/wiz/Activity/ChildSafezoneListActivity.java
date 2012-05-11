@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
@@ -203,7 +202,7 @@ public class ChildSafezoneListActivity extends Activity {
 				textArea2.setVisibility(View.VISIBLE);
 			}
 			if("00000000000000".equals(textView2)){
-				textArea2.setText("안심존 시간 만료");
+				textArea2.setText("안심존 시간 만료(미진입)");
 				textArea2.setVisibility(View.VISIBLE);
 			}
 			
@@ -439,7 +438,6 @@ public class ChildSafezoneListActivity extends Activity {
   				String selectedEncLon = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeLongitude());
   				String url = "https://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode)+"&parentCtn="+URLEncoder.encode(selectedEncCtn)+"&childCtn="+URLEncoder.encode(selectedEncChildCtn)+"&radius="+URLEncoder.encode(selectedEncRadius)+"&addr="+URLEncoder.encode(selectedEncAddr)+"&lat="+URLEncoder.encode(selectedEncLat)+"&lon="+URLEncoder.encode(selectedEncLon);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-  				android.util.Log.i("banhong", "url :: "+url);
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
   				ArrayList<String> returnXML = new ArrayList<String>();

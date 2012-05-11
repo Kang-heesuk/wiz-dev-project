@@ -230,6 +230,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   				{
   					returnXML.add(new String(temp));  					
   				}
+  				
   				//결과를 XML 파싱하여 추출
   				String resultCode = WizSafeParser.xmlParser_String(returnXML,"<RESULT_CD>");
   				String strDate1 = WizSafeParser.xmlParser_String(returnXML,"<DATE>");
@@ -256,7 +257,6 @@ public class ChildTraceViewActivity extends NMapActivity {
   					tempBean.setAddress(WizSafeSeed.seedDec(encAddress.get(i)));
   					tempBean.setType(strType.get(i));
   					tempBean.setHiddenState(strHiddenState.get(i));
-  					
   					childTraceViewListArr.add(tempBean);
   				}
   				
@@ -665,8 +665,6 @@ public class ChildTraceViewActivity extends NMapActivity {
 				Log.i(LOG_TAG, "onCalloutClick: title=" + item.getTitle());
 			}
 			
-			// [[TEMP]] handle a click event of the callout
-			Toast.makeText(ChildTraceViewActivity.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
 		}
 
 		@Override
