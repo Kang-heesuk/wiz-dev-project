@@ -132,7 +132,9 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		}
 		
 		writeLog_print("서비스2번  ===== 온디스트로이");
+		writeLog_print("====================================");
 		Log.i("childList","서비스2번  ===== 온디스트로이");
+		
 	}
 	
 	public void onLocationChanged(Location arg0) {
