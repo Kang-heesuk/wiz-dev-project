@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
@@ -247,6 +246,7 @@ public class ChildTraceListActivity extends Activity {
   			        	//아직차감 안했는데 가진돈이 없는경우(0원포함) = 정지화면 , DetailList보기 불가, 실행 액션 시 포인트 부족 경고창, 포인트부족 노출
   			        	layout_1.setBackgroundResource(R.drawable.trace_stoplist_bg);
   			        	pointArea.setVisibility(View.VISIBLE);
+  			        	nowStateBtn.setBackgroundResource(R.drawable.btn_s_restart_selector);
   			        	nowStateBtn.setOnClickListener(
 							new Button.OnClickListener(){
 								public void onClick(View v) {
@@ -287,8 +287,10 @@ public class ChildTraceListActivity extends Activity {
 	  								}
 	  							}
 	  						);
+  			        		nowStateBtn.setBackgroundResource(R.drawable.btn_s_stop_selector);
   			        	}else{
   			        		layout_1.setBackgroundResource(R.drawable.trace_stoplist_bg);
+  			        		nowStateBtn.setBackgroundResource(R.drawable.btn_s_restart_selector);
   			        	}
   			        	//발자취 ON/OFF 버튼액션
   			        	nowStateBtn.setOnClickListener(
