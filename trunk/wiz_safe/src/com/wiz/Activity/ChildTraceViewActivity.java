@@ -82,6 +82,10 @@ public class ChildTraceViewActivity extends NMapActivity {
 	private String childCtn;
 	private String selectedDay;
 	
+	//spinner의 onItemSelected가 최초에 한번 실행이 안되도록 하기위해 선언한 변수
+	int onItemSelectedVal = -1;
+	
+	
 	//맵위에 위치를 표시할 값을 가진 arraylist
 	ArrayList<ChildTraceViewDetail> childTraceViewListArr = new ArrayList<ChildTraceViewDetail>();
 
@@ -336,11 +340,9 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        	//셀렉트 될때마다 탄다.
   						public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
   	  						ChildTraceViewDetail tempBean = childTraceViewListArr.get(position);
-  							moveSelectedPosition(tempBean.getLongitude(), tempBean.getLatitude());
-  							//오버레이가 정상 생성되어 존재한다면
-  							if (poiDataOverlay != null) {		
-  								poiDataOverlay.selectPOIitem(position, true);
-  							}
+  	  						Log.i("banhong", "최초 스피너 리스너 동작 : "+id);
+  							moveSelectedPosition(tempBean.getLongitude(), tempBean.getLatitude(), position);
+  							
   						}
 
   						public void onNothingSelected(AdapterView<?> parent) {
@@ -463,7 +465,8 @@ public class ChildTraceViewActivity extends NMapActivity {
 			tempBean = childTraceViewListArr.get(i);
 			double tmpLongitude = tempBean.getLongitude();
 			double tmpLatitude = tempBean.getLatitude();
-			String dateInfo = WizSafeUtil.getDateFormat(((String)tempBean.getDay()+(String)tempBean.getHour()));
+			//String dateInfo = WizSafeUtil.getDateFormat(((String)tempBean.getDay()+(String)tempBean.getHour()));
+			String dateInfo = tempBean.getAddress().trim();
 			if(i == 0){
 				//첫번째 데이터는 시작PIN을 사용한다.
 				poiData.addPOIitem(tmpLongitude, tmpLatitude, dateInfo, NMapPOIflagType.CUSTOM_BASE + 2, 0);
@@ -486,21 +489,27 @@ public class ChildTraceViewActivity extends NMapActivity {
 		poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
 		
 		if (poiDataOverlay != null) {		//오버레이가 정상 생성되어 존재한다면
-			
-			poiDataOverlay.showAllPOIdata(100);
+			Log.i("banhong", "모든 핀이 보이게 축척 조정");
+			poiDataOverlay.showAllPOIdata(0);
 		}
 		
 	}
 
-	public void moveSelectedPosition(double longitude, double latitude){
-		//구한 위도 경도로 다시 맵중심을 복구한다.
-		mPreferences = getPreferences(MODE_PRIVATE);
-		int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
-		mMapController.setMapViewMode(viewMode);
-		//시작 축척 레벨을 10로 고정
-		int level = 10;
-		mMapController.setMapCenter(new NGeoPoint(longitude, latitude), level);
-		//구한 위도 경도로 다시 맵중심을 복구한다.
+	public void moveSelectedPosition(double longitude, double latitude, int position){
+		if(onItemSelectedVal > -1){
+		
+			//구한 위도 경도로 다시 맵중심을 복구한다.
+			mPreferences = getPreferences(MODE_PRIVATE);
+			int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
+			mMapController.setMapViewMode(viewMode);
+			Log.i("banhong", "한 위도 경도로 다시 맵중심을 복구");
+			//오버레이가 정상 생성되어 존재한다면
+			if (poiDataOverlay != null) {		
+				poiDataOverlay.selectPOIitem(position, true);
+			}
+		}else{
+			onItemSelectedVal = position;
+		}
 	}
 	
 	
