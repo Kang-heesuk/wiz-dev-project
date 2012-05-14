@@ -559,10 +559,10 @@ public class ChildLocationViewActivity extends NMapActivity {
 		poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
 
 		// select an item
-		//poiDataOverlay.selectPOIitem(0, true);
+		poiDataOverlay.selectPOIitem(0, true);
 		
 		// show all POI data
-		poiDataOverlay.showAllPOIdata(0);	
+		//poiDataOverlay.showAllPOIdata(0);	
 	} 
 
 	
@@ -735,7 +735,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 			}
 
 			// [[TEMP]] handle a click event of the callout
-			Toast.makeText(ChildLocationViewActivity.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
+			//Toast.makeText(ChildLocationViewActivity.this, "onCalloutClick: " + item.getTitle(), Toast.LENGTH_LONG).show();
 		}
 
 		//@Override
