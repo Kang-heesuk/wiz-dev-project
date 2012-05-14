@@ -35,7 +35,7 @@ public class JoinAcceptActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.join_accept);
-        
+         
         //자신의 폰번호 노출되는 부분
         final TextView editText1 = (TextView)findViewById(R.id.editText1);
         editText1.setText(WizSafeUtil.setPhoneNum(WizSafeUtil.getCtn(JoinAcceptActivity.this)));
@@ -308,6 +308,7 @@ public class JoinAcceptActivity extends Activity {
   				returnXML = new ArrayList<String>();
   				while((temp = br.readLine()) != null)
   				{
+  					android.util.Log.i("banhong", "=="+new String(temp));
   					returnXML.add(new String(temp));
   				}
   				
