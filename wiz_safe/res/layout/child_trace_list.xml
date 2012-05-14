@@ -139,12 +139,6 @@
                                         android:layout_height="match_parent"
                                         android:layout_weight="86"
                                         android:orientation="horizontal" >
-
-                                        <Button
-                                            android:id="@+id/nowStateBtn"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:background="#00000000" />
                                     </LinearLayout>
 
                                     <LinearLayout
@@ -359,7 +353,7 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="45"
+                        android:layout_weight="33"
                         android:orientation="vertical" >
 
                         <Button
@@ -372,7 +366,21 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="45"
+                        android:layout_weight="34"
+                        android:orientation="vertical" >
+
+                        <Button
+                            android:id="@+id/nowStateBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_s_restart_selector" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="33"
                         android:orientation="vertical" >
 
                         <Button
