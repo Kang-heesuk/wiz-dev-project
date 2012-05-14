@@ -84,7 +84,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 	
 	//spinner의 onItemSelected가 최초에 한번 실행이 안되도록 하기위해 선언한 변수
 	int onItemSelectedVal = -1;
-	
+	String gap = "";
 	
 	//맵위에 위치를 표시할 값을 가진 arraylist
 	ArrayList<ChildTraceViewDetail> childTraceViewListArr = new ArrayList<ChildTraceViewDetail>();
@@ -309,7 +309,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   					
   					TextView tv_checkTime = (TextView)findViewById(R.id.textView1); 
   			        if(tv_checkTime != null){
-  			        	String gap = "오차범위 : 50m ~2km";
+  			        	gap = "오차범위 : 50m ~2km";
   			        	tv_checkTime.setText("일자 : "+WizSafeUtil.getDateFormat(selectedDay) +"\n"+ gap);
   			        }
   			        
@@ -508,6 +508,16 @@ public class ChildTraceViewActivity extends NMapActivity {
 		}else{
 			onItemSelectedVal = position;
 		}
+		
+		//상단에 정보 부분에 선택한 정보로 갱신
+		ModifyTopViewArea(position);
+	}
+	
+	//상단에 정보 영역을 선택한 값으로 갱신한다.
+	public void ModifyTopViewArea(int selectedVal){
+		ChildTraceViewDetail tempBean = childTraceViewListArr.get(selectedVal);
+		TextView tv_checkTime = (TextView)findViewById(R.id.textView1);
+		tv_checkTime.setText("일자 : "+WizSafeUtil.getDateFormat(selectedDay)+" "+WizSafeUtil.timeConvertFromNumberToString0to23(tempBean.getHour()) +"\n"+ gap);
 	}
 	
 	
@@ -535,7 +545,9 @@ public class ChildTraceViewActivity extends NMapActivity {
 				if (placeMark != null) {
 					mFloatingPOIitem.setTitle(placeMark.toString());
 				}
+				
 				mFloatingPOIdataOverlay.selectPOIitemBy(mFloatingPOIitem.getId(), false);
+				
 			}
 		}
 
@@ -706,6 +718,8 @@ public class ChildTraceViewActivity extends NMapActivity {
 
 						// skip selected item
 						if (poiItem == overlayItem) {
+							//상단에 정보 부분에 선택한 정보로 갱신
+							ModifyTopViewArea(i);
 							//맵 위에 오버레이를 선택했을때 수행되는 메소드 영역
 							continue;
 						}
@@ -724,10 +738,12 @@ public class ChildTraceViewActivity extends NMapActivity {
 					}
 				}
 			}
-
+			
 			// use custom callout overlay
 			return new NMapCalloutCustomOverlay(itemOverlay, overlayItem, itemBounds, mMapViewerResourceProvider);
 
+			//
+			
 			// set basic callout overlay
 			//return new NMapCalloutBasicOverlay(itemOverlay, overlayItem, itemBounds, ChildTraceViewActivity.this);	 		
 		}
