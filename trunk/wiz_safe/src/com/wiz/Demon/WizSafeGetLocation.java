@@ -300,7 +300,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.SECOND, (60*5)+15);
-		am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);
+		am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
 	}
   	
   	public static void writeLog_print(String msg)

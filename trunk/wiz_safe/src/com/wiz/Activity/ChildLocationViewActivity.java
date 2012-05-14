@@ -833,7 +833,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 		}else{
 			tryCount = 0;
 		}
-
+		Toast.makeText(ChildLocationViewActivity.this, "오늘 현위치 추적 시도 횟수 : " + tryCount + " 회", Toast.LENGTH_SHORT).show();
 		return tryCount;
 	}
 	
