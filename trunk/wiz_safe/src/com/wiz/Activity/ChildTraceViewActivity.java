@@ -225,7 +225,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
   				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+URLEncoder.encode(selectedDay);
-  				Log.i("banhong", "== "+url);
+  				
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -340,7 +340,6 @@ public class ChildTraceViewActivity extends NMapActivity {
   			        	//셀렉트 될때마다 탄다.
   						public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
   	  						ChildTraceViewDetail tempBean = childTraceViewListArr.get(position);
-  	  						Log.i("banhong", "최초 스피너 리스너 동작 : "+id);
   							moveSelectedPosition(tempBean.getLongitude(), tempBean.getLatitude(), position);
   							
   						}
@@ -489,7 +488,6 @@ public class ChildTraceViewActivity extends NMapActivity {
 		poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
 		
 		if (poiDataOverlay != null) {		//오버레이가 정상 생성되어 존재한다면
-			Log.i("banhong", "모든 핀이 보이게 축척 조정");
 			poiDataOverlay.showAllPOIdata(0);
 		}
 		
@@ -502,7 +500,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 			mPreferences = getPreferences(MODE_PRIVATE);
 			int viewMode = mPreferences.getInt(KEY_VIEW_MODE, NMAP_VIEW_MODE_DEFAULT);
 			mMapController.setMapViewMode(viewMode);
-			Log.i("banhong", "한 위도 경도로 다시 맵중심을 복구");
+			
 			//오버레이가 정상 생성되어 존재한다면
 			if (poiDataOverlay != null) {		
 				poiDataOverlay.selectPOIitem(position, true);
