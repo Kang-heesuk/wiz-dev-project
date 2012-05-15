@@ -150,7 +150,7 @@
                     android:id="@+id/btn_modify"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_s_modify_selector" />
+                    android:background="@drawable/btn_s_modify_long_selector" />
             </LinearLayout>
 
             <LinearLayout
@@ -163,7 +163,7 @@
                     android:id="@+id/btn_delete"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_s_del_selector" />
+                    android:background="@drawable/btn_s_del_long_selector" />
             </LinearLayout>
 
             <LinearLayout
