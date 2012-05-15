@@ -16,6 +16,21 @@ public class WizSafeDialog  {
 
 			m_loadingDialog = new Dialog(context, R.style.TransDialog);
 			ProgressBar pb = new ProgressBar(context, null, android.R.attr.progressBarStyleInverse);
+			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			m_loadingDialog.addContentView(pb, params);
+			m_loadingDialog.setCancelable(false);
+
+		}
+
+		m_loadingDialog.show();
+
+	}
+	
+	public static void showLoading_mapView(Context context) {
+		if (m_loadingDialog == null) {
+
+			m_loadingDialog = new Dialog(context, R.style.TransDialog);
+			ProgressBar pb = new ProgressBar(context, null, android.R.attr.progressBarStyleInverse);
 			pb.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.progress));
 			LayoutParams params = new LayoutParams(200, 200);
 			m_loadingDialog.addContentView(pb, params);
