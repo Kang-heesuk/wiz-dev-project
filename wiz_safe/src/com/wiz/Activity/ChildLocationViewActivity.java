@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 import android.app.AlertDialog;
@@ -194,7 +193,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 					payMode = "PAY";
 					//API 호출 쓰레드 시작
 			    	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
-			    	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+			    	WizSafeDialog.showLoading_mapView(ChildLocationViewActivity.this);	//Dialog 보이기
 			    	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
 					thread.start();
 				}
@@ -209,7 +208,7 @@ public class ChildLocationViewActivity extends NMapActivity {
     		payMode = "NOPAY";
     		//API 호출 쓰레드 시작
         	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
-        	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+        	WizSafeDialog.showLoading_mapView(ChildLocationViewActivity.this);	//Dialog 보이기
         	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
     		thread.start();
     	}
@@ -354,7 +353,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   										public void onClick(DialogInterface dialog, int which) {
   											payMode = "PAY";
   											//API 호출 쓰레드 시작
-  									    	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+  									    	WizSafeDialog.showLoading_mapView(ChildLocationViewActivity.this);	//Dialog 보이기
   									    	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
   											thread.start();  											
   										}
@@ -367,7 +366,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   						    	}else{
   						    		payMode = "NOPAY";
   						    		//API 호출 쓰레드 시작
-  						        	WizSafeDialog.showLoading(ChildLocationViewActivity.this);	//Dialog 보이기
+  						        	WizSafeDialog.showLoading_mapView(ChildLocationViewActivity.this);	//Dialog 보이기
   						        	CallGetNowLocationApiThread thread = new CallGetNowLocationApiThread(); 
   						    		thread.start();
   						    	}
@@ -813,10 +812,9 @@ public class ChildLocationViewActivity extends NMapActivity {
 	//현위치 찾기를 몇번이나 시도하였는지 확인한다.
 	public int getHowManyTry(){
 		int tryCount =0;
-		GregorianCalendar calendar = new GregorianCalendar();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String strNowDate = (new SimpleDateFormat("yyyyMMdd")).format(new java.util.Date());
 		SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
-		String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",sdf.format(calendar.getTime())+"_0");
+		String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",strNowDate+"_0");
 		String nowDate = "";
 		String nowCount = "0";
 		StringTokenizer st = new StringTokenizer(getNowChildLocCnt, "_");
@@ -828,7 +826,7 @@ public class ChildLocationViewActivity extends NMapActivity {
 		}
 		
 		//오늘중에 시도한 횟수
-		if(nowDate.equals(sdf.format(calendar.getTime()))){
+		if(nowDate.equals(strNowDate)){
 			tryCount = Integer.parseInt(nowCount);
 		}else{
 			tryCount = 0;
@@ -840,12 +838,11 @@ public class ChildLocationViewActivity extends NMapActivity {
 	//위치찾기를 하고 난 후에 그날 몇번째 위치찾기를 하였는지 저장한다.
 	public void setHowManyTry(){
 		int tryCount =0;
-		GregorianCalendar calendar = new GregorianCalendar();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String strNowDate = (new SimpleDateFormat("yyyyMMdd")).format(new java.util.Date());
 		SharedPreferences LocalSave = getSharedPreferences("WizSafeLocalVal", 0);
-		String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",sdf.format(calendar.getTime())+"_0");
+		String getNowChildLocCnt = LocalSave.getString("getNowChildLocCnt",strNowDate+"_0");
 		String nowDate = "";
-		String nowCount = "0";
+		String nowCount = "0";  
 		StringTokenizer st = new StringTokenizer(getNowChildLocCnt, "_");
 		while(st.hasMoreTokens())
 		{
@@ -853,15 +850,14 @@ public class ChildLocationViewActivity extends NMapActivity {
 			nowCount = st.nextToken();
 		}
 		//오늘중에 시도한 횟수 셋팅
-		if(nowDate.equals(sdf.format(calendar.getTime()))){
+		if(nowDate.equals(strNowDate)){
 			tryCount = Integer.parseInt(nowCount)+1;
 		}else{
 			tryCount = 1;
 		}
-		tryCount = Integer.parseInt(nowCount)+1;
 		SharedPreferences.Editor edit;
 		edit = LocalSave.edit();
-		edit.putString("getNowChildLocCnt", sdf.format(calendar.getTime())+"_"+tryCount);
+		edit.putString("getNowChildLocCnt", strNowDate+"_"+tryCount);
 		edit.commit();
 	}
 }
