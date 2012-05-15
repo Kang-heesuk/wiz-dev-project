@@ -15,7 +15,7 @@ public class WizSafeDialog  {
 		if (m_loadingDialog == null) {
 
 			m_loadingDialog = new Dialog(context, R.style.TransDialog);
-			ProgressBar pb = new ProgressBar(context, null, android.R.attr.progressBarStyleInverse);
+			ProgressBar pb = new ProgressBar(context, null);
 			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			m_loadingDialog.addContentView(pb, params);
 			m_loadingDialog.setCancelable(false);
