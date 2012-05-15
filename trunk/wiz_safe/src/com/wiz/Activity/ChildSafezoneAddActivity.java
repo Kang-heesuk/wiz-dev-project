@@ -222,7 +222,7 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
 	    				searchText = searchArea.getText().toString();
 	    				//API 호출 쓰레드 시작
 	    				//주소를 통해서 위도 경도를 구하고 해당 위치로 이동한다.
-	    		    	WizSafeDialog.showLoading(ChildSafezoneAddActivity.this);	//Dialog 보이기
+	    		    	WizSafeDialog.showLoading_mapView(ChildSafezoneAddActivity.this);	//Dialog 보이기
 	    		        CallGetLocaInfoAndMoveApiThread thread = new CallGetLocaInfoAndMoveApiThread(); 
 	    				thread.start();
 	    		    	//getLocaInfoAndMove(searchArea.getText().toString());
@@ -290,7 +290,7 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
 						
 						//API 호출 쓰레드 시작
 				    	//안심존을 등록/수정한다.
-				    	WizSafeDialog.showLoading(ChildSafezoneAddActivity.this);	//Dialog 보이기
+				    	WizSafeDialog.showLoading_mapView(ChildSafezoneAddActivity.this);	//Dialog 보이기
 				        CallInsertSafeZoneApiThread thread = new CallInsertSafeZoneApiThread(); 
 						thread.start();
 					}

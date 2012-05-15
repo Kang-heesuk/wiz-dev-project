@@ -143,7 +143,7 @@ public class ChildTraceViewActivity extends NMapActivity {
 		
     	//API 호출 쓰레드 시작
     	//class 최초 진입시 api 통신으로 위도경도를 가져온다.
-    	WizSafeDialog.showLoading(ChildTraceViewActivity.this);	//Dialog 보이기
+    	WizSafeDialog.showLoading_mapView(ChildTraceViewActivity.this);	//Dialog 보이기
     	CallGetChildTraceViewApiThread thread = new CallGetChildTraceViewApiThread(); 
 		thread.start();
 		
