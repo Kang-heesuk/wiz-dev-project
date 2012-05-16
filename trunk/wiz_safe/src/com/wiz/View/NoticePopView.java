@@ -4,13 +4,10 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,27 +44,14 @@ public class NoticePopView extends PopView{
 				dismiss();
 			}
 	    });
-	      
-	    //실행 단말기의 사이즈를 구한다. -test
-	    Display display = ((WindowManager)anchor.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-	    int width = display.getWidth();
-	    int height = display.getHeight();
-	      
-	    //실행 단말기의 해상도를 구한다. -test
-	    DisplayMetrics displayMetrics = new DisplayMetrics();
-	    ((WindowManager)anchor.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-	    int deviceWidth = displayMetrics.widthPixels;
-	    int deviceHeight =displayMetrics.heightPixels;
-	    //실행 단말기의 밀도를 구한다. -test
-	    int deviceDensity =displayMetrics.densityDpi;
-	      
+	   
 	    //공지사항 내용을 입력
 	    String noticeContent = "";
 			try {
 				noticeContent = WizSafeUtil.replaceStr(noticeData.get(2),"☆","\n");
 			} catch (Exception e) {}
 	    TextView noticeStr = (TextView)root.findViewById(R.id.textView1);
-	    noticeStr.setText("사이즈는??\n가로 : "+width+"\n세로 : "+height+"\n\n해상도는??\n가로 : "+deviceWidth+"\n세로 : "+deviceHeight+"\n밀도 : "+deviceDensity+"\n\n" + noticeContent);
+	    noticeStr.setText(noticeContent);
 	      
 	    //공지팝업 하단 체크  누른경우의 액션
 	    final LinearLayout checkLayout = (LinearLayout)root.findViewById(R.id.checkLayout);
