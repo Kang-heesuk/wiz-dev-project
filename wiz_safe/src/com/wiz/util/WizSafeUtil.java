@@ -617,4 +617,19 @@ public class WizSafeUtil {
     	return returnVal;
 	}
 	
+	//xml 처리를 위해 변경한 문자를 다시 안드로이드 표현식으로  변경
+	public static String replaceXMLtoAndExpress(String word) throws Exception {
+		if (word != null && !word.equals("")) {
+			word = replaceStr(word, "&amp;", "&");
+			word = replaceStr(word, "&lt;", "<");
+			word = replaceStr(word, "&gt;", ">");
+			word = replaceStr(word, "&apos;", "'");
+			word = replaceStr(word, "&quot", "\"");
+			word = replaceStr(word, "&#10;", "\n");
+		}
+
+		return word;
+	}
+
+	
 }

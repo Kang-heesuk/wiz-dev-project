@@ -259,15 +259,12 @@ public class AnswerListActivity extends Activity {
     			ArrayList<String> title = WizSafeParser.xmlParser_List(returnXML,"<TITLE>");
     			ArrayList<String> question = WizSafeParser.xmlParser_List(returnXML,"<QUESTION>");
     			ArrayList<String> answer = WizSafeParser.xmlParser_List(returnXML,"<ANSWER>");
-    			
     			//복호화 하여 2차원배열에 담는다.
     			httpResult = Integer.parseInt(resultCode);
-    			
     			//정상적으로 리스트를 가져온 경우 
     			if(httpResult == 0){
     				//조회해온 리스트 사이즈 만큼의 2차원배열을 선언한다.
     				manToManList = new String[state.size()][5];
-    				
     				if(state.size() > 0){
     					for(int i=0; i < state.size(); i++){
     						manToManList[i][0] = (String) state.get(i);
@@ -280,17 +277,17 @@ public class AnswerListActivity extends Activity {
     				}
     				if(title.size() > 0){
     					for(int i=0; i <title.size(); i++){
-    						manToManList[i][2] = (String) title.get(i);
+    						manToManList[i][2] = WizSafeUtil.replaceXMLtoAndExpress((String) title.get(i));
     					}
     				}
     				if(question.size() > 0){
     					for(int i=0; i <question.size(); i++){
-    						manToManList[i][3] = (String) question.get(i);
+    						manToManList[i][3] = WizSafeUtil.replaceXMLtoAndExpress((String) question.get(i));
     					}
     				}
     				if(answer.size() > 0){
     					for(int i=0; i <answer.size(); i++){
-    						manToManList[i][4] = (String) answer.get(i);
+    						manToManList[i][4] = WizSafeUtil.replaceXMLtoAndExpress((String) answer.get(i));
     					}
     				}
     				//2차원 배열을 커스텀 어레이리스트에 담는다.
