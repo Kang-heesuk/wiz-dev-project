@@ -27,7 +27,7 @@ public class SplashActivity extends Activity {
         String OSver = android.os.Build.VERSION.RELEASE;
         int APIver = android.os.Build.VERSION.SDK_INT;
         
-        if((OSver.indexOf("2.1") > -1 || OSver.indexOf("2.2") > -1) || APIver < 50){
+        if((OSver.indexOf("2.1") > -1 || OSver.indexOf("2.2") > -1) || APIver < 7){
         	AlertDialog.Builder ad = new AlertDialog.Builder(SplashActivity.this);
 			String title = "알림";	
 			String message = "해당 OS 버전에서는 지원하지 않습니다.\nOS 업데이트 후 이용해주세요.";	
