@@ -206,10 +206,11 @@ public class ChildSafezoneListActivity extends Activity {
 				textArea2.setVisibility(View.VISIBLE);
 			}
 			
-			btn_modify.setOnClickListener(
-				new Button.OnClickListener(){
-					public void onClick(View v) {
-						if(arSrc.get(pos).getSafeAlarmDate() == null || "".equals(arSrc.get(pos).getSafeAlarmDate()) || arSrc.get(pos).getSafeAlarmDate().length() < 10){
+			
+			if(arSrc.get(pos).getSafeAlarmDate() == null || "".equals(arSrc.get(pos).getSafeAlarmDate()) || arSrc.get(pos).getSafeAlarmDate().length() < 10){
+				btn_modify.setOnClickListener(
+					new Button.OnClickListener(){
+						public void onClick(View v) {
 							Intent intent = new Intent(ChildSafezoneListActivity.this, ChildSafezoneAddActivity.class);
 							intent.putExtra("safezoneCode", arSrc.get(pos).getSafezoneCode());
 							intent.putExtra("latitude", arSrc.get(pos).getSafeLatitude());
@@ -221,8 +222,12 @@ public class ChildSafezoneListActivity extends Activity {
 							startActivity(intent);
 						}
 					}
-				}
-			);
+				);
+			}else{
+				btn_modify.setBackgroundResource(R.drawable.btn_s_modify_long_on);
+			}
+			
+			
 			
 			btn_delete.setOnClickListener(
 				new Button.OnClickListener(){
