@@ -147,7 +147,7 @@ public class UseInfoListActivity extends Activity {
 				}else{
 					//조회실패
 					AlertDialog.Builder ad = new AlertDialog.Builder(UseInfoListActivity.this);
-					String title = "통신 오류";	
+					String title = "네트워크 오류";	
 					String message = "부모 리스트 정보를 조회할 수 없습니다.";	
 					String buttonName = "확인";
 					ad.setTitle(title);
@@ -162,8 +162,8 @@ public class UseInfoListActivity extends Activity {
   			}else if(msg.what == 1){
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(UseInfoListActivity.this);
-				String title = "통신 오류";	
-				String message = "통신 중 오류가 발생하였습니다.";	
+				String title = "네트워크 오류";	
+				String message = "네트워크 접속이 지연되고 있습니다.\n네트워크 상태를 확인 후에 다시 시도해주세요.";	
 				String buttonName = "확인";
 				ad.setTitle(title);
 				ad.setMessage(message);
