@@ -30,7 +30,7 @@ public class SplashActivity extends Activity {
         if((OSver.indexOf("2.1") > -1 || OSver.indexOf("2.2") > -1) || APIver < 7){
         	AlertDialog.Builder ad = new AlertDialog.Builder(SplashActivity.this);
 			String title = "알림";	
-			String message = "해당 OS 버전에서는 지원하지 않습니다.\nOS 업데이트 후 이용해주세요.";	
+			String message = "해당 휴대폰의 OS 버전에서는 서비스 이용이 불가합니다.\nOS 업데이트 후 이용해주세요.";	
 			String buttonName = "확인";
 			ad.setTitle(title);
 			ad.setMessage(message);

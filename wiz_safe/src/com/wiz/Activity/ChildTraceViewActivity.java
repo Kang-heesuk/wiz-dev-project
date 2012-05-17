@@ -375,8 +375,8 @@ public class ChildTraceViewActivity extends NMapActivity {
   				WizSafeDialog.hideLoading();
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
-				String title = "통신 오류";	
-				String message = "통신 중 오류가 발생하였습니다.";	
+				String title = "네트워크 오류";	
+				String message = "네트워크 접속이 지연되고 있습니다.\n네트워크 상태를 확인 후에 다시 시도해주세요.";	
 				String buttonName = "확인";
 				ad.setTitle(title);
 				ad.setMessage(message);
@@ -420,8 +420,8 @@ public class ChildTraceViewActivity extends NMapActivity {
   					WizSafeDialog.hideLoading();
   	  				//핸들러 비정상
   	  				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
-  					String title = "통신 오류";	
-  					String message = "통신 중 오류가 발생하였습니다.";	
+  					String title = "네트워크 오류";	
+  					String message = "네트워크 접속이 지연되고 있습니다.\n네트워크 상태를 확인 후에 다시 시도해주세요.";	
   					String buttonName = "확인";
   					ad.setTitle(title);
   					ad.setMessage(message);
@@ -437,8 +437,8 @@ public class ChildTraceViewActivity extends NMapActivity {
   				WizSafeDialog.hideLoading();
   				//핸들러 비정상
   				AlertDialog.Builder ad = new AlertDialog.Builder(ChildTraceViewActivity.this);
-				String title = "통신 오류";	
-				String message = "통신 중 오류가 발생하였습니다.";	
+				String title = "네트워크 오류";	
+				String message = "네트워크 접속이 지연되고 있습니다.\n네트워크 상태를 확인 후에 다시 시도해주세요.";	
 				String buttonName = "확인";
 				ad.setTitle(title);
 				ad.setMessage(message);
