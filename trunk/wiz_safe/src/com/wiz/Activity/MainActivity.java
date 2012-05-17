@@ -490,7 +490,7 @@ public class MainActivity extends Activity {
   			// GPS OFF 일때 Dialog 띄워서 설정 화면으로 튀어봅니다..
   			AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
   			gsDialog.setTitle("위치조회 사용 설정");
-  			gsDialog.setMessage("위치조회 기능이 해제되어 있습니다.\n단말기의 '환경설정 > 위치(장소) 및 보안'에서\n'무선 네트워크 사용' 또는 'GPS 위성 사용'을\n활성화 시킨 후 이용해주세요.\n※비활성화 시 위치조회가 불가능 합니다.");
+  			gsDialog.setMessage("위치조회 기능이 해제되어 있습니다.\n단말기의 '환경설정 > 위치(장소) 및 보안'에서 '무선 네트워크 사용' 또는 'GPS 위성 사용'을 활성화 시킨 후 이용해주세요.\n\n※비활성화 시 위치조회가 불가능 합니다.");
   			gsDialog.setPositiveButton("환경설정", new DialogInterface.OnClickListener() {
   				public void onClick(DialogInterface dialog, int which) {
   					// GPS설정 화면으로 튀어요
