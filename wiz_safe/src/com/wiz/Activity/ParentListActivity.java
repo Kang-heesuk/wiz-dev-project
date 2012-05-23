@@ -316,6 +316,13 @@ public class ParentListActivity extends Activity {
 								});
 								submitAlert.show();
 							}
+						}else{
+							//대기중 일때만
+							if("".equals(arSrc.get(pos).getAcceptDate())){
+								Intent intent = new Intent(ParentListActivity.this, AllowLocation.class);
+								intent.putExtra("allowPhoneNumber", arSrc.get(pos).getparentCtn());
+								startActivity(intent);
+							}
 						}
 					}
 				}
@@ -509,6 +516,8 @@ public class ParentListActivity extends Activity {
   							}
   						}
   					);
+  			        
+  			      
   			        
   			        
   			        //메뉴키 눌렀을경우 하단에 나오는 메뉴들의 액션 정의

@@ -131,7 +131,7 @@ public class ChildTraceAddActivity extends Activity {
         if(intent.getStringExtra("startTime") != null){
         	timeStartSpinner.setSelection(Integer.parseInt(startTime));
         }else{
-        	timeStartSpinner.setSelection(13);
+        	timeStartSpinner.setSelection(8);
         }
         
         timeStartSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -163,7 +163,7 @@ public class ChildTraceAddActivity extends Activity {
         	}
         	timeEndSpinner.setSelection(Integer.parseInt(endTime)-1);
         }else{
-        	timeEndSpinner.setSelection(18);
+        	timeEndSpinner.setSelection(16);
         }
         	
         
