@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -225,6 +226,21 @@ public class ParentListActivity extends Activity {
 			TextView textArea1 = (TextView)convertView.findViewById(R.id.textArea1);
 			TextView textArea2 = (TextView)convertView.findViewById(R.id.textArea2);
 			Button imgState = (Button)convertView.findViewById(R.id.imgState);
+			LinearLayout layout_1 = (LinearLayout)convertView.findViewById(R.id.layout_1);
+			
+			//대기중일때 버튼 액션
+			layout_1.setOnClickListener(
+				new Button.OnClickListener(){
+					public void onClick(View v) {
+						//대기중 일때만
+						if("".equals(arSrc.get(pos).getAcceptDate())){
+							Intent intent = new Intent(ParentListActivity.this, AllowLocation.class);
+							intent.putExtra("allowPhoneNumber", arSrc.get(pos).getparentCtn());
+							startActivity(intent);
+						}
+					}
+				}
+			);
 			
 			//커스텀 리스트 뷰 앞쪽 이미지 숫자
 			if((position + 1) == 1){
@@ -621,5 +637,7 @@ public class ParentListActivity extends Activity {
   			}
   		}
   	};
+  	
+	
 	
 }
