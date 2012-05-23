@@ -12,6 +12,27 @@
         android:layout_weight="1"
         android:orientation="vertical" >
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text=" v1.0"
+                    android:textColor="#64282828"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -236,7 +257,7 @@
                 android:layout_weight="20"
                 android:background="@drawable/main_btn2_selector"
                 android:orientation="vertical" >
-                
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -280,9 +301,7 @@
                     android:layout_weight="32"
                     android:orientation="vertical" >
                 </LinearLayout>
-                
             </LinearLayout>
-            
 
             <LinearLayout
                 android:layout_width="0dp"

@@ -192,13 +192,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="90"
                 android:orientation="horizontal" >
-
+                
                 <Spinner
                     android:id="@+id/timeIntervalSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="10dp"
                     android:background="@drawable/listmenu" />
+
             </LinearLayout>
 
             <LinearLayout
