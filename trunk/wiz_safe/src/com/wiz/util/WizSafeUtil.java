@@ -190,7 +190,7 @@ public class WizSafeUtil {
 		String returnVal = "";
 		
 		if("00".equals(num)){
-			returnVal = "오전12시";
+			returnVal = "오전0시";
 		}else if("01".equals(num)){
 			returnVal = "오전1시";
 		}else if("02".equals(num)){

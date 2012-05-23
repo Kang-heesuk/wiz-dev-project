@@ -188,8 +188,11 @@ public class ChildTraceAddActivity extends Activity {
 			}
 		});
         
+         
         //셀렉트 박스 구성(간격설정)
         Spinner timeIntervalSpinner = (Spinner)findViewById(R.id.timeIntervalSpinner);
+        timeIntervalSpinner.setFocusable(false);
+        timeIntervalSpinner.setFocusableInTouchMode(false);
         timeIntervalSpinner.setPrompt("시간간격을 설정하세요.");
         timeIntervalAdspin = ArrayAdapter.createFromResource(this, R.array.ChildTraceAddActivity_timeIntervalSetup, R.layout.text_spinner_item);
         timeIntervalAdspin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -197,8 +200,7 @@ public class ChildTraceAddActivity extends Activity {
         if(intent.getStringExtra("interval") != null){
         	timeIntervalSpinner.setSelection((Integer.parseInt(interval)/60)-1);
         }
-        
-        
+
         timeIntervalSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
         	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -209,6 +211,7 @@ public class ChildTraceAddActivity extends Activity {
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
+        
         
         //버튼 액션 정의
         findViewById(R.id.btn_setup).setOnClickListener(mClickListener);
