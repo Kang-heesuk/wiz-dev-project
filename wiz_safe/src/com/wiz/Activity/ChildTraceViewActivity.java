@@ -225,7 +225,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
   				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+URLEncoder.encode(selectedDay);
-  				
+  				Log.i("banhong", "url = "+url);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -321,7 +321,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   						String[] adapterItemList = new String[childTraceViewListArr.size()];
   						for(int i=0; i < childTraceViewListArr.size(); i++){
   							ChildTraceViewDetail tempBean = childTraceViewListArr.get(i);
-  							adapterItemList[i] = WizSafeUtil.getDateFormat(tempBean.getDay()) + " " + WizSafeUtil.timeConvertFromNumberToString1to24(tempBean.getHour());
+  							adapterItemList[i] = WizSafeUtil.getDateFormat(tempBean.getDay()) + " " + WizSafeUtil.timeConvertFromNumberToString0to23(tempBean.getHour());
   						}
   						//데이터가 있으면 스피너 셋팅
   						if(adapterItemList.length > 0){
