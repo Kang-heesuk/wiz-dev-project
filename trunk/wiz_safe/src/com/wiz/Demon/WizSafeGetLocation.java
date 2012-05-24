@@ -78,8 +78,6 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	public void onCreate(){ 
 		super.onCreate(); 
 		
-		Log.i("childList","===시작");
-		
 		//5분뒤에 재시작되도록 설정함
 		restartDemon();
 		
@@ -90,7 +88,6 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		
 		//위치조회 하지 않는 단말기(부모로 등록된 사람이 없는 단말기)일경우 바로 종료한다.
 		if(!WizSafeUtil.isSendLocationUser(WizSafeGetLocation.this)){
-			Log.i("childList","===허허");
 			cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
 			stopService(new Intent().setComponent(cn));
 			return;
@@ -118,9 +115,9 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	public void onDestroy(){  
 		super.onDestroy();
 		//해당 단말의 위도 경도를 가져오는 로직을 없애준다.
-		if(mLocationManager_GPS != null) { mLocationManager_GPS.removeNmeaListener(gpsQuentityLoad); Log.i("childList","===히히"); }
-		if(mLocationManager_GPS != null) { mLocationManager_GPS.removeUpdates(this); Log.i("childList","===히히"); }
-		if(mLocationManager_NETWORK != null) { mLocationManager_NETWORK.removeUpdates(this); Log.i("childList","===호호"); }
+		if(mLocationManager_GPS != null) { mLocationManager_GPS.removeNmeaListener(gpsQuentityLoad); }
+		if(mLocationManager_GPS != null) { mLocationManager_GPS.removeUpdates(this); }
+		if(mLocationManager_NETWORK != null) { mLocationManager_NETWORK.removeUpdates(this); }
 
 		//슬립모드에서도 동작하도록 하는 로직을 없애준다.
 		if(wakeLock != null){
