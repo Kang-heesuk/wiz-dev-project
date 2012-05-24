@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.wiz.Demon.WizSafeGetLocation;
 import com.wiz.Seed.WizSafeSeed;
 import com.wiz.util.WizSafeDialog;
 import com.wiz.util.WizSafeParser;
@@ -110,6 +112,15 @@ public class AllowLocation extends Activity {
   				//자녀리스트 등록이 되고난 후 , 위치허용 동의를 한 순간 부터 서버로 위치 정보를 제공하도록 셋팅
   				if(allowApiResult == 0){
   					WizSafeUtil.setSendLocationUser(AllowLocation.this, true);	//로컬벨류셋팅
+  						
+  					//바로 위치값을 주기위하여 위치 찾기 데몬 한번 실행
+  					//인증된 사람인지 아닌지 판별하여 바로 위치 한번 전송한다.
+  			        if(WizSafeUtil.isAuthOkUser(AllowLocation.this)){
+  			        	//백그라운드에 DemonService라는 Sevice가 존재하는지 가져옴.
+  			    		ComponentName cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
+  			    		//서비스 시작(위에서 중지 시킨 데몬을 시작시킴)
+  			    		startService(new Intent().setComponent(cn));
+  			        }
   				}
 
   				pHandler.sendEmptyMessage(0);
