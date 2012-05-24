@@ -1,16 +1,11 @@
 package com.wiz.Demon;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -25,7 +20,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -44,8 +38,8 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	Calendar calendar;
 	
 	//현재 자신의 위치와 주소를 가져오기 위한 변수
-	private LocationManager mLocationManager_GPS;
-	private LocationManager mLocationManager_NETWORK;
+	private LocationManager mLocationManager_GPS = null;
+	private LocationManager mLocationManager_NETWORK = null;
 	private Location mLocation_GPS;
 	private Location mLocation_NETWORK;
 	private Location selectedLocation = null;
@@ -84,16 +78,23 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	public void onCreate(){ 
 		super.onCreate(); 
 		
+		Log.i("childList","===시작");
+		
 		//5분뒤에 재시작되도록 설정함
 		restartDemon();
-		
-		writeLog_print("서비스2번  ===== 온크리에이트");
-		Log.i("childList","서비스2번  ===== 온크리에이트");
 		
 		//절전모드에서도 CPU가 계속 사용중이도록 셋팅
 		pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Deomon WakeLock");
 		wakeLock.acquire();
+		
+		//위치조회 하지 않는 단말기(부모로 등록된 사람이 없는 단말기)일경우 바로 종료한다.
+		if(!WizSafeUtil.isSendLocationUser(WizSafeGetLocation.this)){
+			Log.i("childList","===허허");
+			cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
+			stopService(new Intent().setComponent(cn));
+			return;
+		}
 		
 		//네트워크 신호와 GPS신호 모두를 선언한다.
 		mLocationManager_GPS = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -104,10 +105,6 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		
 		//위치 정보를 가져오는 방식이 두개 모두 꺼져있는경우엔 그냥 서비스 종료한다.
 		if(!mLocationManager_GPS.isProviderEnabled(LocationManager.GPS_PROVIDER) && !mLocationManager_NETWORK.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-			
-			writeLog_print("서비스 2번 *** 위치정보가져오는방식 모두 꺼짐 서비스 종료함");
-			Log.i("childList","서비스 2번 *** 위치정보가져오는방식 모두 꺼짐 서비스 종료함");
-			
 			cn = new ComponentName(getPackageName(), WizSafeGetLocation.class.getName());
 			stopService(new Intent().setComponent(cn));
 			return;
@@ -121,9 +118,9 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	public void onDestroy(){  
 		super.onDestroy();
 		//해당 단말의 위도 경도를 가져오는 로직을 없애준다.
-		mLocationManager_GPS.removeNmeaListener(gpsQuentityLoad);
-		mLocationManager_GPS.removeUpdates(this);
-		mLocationManager_NETWORK.removeUpdates(this);
+		if(mLocationManager_GPS != null) { mLocationManager_GPS.removeNmeaListener(gpsQuentityLoad); Log.i("childList","===히히"); }
+		if(mLocationManager_GPS != null) { mLocationManager_GPS.removeUpdates(this); Log.i("childList","===히히"); }
+		if(mLocationManager_NETWORK != null) { mLocationManager_NETWORK.removeUpdates(this); Log.i("childList","===호호"); }
 
 		//슬립모드에서도 동작하도록 하는 로직을 없애준다.
 		if(wakeLock != null){
@@ -131,14 +128,11 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 			wakeLock = null;
 		}
 		
-		writeLog_print("서비스2번  ===== 온디스트로이");
-		writeLog_print("====================================");
-		Log.i("childList","서비스2번  ===== 온디스트로이");
-		
+		//바로 종료되는 경우에도 셋팅을 하여준다.
+		WizSafeUtil.setLastSendLocation(WizSafeGetLocation.this, Long.toString(System.currentTimeMillis()));
 	}
 	
 	public void onLocationChanged(Location arg0) {
-		writeLog_print("====LocationChange!!");
 		
 		//위치가 어떤것으로 변하던 두가지 방식 모두를 가지고 둘 중 조건에 맞는 값을 가져온다.
 		mLocation_GPS = mLocationManager_GPS.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -222,12 +216,9 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 	class CallInsertLocationThread extends Thread{ 
 		public void run(){
 			try{
-				writeLog_print("서비스 2번의 스레드***시작");
-				Log.i("childList","서비스 2번의 스레드***시작");
 				try{Thread.sleep(1000 * 10);}catch(Exception e){}
 				
 				if(selectedLocation != null){
-					writeLog_print("서비스 2번의 스레드***위치정보를 가져옴");
 					//위치 정보 전역변수에 저장
 					lat = selectedLocation.getLatitude();
 					lon = selectedLocation.getLongitude();
@@ -256,10 +247,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 							urlConn.setConnectTimeout(3000);
 							urlConn.setReadTimeout(3000);
 							br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
-							writeLog_print("서비스 2번의 스레드***통신이완료되었슴");
 						}catch(Exception e){
-							writeLog_print("서비스 2번의 스레드***통신중에러남 : " + e.toString());
-							Log.i("childList","서비스 2번의 스레드***통신중에러남 : " + e.toString());
 						}finally{
 							if(br != null){ br.close(); }
 							if(urlConn != null) {urlConn.disconnect(); urlConn = null;}
@@ -269,7 +257,6 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 				WizSafeUtil.setLastSendLocation(WizSafeGetLocation.this, Long.toString(System.currentTimeMillis()));
 				pHandler.sendEmptyMessage(0);
 			}catch(Exception e){
-				writeLog_print("서비스 2번의 스레드***개에러남 : " + e.toString());
 				WizSafeUtil.setLastSendLocation(WizSafeGetLocation.this, Long.toString(System.currentTimeMillis()));
 				pHandler.sendEmptyMessage(0);
 			}
@@ -303,6 +290,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
 	}
   	
+  	/*
   	public static void writeLog_print(String msg)
 	{
 		try{
@@ -321,5 +309,6 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		}catch(Exception e){
 		}
 	}
+	*/
   	
 }
