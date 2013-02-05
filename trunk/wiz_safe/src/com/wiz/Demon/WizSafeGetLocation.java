@@ -238,7 +238,7 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 						try{
 							enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(WizSafeGetLocation.this));
 							dbInsertDate = WizSafeUtil.getInsertDbDate();
-							url = "https://www.heream.com/api/insertLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&dbInsertDate=" + URLEncoder.encode(dbInsertDate) + "&lat=" + URLEncoder.encode(enc_lat) + "&lon=" + URLEncoder.encode(enc_lon) + "&type=" + URLEncoder.encode(provider) + "&hiddenUser=" + URLEncoder.encode(hiddenUser);
+							url = "http://www.heream.com/api/insertLocation.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&dbInsertDate=" + URLEncoder.encode(dbInsertDate) + "&lat=" + URLEncoder.encode(enc_lat) + "&lon=" + URLEncoder.encode(enc_lon) + "&type=" + URLEncoder.encode(provider) + "&hiddenUser=" + URLEncoder.encode(hiddenUser);
 							urlConn = (HttpURLConnection) new URL(url).openConnection();
 							urlConn.setConnectTimeout(3000);
 							urlConn.setReadTimeout(3000);
@@ -285,26 +285,5 @@ public class WizSafeGetLocation extends Service implements LocationListener {
 		calendar.add(Calendar.SECOND, (60*5)+15);
 		am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
 	}
-  	
-  	/*
-  	public static void writeLog_print(String msg)
-	{
-		try{
-			File file = new File(Environment.getExternalStorageDirectory(),"note.txt");
-		    FileWriter fw = new FileWriter(file,true);
-		    BufferedWriter out = new BufferedWriter(fw);
-		    Date today = new Date();
-		    StringBuffer buf = new StringBuffer();
-		    SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMdd");
-			SimpleDateFormat df2 = new SimpleDateFormat("HH:mm:ss-SSS");
-			buf.append(df1.format(today) + " " + df2.format(today)).append("\n");
-			buf.append(" : ").append(msg).append("\n");
-		    out.write(buf.toString());
-		    out.flush();
-		    out.close();
-		}catch(Exception e){
-		}
-	}
-	*/
-  	
+ 	
 }
