@@ -32,7 +32,7 @@ public class PointChargeActivity extends Activity {
 	    //스크롤 제거
 	    pointWebView.setHorizontalScrollBarEnabled(false);
 	    pointWebView.setVerticalScrollBarEnabled(false);
-	    pointWebView.loadUrl("https://www.heream.com/microPayment/Start.jsp?ctn="+URLEncoder.encode(enc_ctn));
+	    pointWebView.loadUrl("http://www.heream.com/microPayment/Start.jsp?ctn="+URLEncoder.encode(enc_ctn));
 	    //pointWebView.setWebChromeClient(new WebChromeClient());
 	    
 	    pointWebView.setWebChromeClient(new WebChromeClient(){
@@ -115,10 +115,10 @@ public class PointChargeActivity extends Activity {
     		String url = "";
     		if("MoveHelp".equals(arg)){
 				//url = "http://web.teledit.com/Danal/TMobile/help/mguide.html";
-    			url = "https://www.heream.com/microPayment/Mguide.jsp";
+    			url = "http://www.heream.com/microPayment/Mguide.jsp";
 			}else if("OpenYak".equals(arg)){
 				//url = "http://web.teledit.com/Danal/TMobile/help/myak.html";
-				url = "https://www.heream.com/microPayment/Myak.jsp";
+				url = "http://www.heream.com/microPayment/Myak.jsp";
 			}
     		
     		//WebView subWebView = (WebView)findViewById(R.id.webview);

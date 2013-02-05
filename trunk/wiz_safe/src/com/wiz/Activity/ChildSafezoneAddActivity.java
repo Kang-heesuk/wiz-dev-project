@@ -390,7 +390,7 @@ public class ChildSafezoneAddActivity extends NMapActivity implements LocationLi
   				String encLongitude = WizSafeSeed.seedEnc(Double.toString(longitude));
   				
   				StringBuffer url = new StringBuffer();
-  				url.append("https://www.heream.com/api/addChildSafezone.jsp");
+  				url.append("http://www.heream.com/api/addChildSafezone.jsp");
   				url.append("?safezoneCode=" + URLEncoder.encode(safezoneCode));
   				url.append("&ctn=" + URLEncoder.encode(encCtn));
   				url.append("&child_ctn=" + URLEncoder.encode(encChildCtn));

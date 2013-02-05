@@ -256,7 +256,7 @@ public class ChildTraceAddActivity extends Activity {
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceAddActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(phonenum);
-  				String url = "https://www.heream.com/api/addChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn) +"&childName="+ URLEncoder.encode(enc_childCtn) + "&startWeek=" + URLEncoder.encode(startWeek) + "&endWeek=" + URLEncoder.encode(endWeek) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) + "&interval=" + URLEncoder.encode(interval) + "&traceLogCode=" + URLEncoder.encode(traceLogCode);
+  				String url = "http://www.heream.com/api/addChildTrace.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&childCtn="+ URLEncoder.encode(enc_childCtn) +"&childName="+ URLEncoder.encode(enc_childCtn) + "&startWeek=" + URLEncoder.encode(startWeek) + "&endWeek=" + URLEncoder.encode(endWeek) + "&startTime=" + URLEncoder.encode(startTime) + "&endTime=" + URLEncoder.encode(endTime) + "&interval=" + URLEncoder.encode(interval) + "&traceLogCode=" + URLEncoder.encode(traceLogCode);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

@@ -224,7 +224,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   				
   				String enc_parentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
-  				String url = "https://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+URLEncoder.encode(selectedDay);
+  				String url = "http://www.heream.com/api/getChildTraceDetailView.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) + "&childCtn="+ URLEncoder.encode(enc_childCtn)+"&selectedDay="+URLEncoder.encode(selectedDay);
   				Log.i("banhong", "url = "+url);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
@@ -278,7 +278,7 @@ public class ChildTraceViewActivity extends NMapActivity {
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildTraceViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
-  				String url = "https://www.heream.com/api/traceDeductPoint.jsp?parentCtn=" + URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn);
+  				String url = "http://www.heream.com/api/traceDeductPoint.jsp?parentCtn=" + URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

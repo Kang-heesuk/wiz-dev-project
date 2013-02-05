@@ -164,7 +164,7 @@ public class PointLogActivity extends Activity {
   		public void run(){
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(PointLogActivity.this));
-  				String url = "https://www.heream.com/api/getPointLog.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  				String url = "http://www.heream.com/api/getPointLog.jsp?ctn="+ URLEncoder.encode(enc_ctn);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

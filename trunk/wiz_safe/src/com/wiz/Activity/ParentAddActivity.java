@@ -172,7 +172,7 @@ public class ParentAddActivity extends Activity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ParentAddActivity.this));
   				String enc_parentCtn = WizSafeSeed.seedEnc(parentPhoneTemp);
   				String enc_parentName = WizSafeSeed.seedEnc(parentNameTemp);
-  				String url = "https://www.heream.com/api/addRelation.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) +"&childCtn="+ URLEncoder.encode(enc_ctn) +"&parentName="+ URLEncoder.encode(enc_parentName) +"&type=" + URLEncoder.encode("02");
+  				String url = "http://www.heream.com/api/addRelation.jsp?parentCtn="+ URLEncoder.encode(enc_parentCtn) +"&childCtn="+ URLEncoder.encode(enc_ctn) +"&parentName="+ URLEncoder.encode(enc_parentName) +"&type=" + URLEncoder.encode("02");
   				
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
@@ -191,7 +191,7 @@ public class ParentAddActivity extends Activity {
   				}
   				
   				if(haveCheck){
-  					url = "https://www.heream.com/api/sendAppDownSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&d_ctn=" + URLEncoder.encode(enc_parentCtn) + "&stype=" + URLEncoder.encode("02");
+  					url = "http://www.heream.com/api/sendAppDownSMS.jsp?ctn="+ URLEncoder.encode(enc_ctn) + "&d_ctn=" + URLEncoder.encode(enc_parentCtn) + "&stype=" + URLEncoder.encode("02");
   					urlConn = (HttpURLConnection) new URL(url).openConnection();
   	  				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
   				}

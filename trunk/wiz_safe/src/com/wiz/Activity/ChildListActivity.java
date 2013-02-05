@@ -394,7 +394,7 @@ public class ChildListActivity extends Activity {
   		public void run(){
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildListActivity.this));
-  				String url = "https://www.heream.com/api/getChildList.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  				String url = "http://www.heream.com/api/getChildList.jsp?ctn="+ URLEncoder.encode(enc_ctn);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -463,7 +463,7 @@ public class ChildListActivity extends Activity {
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildListActivity.this));
   				String enc_selectedCtn = WizSafeSeed.seedEnc(childListArr.get(selectedRow).getChildCtn());
-  				String url = "https://www.heream.com/api/deleteRelation.jsp?parentCtn="+ URLEncoder.encode(enc_ctn) + "&childCtn=" + URLEncoder.encode(enc_selectedCtn) + "&me=parent";
+  				String url = "http://www.heream.com/api/deleteRelation.jsp?parentCtn="+ URLEncoder.encode(enc_ctn) + "&childCtn=" + URLEncoder.encode(enc_selectedCtn) + "&me=parent";
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

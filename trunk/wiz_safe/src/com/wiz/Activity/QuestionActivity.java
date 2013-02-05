@@ -110,7 +110,7 @@ public class QuestionActivity extends Activity {
   		public void run(){
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(QuestionActivity.this));
-  				String url = "https://www.heream.com/api/manToManRequest.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&title="+ URLEncoder.encode(tempEditText1,"euc-kr") +"&content="+ URLEncoder.encode(tempEditText2,"euc-kr");
+  				String url = "http://www.heream.com/api/manToManRequest.jsp?ctn="+ URLEncoder.encode(enc_ctn) +"&title="+ URLEncoder.encode(tempEditText1,"euc-kr") +"&content="+ URLEncoder.encode(tempEditText2,"euc-kr");
   				
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
