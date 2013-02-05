@@ -97,7 +97,7 @@ public class AllowLocation extends Activity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(AllowLocation.this));
   				String enc_parentCtn = WizSafeSeed.seedEnc(allowPhoneNumber);
   				String type = "ACCEPT";
-  				String url = "https://www.heream.com/api/allowLocation.jsp?ctn=" + URLEncoder.encode(enc_ctn) +"&parentCtn=" + URLEncoder.encode(enc_parentCtn) +"&type=" + URLEncoder.encode(type);
+  				String url = "http://www.heream.com/api/allowLocation.jsp?ctn=" + URLEncoder.encode(enc_ctn) +"&parentCtn=" + URLEncoder.encode(enc_parentCtn) +"&type=" + URLEncoder.encode(type);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -139,7 +139,7 @@ public class AllowLocation extends Activity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(AllowLocation.this));
   				String enc_parentCtn = WizSafeSeed.seedEnc(allowPhoneNumber);
   				String type = "REJECT";
-  				String url = "https://www.heream.com/api/allowLocation.jsp?ctn=" + URLEncoder.encode(enc_ctn) +"&parentCtn=" + URLEncoder.encode(enc_parentCtn) +"&type=" + URLEncoder.encode(type);
+  				String url = "http://www.heream.com/api/allowLocation.jsp?ctn=" + URLEncoder.encode(enc_ctn) +"&parentCtn=" + URLEncoder.encode(enc_parentCtn) +"&type=" + URLEncoder.encode(type);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

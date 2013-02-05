@@ -235,7 +235,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   				if(childCtn != null && !"".equals(childCtn)){
   					enc_ctn = WizSafeSeed.seedEnc(childCtn);
   					String enc_ParentCtn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
-  					String url = "https://www.heream.com/api/getNowLocation.jsp?childCtn="+ URLEncoder.encode(enc_ctn) + "&parentCtn=" + URLEncoder.encode(enc_ParentCtn);
+  					String url = "http://www.heream.com/api/getNowLocation.jsp?childCtn="+ URLEncoder.encode(enc_ctn) + "&parentCtn=" + URLEncoder.encode(enc_ParentCtn);
   					
   					HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   	  				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
@@ -278,7 +278,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   		public void run(){
   			try{
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
-  				String url = "https://www.heream.com/api/nowLocationDeductPoint.jsp?ctn="+ URLEncoder.encode(enc_ctn);
+  				String url = "http://www.heream.com/api/nowLocationDeductPoint.jsp?ctn="+ URLEncoder.encode(enc_ctn);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;
@@ -304,7 +304,7 @@ public class ChildLocationViewActivity extends NMapActivity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildLocationViewActivity.this));
   				String enc_childCtn = WizSafeSeed.seedEnc(childCtn);
   				String enc_address = WizSafeSeed.seedEnc(address);
-  				String url = "https://www.heream.com/api/insertLocationBoard.jsp?parentCtn="+ URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&address=" + URLEncoder.encode(enc_address);
+  				String url = "http://www.heream.com/api/insertLocationBoard.jsp?parentCtn="+ URLEncoder.encode(enc_ctn) + "&childCtn="+ URLEncoder.encode(enc_childCtn) + "&address=" + URLEncoder.encode(enc_address);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));
   				String temp;

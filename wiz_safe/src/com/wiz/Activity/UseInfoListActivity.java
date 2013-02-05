@@ -73,7 +73,7 @@ public class UseInfoListActivity extends Activity {
   	class CallGetUseInfoListApiThread extends Thread{
   		public void run(){
   			try{
-  				String url = "https://www.heream.com/api/getBoardList.jsp?part="+URLEncoder.encode("02");
+  				String url = "http://www.heream.com/api/getBoardList.jsp?part="+URLEncoder.encode("02");
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

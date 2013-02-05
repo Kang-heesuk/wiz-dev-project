@@ -83,7 +83,7 @@ public class SplashActivity extends Activity {
   	class CallAppVersionCheckThread extends Thread{
   		public void run(){
   			try{
-  				String url = "https://www.heream.com/api/checkVersion.jsp?appVersion="+ URLEncoder.encode(AppVersion) +"&appStore="+ URLEncoder.encode(Market);
+  				String url = "http://www.heream.com/api/checkVersion.jsp?appVersion="+ URLEncoder.encode(AppVersion) +"&appStore="+ URLEncoder.encode(Market);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

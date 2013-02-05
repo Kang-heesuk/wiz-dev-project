@@ -314,7 +314,7 @@ public class ChildSafezoneListActivity extends Activity {
   			try{
   				//고객의 잔여 포인트를 가져오는 로직
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(ChildSafezoneListActivity.this));
-  				url = "https://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
+  				url = "http://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
   				urlConn = (HttpURLConnection) new URL(url).openConnection();
   				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				temp = "";
@@ -332,8 +332,7 @@ public class ChildSafezoneListActivity extends Activity {
   				}
   				
   				//안심존 리스트 가져오는 로직
-  				url = "https://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));
-  				urlConn = (HttpURLConnection) new URL(url).openConnection();
+  				url = "http://www.heream.com/api/getChildSafezoneList.jsp?parent_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(parentCtn)) + "&child_ctn=" + URLEncoder.encode(WizSafeSeed.seedEnc(childCtn));  				urlConn = (HttpURLConnection) new URL(url).openConnection();
   				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				temp = "";
   				returnXML = new ArrayList<String>();
@@ -441,7 +440,7 @@ public class ChildSafezoneListActivity extends Activity {
   				String selectedEncAddr = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeAddress());
   				String selectedEncLat = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeLatitude());
   				String selectedEncLon = WizSafeSeed.seedEnc(childSafezoneListArr.get(selectedRow).getSafeLongitude());
-  				String url = "https://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode)+"&parentCtn="+URLEncoder.encode(selectedEncCtn)+"&childCtn="+URLEncoder.encode(selectedEncChildCtn)+"&radius="+URLEncoder.encode(selectedEncRadius)+"&addr="+URLEncoder.encode(selectedEncAddr)+"&lat="+URLEncoder.encode(selectedEncLat)+"&lon="+URLEncoder.encode(selectedEncLon);
+  				String url = "http://www.heream.com/api/deleteChildSafezone.jsp?safezoneCode=" + URLEncoder.encode(selectedSafezoneCode)+"&parentCtn="+URLEncoder.encode(selectedEncCtn)+"&childCtn="+URLEncoder.encode(selectedEncChildCtn)+"&radius="+URLEncoder.encode(selectedEncRadius)+"&addr="+URLEncoder.encode(selectedEncAddr)+"&lat="+URLEncoder.encode(selectedEncLat)+"&lon="+URLEncoder.encode(selectedEncLon);
   				HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
   				BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				String temp;

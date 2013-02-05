@@ -66,7 +66,7 @@ public class SetupActivity extends Activity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(SetupActivity.this));
 
   				//고객정보를 가져오는 통신
-  				url = "https://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
+  				url = "http://www.heream.com/api/getCustomerInformation.jsp?ctn=" + URLEncoder.encode(enc_ctn);
   				urlConn = (HttpURLConnection) new URL(url).openConnection();
   				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				returnXML = new ArrayList<String>();
@@ -101,7 +101,7 @@ public class SetupActivity extends Activity {
   				String enc_ctn = WizSafeSeed.seedEnc(WizSafeUtil.getCtn(SetupActivity.this));
 
   				//문자수신 상태값을 변경시키는 API
-  				url = "https://www.heream.com/api/alarmOnOff.jsp?ctn=" + URLEncoder.encode(enc_ctn) + "&setValue=" + URLEncoder.encode(setMyAlarmState);
+  				url = "http://www.heream.com/api/alarmOnOff.jsp?ctn=" + URLEncoder.encode(enc_ctn) + "&setValue=" + URLEncoder.encode(setMyAlarmState);
   				urlConn = (HttpURLConnection) new URL(url).openConnection();
   				br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),"euc-kr"));	
   				returnXML = new ArrayList<String>();
